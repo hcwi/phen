@@ -1,0 +1,12 @@
+log.roo
+application.log*
+
+# eclipse
+.settings
+.classpath
+.project
+
+# bin
+bin
+target
+
