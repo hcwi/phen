@@ -9,38 +9,38 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Version;
-import pl.poznan.igr.domain.Context;
+import pl.poznan.igr.domain.UnzipSession;
 
-privileged aspect Context_Roo_Jpa_Entity {
+privileged aspect UnzipSession_Roo_Jpa_Entity {
     
-    declare @type: Context: @Entity;
+    declare @type: UnzipSession: @Entity;
     
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
-    private Long Context.id;
+    private Long UnzipSession.id;
     
     @Version
     @Column(name = "version")
-    private Integer Context.version;
+    private Integer UnzipSession.version;
     
-    public Context.new() {
+    public UnzipSession.new() {
         super();
     }
 
-    public Long Context.getId() {
+    public Long UnzipSession.getId() {
         return this.id;
     }
     
-    public void Context.setId(Long id) {
+    public void UnzipSession.setId(Long id) {
         this.id = id;
     }
     
-    public Integer Context.getVersion() {
+    public Integer UnzipSession.getVersion() {
         return this.version;
     }
     
-    public void Context.setVersion(Integer version) {
+    public void UnzipSession.setVersion(Integer version) {
         this.version = version;
     }
     

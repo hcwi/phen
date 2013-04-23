@@ -4,9 +4,10 @@
 package pl.poznan.igr.domain;
 
 import org.springframework.beans.factory.annotation.Configurable;
+import pl.poznan.igr.domain.ImportSessionDataOnDemand;
 
-privileged aspect BlobFile_Roo_Configurable {
+privileged aspect ImportSessionDataOnDemand_Roo_Configurable {
     
-    declare @type: BlobFile: @Configurable;
+    declare @type: ImportSessionDataOnDemand: @Configurable;
     
 }

@@ -9,38 +9,38 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Version;
-import pl.poznan.igr.domain.Context;
+import pl.poznan.igr.domain.StatsSession;
 
-privileged aspect Context_Roo_Jpa_Entity {
+privileged aspect StatsSession_Roo_Jpa_Entity {
     
-    declare @type: Context: @Entity;
+    declare @type: StatsSession: @Entity;
     
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
-    private Long Context.id;
+    private Long StatsSession.id;
     
     @Version
     @Column(name = "version")
-    private Integer Context.version;
+    private Integer StatsSession.version;
     
-    public Context.new() {
+    public StatsSession.new() {
         super();
     }
 
-    public Long Context.getId() {
+    public Long StatsSession.getId() {
         return this.id;
     }
     
-    public void Context.setId(Long id) {
+    public void StatsSession.setId(Long id) {
         this.id = id;
     }
     
-    public Integer Context.getVersion() {
+    public Integer StatsSession.getVersion() {
         return this.version;
     }
     
-    public void Context.setVersion(Integer version) {
+    public void StatsSession.setVersion(Integer version) {
         this.version = version;
     }
     

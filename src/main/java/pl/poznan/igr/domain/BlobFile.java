@@ -1,11 +1,13 @@
 package pl.poznan.igr.domain;
 
 import java.util.Date;
+
 import javax.persistence.Basic;
 import javax.persistence.FetchType;
 import javax.persistence.Lob;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.roo.addon.equals.RooEquals;
 import org.springframework.roo.addon.javabean.RooJavaBean;

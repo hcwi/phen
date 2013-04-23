@@ -9,7 +9,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Version;
-import pl.poznan.igr.domain.BlobFile;
 
 privileged aspect BlobFile_Roo_Jpa_Entity {
     

@@ -4,73 +4,72 @@
 package pl.poznan.igr.domain;
 
 import java.util.List;
-
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-
 import org.springframework.transaction.annotation.Transactional;
+import pl.poznan.igr.domain.UnzipSession;
 
-privileged aspect BlobFile_Roo_Jpa_ActiveRecord {
+privileged aspect UnzipSession_Roo_Jpa_ActiveRecord {
     
     @PersistenceContext
-    transient EntityManager BlobFile.entityManager;
+    transient EntityManager UnzipSession.entityManager;
     
-    public static final EntityManager BlobFile.entityManager() {
-        EntityManager em = new BlobFile().entityManager;
+    public static final EntityManager UnzipSession.entityManager() {
+        EntityManager em = new UnzipSession().entityManager;
         if (em == null) throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");
         return em;
     }
     
-    public static long BlobFile.countBlobFiles() {
-        return entityManager().createQuery("SELECT COUNT(o) FROM BlobFile o", Long.class).getSingleResult();
+    public static long UnzipSession.countUnzipSessions() {
+        return entityManager().createQuery("SELECT COUNT(o) FROM UnzipSession o", Long.class).getSingleResult();
     }
     
-    public static List<BlobFile> BlobFile.findAllBlobFiles() {
-        return entityManager().createQuery("SELECT o FROM BlobFile o", BlobFile.class).getResultList();
+    public static List<UnzipSession> UnzipSession.findAllUnzipSessions() {
+        return entityManager().createQuery("SELECT o FROM UnzipSession o", UnzipSession.class).getResultList();
     }
     
-    public static BlobFile BlobFile.findBlobFile(Long id) {
+    public static UnzipSession UnzipSession.findUnzipSession(Long id) {
         if (id == null) return null;
-        return entityManager().find(BlobFile.class, id);
+        return entityManager().find(UnzipSession.class, id);
     }
     
-    public static List<BlobFile> BlobFile.findBlobFileEntries(int firstResult, int maxResults) {
-        return entityManager().createQuery("SELECT o FROM BlobFile o", BlobFile.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
+    public static List<UnzipSession> UnzipSession.findUnzipSessionEntries(int firstResult, int maxResults) {
+        return entityManager().createQuery("SELECT o FROM UnzipSession o", UnzipSession.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
     }
     
     @Transactional
-    public void BlobFile.persist() {
+    public void UnzipSession.persist() {
         if (this.entityManager == null) this.entityManager = entityManager();
         this.entityManager.persist(this);
     }
     
     @Transactional
-    public void BlobFile.remove() {
+    public void UnzipSession.remove() {
         if (this.entityManager == null) this.entityManager = entityManager();
         if (this.entityManager.contains(this)) {
             this.entityManager.remove(this);
         } else {
-            BlobFile attached = BlobFile.findBlobFile(this.id);
+            UnzipSession attached = UnzipSession.findUnzipSession(this.id);
             this.entityManager.remove(attached);
         }
     }
     
     @Transactional
-    public void BlobFile.flush() {
+    public void UnzipSession.flush() {
         if (this.entityManager == null) this.entityManager = entityManager();
         this.entityManager.flush();
     }
     
     @Transactional
-    public void BlobFile.clear() {
+    public void UnzipSession.clear() {
         if (this.entityManager == null) this.entityManager = entityManager();
         this.entityManager.clear();
     }
     
     @Transactional
-    public BlobFile BlobFile.merge() {
+    public UnzipSession UnzipSession.merge() {
         if (this.entityManager == null) this.entityManager = entityManager();
-        BlobFile merged = this.entityManager.merge(this);
+        UnzipSession merged = this.entityManager.merge(this);
         this.entityManager.flush();
         return merged;
     }

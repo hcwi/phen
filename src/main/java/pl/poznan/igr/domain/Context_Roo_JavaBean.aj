@@ -4,8 +4,9 @@
 package pl.poznan.igr.domain;
 
 import java.util.Date;
-import pl.poznan.igr.domain.BlobFile;
 import pl.poznan.igr.domain.Context;
+import pl.poznan.igr.domain.ImportSession;
+import pl.poznan.igr.domain.UnzipSession;
 import pl.poznan.igr.domain.type.Status;
 
 privileged aspect Context_Roo_JavaBean {
@@ -34,20 +35,36 @@ privileged aspect Context_Roo_JavaBean {
         this.finished = finished;
     }
     
-    public BlobFile Context.getUploadedFile() {
-        return this.uploadedFile;
-    }
-    
-    public void Context.setUploadedFile(BlobFile uploadedFile) {
-        this.uploadedFile = uploadedFile;
-    }
-    
     public Status Context.getStatus() {
         return this.status;
     }
     
     public void Context.setStatus(Status status) {
         this.status = status;
+    }
+    
+    public ImportSession Context.getImportSession() {
+        return this.importSession;
+    }
+    
+    public void Context.setImportSession(ImportSession importSession) {
+        this.importSession = importSession;
+    }
+    
+    public UnzipSession Context.getUnzipSession() {
+        return this.unzipSession;
+    }
+    
+    public void Context.setUnzipSession(UnzipSession unzipSession) {
+        this.unzipSession = unzipSession;
+    }
+    
+    public UnzipSession Context.getStatsSession() {
+        return this.statsSession;
+    }
+    
+    public void Context.setStatsSession(UnzipSession statsSession) {
+        this.statsSession = statsSession;
     }
     
 }

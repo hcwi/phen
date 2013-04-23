@@ -5,10 +5,11 @@ package pl.poznan.igr.domain;
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import pl.poznan.igr.domain.StatsSession;
 
-privileged aspect BlobFile_Roo_ToString {
+privileged aspect StatsSession_Roo_ToString {
     
-    public String BlobFile.toString() {
+    public String StatsSession.toString() {
         return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
     }
     

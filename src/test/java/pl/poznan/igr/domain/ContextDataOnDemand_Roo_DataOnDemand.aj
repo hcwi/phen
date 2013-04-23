@@ -15,9 +15,10 @@ import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import pl.poznan.igr.domain.BlobFileDataOnDemand;
 import pl.poznan.igr.domain.Context;
 import pl.poznan.igr.domain.ContextDataOnDemand;
+import pl.poznan.igr.domain.ImportSessionDataOnDemand;
+import pl.poznan.igr.domain.UnzipSessionDataOnDemand;
 import pl.poznan.igr.domain.type.Status;
 
 privileged aspect ContextDataOnDemand_Roo_DataOnDemand {
@@ -29,7 +30,10 @@ privileged aspect ContextDataOnDemand_Roo_DataOnDemand {
     private List<Context> ContextDataOnDemand.data;
     
     @Autowired
-    BlobFileDataOnDemand ContextDataOnDemand.blobFileDataOnDemand;
+    ImportSessionDataOnDemand ContextDataOnDemand.importSessionDataOnDemand;
+    
+    @Autowired
+    UnzipSessionDataOnDemand ContextDataOnDemand.unzipSessionDataOnDemand;
     
     public Context ContextDataOnDemand.getNewTransientContext(int index) {
         Context obj = new Context();

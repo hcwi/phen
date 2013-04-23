@@ -5,7 +5,6 @@ package pl.poznan.igr.domain;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import pl.poznan.igr.domain.BlobFile;
 
 privileged aspect BlobFile_Roo_Equals {
     
