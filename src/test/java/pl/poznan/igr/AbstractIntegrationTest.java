@@ -9,13 +9,13 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "/applicationContext*.xml")
+@ContextConfiguration(locations = "classpath:/META-INF/spring/applicationContext*.xml")
 @Transactional
 public abstract class AbstractIntegrationTest {
 
-	@PersistenceContext
+	/*@PersistenceContext
 	transient EntityManager entityManager;
-
+*/
 	/*@Before
 	public void setUpMocks() {
 		MockitoAnnotations.initMocks(this);

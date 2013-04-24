@@ -48,10 +48,11 @@ public class ImportServiceImpl implements ImportService {
 		is.setBlobFile(blobFile);
 		is.setCreationDate(new Date());
 		is.setContext(ctx);
-		//is.persist(); //no need to persist() because of cascade=CascadeType.PERSIST set in Context
+		is.persist(); //no need to persist() because of cascade=CascadeType.PERSIST set in Context
 		
 		ctx.setStatus(Status.UPLOADED);
-		ctx.setImportSession(is);
+		//ctx.setImportSession(is);
+		ctx = ctx.merge();
 	}
 
 	private Context createContext(String owner) {

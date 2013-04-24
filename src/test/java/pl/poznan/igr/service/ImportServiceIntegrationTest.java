@@ -18,7 +18,7 @@ public class ImportServiceIntegrationTest extends AbstractIntegrationTest {
 
 	public static final String OWNER = "owner";
 	public static final String FILE_PATH = "src/test/resources/test.txt";
-	public static final String ZIP_PATH = "src/test/resources/test.zip";
+	public static final String ZIP_PATH = "src/test/resources/testzip.zip";
 
 	@Autowired
 	private ImportService importService;
@@ -52,7 +52,7 @@ public class ImportServiceIntegrationTest extends AbstractIntegrationTest {
 		BlobFile uploadedFile = session.getBlobFile();
 		assertEquals(uploadedFile, blobFile);
 		
-		ImportSession is = ctx.getImportSession();
+		ImportSession is = ImportSession.findImportSessionForContext(ctx);
 		assertEquals(session, is);
 				
 	}
@@ -69,8 +69,8 @@ public class ImportServiceIntegrationTest extends AbstractIntegrationTest {
 		assertEquals(1, Context.countContexts());
 
 		BlobFile blobFile = BlobFile.findAllBlobFiles().iterator().next();
-		assertEquals("test.zip", new String(blobFile.getFileName()));
-		//TODO uncomment and find out why
+		assertEquals("testzip.zip", new String(blobFile.getFileName()));
+		//TODO uncomment and find out why ?!
 		//assertEquals(true, blobFile.getCreated().before(new Date()));
 		Context ctx = Context.findAllContexts().get(0);
 		assertEquals(OWNER, ctx.getOwner());
@@ -85,7 +85,9 @@ public class ImportServiceIntegrationTest extends AbstractIntegrationTest {
 		BlobFile uploadedFile = session.getBlobFile();
 		assertEquals(uploadedFile, blobFile);
 		
-		ImportSession is = ctx.getImportSession();
+		ImportSession is = ImportSession.findImportSessionForContext(ctx);
+		
+		assertEquals(true, null != is);
 		assertEquals(session, is);
 		
 		System.out.println();
