@@ -4,11 +4,10 @@
 package pl.poznan.igr.domain;
 
 import java.util.List;
-
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-
 import org.springframework.transaction.annotation.Transactional;
+import pl.poznan.igr.domain.BlobFile;
 
 privileged aspect BlobFile_Roo_Jpa_ActiveRecord {
     

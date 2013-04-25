@@ -39,6 +39,9 @@ public class UnzipServiceIntegrationTest extends AbstractIntegrationTest {
 
 	private void testFromContext(String owner, String zipPath, String fileName) {
 
+		File zip = new File(zipPath);
+		assertEquals("Zip file does not exist.", true, zip.exists());
+		
 		importService.importFile(owner, zipPath);
 
 		Context ctx = Context.findAllContexts().get(
@@ -48,7 +51,7 @@ public class UnzipServiceIntegrationTest extends AbstractIntegrationTest {
 		unzipService.unzipFile(ctx);
 
 		File f = new File(fileName);
-		assert (f.exists());
+		assertEquals("Unzipped file does not exist.", true, f.exists());
 		//deleteFile(f);
 		try {
 			if (f.isFile())
@@ -58,7 +61,7 @@ public class UnzipServiceIntegrationTest extends AbstractIntegrationTest {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		assert (!f.exists());
+		assertEquals("Unzipped file has not been deleted.", false, f.exists());
 	}
 
 	@SuppressWarnings("unused")
@@ -83,12 +86,15 @@ public class UnzipServiceIntegrationTest extends AbstractIntegrationTest {
 	@Test
 	public void testUnzipFromPath() {
 
+		File zip = new File(SMALL_ZIP_PATH);
+		assertEquals("Zip file does not exist.", true, zip.exists());
+		
 		unzipService.unzipFile(SMALL_ZIP_PATH);
 
 		File f = new File(SMALL_FILE_NAME);
-		assert (f.exists());
+		assertEquals("Unzipped file does not exist.", true, f.exists());
 		f.delete();
-		assert (!f.exists());
+		assertEquals("Unzipped file has not been deleted.", false, f.exists());
 	}
 
 }

@@ -4,6 +4,7 @@
 package pl.poznan.igr.domain;
 
 import java.util.Date;
+import pl.poznan.igr.domain.BlobFile;
 
 privileged aspect BlobFile_Roo_JavaBean {
     

@@ -5,6 +5,7 @@ package pl.poznan.igr.domain;
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
+import pl.poznan.igr.domain.BlobFile;
 
 privileged aspect BlobFile_Roo_ToString {
     
