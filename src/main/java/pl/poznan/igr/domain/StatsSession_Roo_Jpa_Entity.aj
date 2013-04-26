@@ -24,10 +24,6 @@ privileged aspect StatsSession_Roo_Jpa_Entity {
     @Column(name = "version")
     private Integer StatsSession.version;
     
-    public StatsSession.new() {
-        super();
-    }
-
     public Long StatsSession.getId() {
         return this.id;
     }

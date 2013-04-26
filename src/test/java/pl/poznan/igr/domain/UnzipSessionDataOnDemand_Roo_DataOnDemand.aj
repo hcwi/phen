@@ -15,7 +15,6 @@ import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import pl.poznan.igr.domain.BlobFileDataOnDemand;
 import pl.poznan.igr.domain.Context;
 import pl.poznan.igr.domain.ContextDataOnDemand;
 import pl.poznan.igr.domain.UnzipSession;
@@ -30,15 +29,13 @@ privileged aspect UnzipSessionDataOnDemand_Roo_DataOnDemand {
     private List<UnzipSession> UnzipSessionDataOnDemand.data;
     
     @Autowired
-    BlobFileDataOnDemand UnzipSessionDataOnDemand.blobFileDataOnDemand;
-    
-    @Autowired
     ContextDataOnDemand UnzipSessionDataOnDemand.contextDataOnDemand;
     
     public UnzipSession UnzipSessionDataOnDemand.getNewTransientUnzipSession(int index) {
         UnzipSession obj = new UnzipSession();
         setContext(obj, index);
         setCreationDate(obj, index);
+        setUnzipPath(obj, index);
         return obj;
     }
     
@@ -50,6 +47,11 @@ privileged aspect UnzipSessionDataOnDemand_Roo_DataOnDemand {
     public void UnzipSessionDataOnDemand.setCreationDate(UnzipSession obj, int index) {
         Date creationDate = new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.MONTH), Calendar.getInstance().get(Calendar.DAY_OF_MONTH), Calendar.getInstance().get(Calendar.HOUR_OF_DAY), Calendar.getInstance().get(Calendar.MINUTE), Calendar.getInstance().get(Calendar.SECOND) + new Double(Math.random() * 1000).intValue()).getTime();
         obj.setCreationDate(creationDate);
+    }
+    
+    public void UnzipSessionDataOnDemand.setUnzipPath(UnzipSession obj, int index) {
+        String unzipPath = "unzipPath_" + index;
+        obj.setUnzipPath(unzipPath);
     }
     
     public UnzipSession UnzipSessionDataOnDemand.getSpecificUnzipSession(int index) {

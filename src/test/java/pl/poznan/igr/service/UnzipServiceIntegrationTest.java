@@ -22,6 +22,7 @@ public class UnzipServiceIntegrationTest extends AbstractIntegrationTest {
 	public static final String BIG_FILE_NAME = "Phenotyping";
 	public static final String SMALL_ZIP_PATH = "src/test/resources/testzip.zip";
 	public static final String BIG_ZIP_PATH = "src/test/resources/Phenotyping.zip";
+	private static final String OUT_PATH = "target/output";
 
 	@Autowired
 	private ImportService importService;
@@ -41,7 +42,7 @@ public class UnzipServiceIntegrationTest extends AbstractIntegrationTest {
 
 		File zip = new File(zipPath);
 		assertEquals("Zip file does not exist.", true, zip.exists());
-		
+
 		importService.importFile(owner, zipPath);
 
 		Context ctx = Context.findAllContexts().get(
@@ -50,9 +51,17 @@ public class UnzipServiceIntegrationTest extends AbstractIntegrationTest {
 
 		unzipService.unzipFile(ctx);
 
-		File f = new File(fileName);
+		File f = new File(OUT_PATH + "/" + ctx.getId() + "/" + fileName);
 		assertEquals("Unzipped file does not exist.", true, f.exists());
-		//deleteFile(f);
+		
+		// deleteFile(f);
+		removeUnzipped(f);
+		
+	}
+
+	private void removeUnzipped(File f) {
+				
+		//TODO find out why top directories are not removed (target/output/ctxId)
 		try {
 			if (f.isFile())
 				f.delete();
@@ -88,10 +97,11 @@ public class UnzipServiceIntegrationTest extends AbstractIntegrationTest {
 
 		File zip = new File(SMALL_ZIP_PATH);
 		assertEquals("Zip file does not exist.", true, zip.exists());
-		
+
 		unzipService.unzipFile(SMALL_ZIP_PATH);
 
-		File f = new File(SMALL_FILE_NAME);
+		String fname = OUT_PATH + "/tmp/" + SMALL_FILE_NAME;
+		File f = new File(fname);
 		assertEquals("Unzipped file does not exist.", true, f.exists());
 		f.delete();
 		assertEquals("Unzipped file has not been deleted.", false, f.exists());

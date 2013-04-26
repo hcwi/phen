@@ -24,10 +24,6 @@ privileged aspect UnzipSession_Roo_Jpa_Entity {
     @Column(name = "version")
     private Integer UnzipSession.version;
     
-    public UnzipSession.new() {
-        super();
-    }
-
     public Long UnzipSession.getId() {
         return this.id;
     }

@@ -4,7 +4,6 @@
 package pl.poznan.igr.domain;
 
 import java.util.Date;
-import pl.poznan.igr.domain.BlobFile;
 import pl.poznan.igr.domain.Context;
 import pl.poznan.igr.domain.UnzipSession;
 
@@ -26,12 +25,12 @@ privileged aspect UnzipSession_Roo_JavaBean {
         this.context = context;
     }
     
-    public BlobFile UnzipSession.getBlobFile() {
-        return this.blobFile;
+    public String UnzipSession.getUnzipPath() {
+        return this.unzipPath;
     }
     
-    public void UnzipSession.setBlobFile(BlobFile blobFile) {
-        this.blobFile = blobFile;
+    public void UnzipSession.setUnzipPath(String unzipPath) {
+        this.unzipPath = unzipPath;
     }
     
 }

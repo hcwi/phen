@@ -38,4 +38,8 @@ public class StatsSession {
 		this.setCreationDate(new Date());
 		this.setBlobFile(blob);
 	}
+	
+	public StatsSession() {
+		this.setCreationDate(new Date());
+	}
 }

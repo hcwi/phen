@@ -17,11 +17,11 @@ privileged aspect UnzipSession_Roo_Equals {
             return true;
         }
         UnzipSession rhs = (UnzipSession) obj;
-        return new EqualsBuilder().append(blobFile, rhs.blobFile).append(context, rhs.context).append(creationDate, rhs.creationDate).append(id, rhs.id).isEquals();
+        return new EqualsBuilder().append(context, rhs.context).append(creationDate, rhs.creationDate).append(id, rhs.id).append(unzipPath, rhs.unzipPath).isEquals();
     }
     
     public int UnzipSession.hashCode() {
-        return new HashCodeBuilder().append(blobFile).append(context).append(creationDate).append(id).toHashCode();
+        return new HashCodeBuilder().append(context).append(creationDate).append(id).append(unzipPath).toHashCode();
     }
     
 }
