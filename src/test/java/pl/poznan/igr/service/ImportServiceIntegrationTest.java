@@ -1,6 +1,6 @@
 package pl.poznan.igr.service;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 import java.util.Date;
 
@@ -37,19 +37,16 @@ public class ImportServiceIntegrationTest extends AbstractIntegrationTest {
 		BlobFile blobFile = BlobFile.findAllBlobFiles().iterator().next();
 		assertEquals("This is a test.", new String(blobFile.getContent()));
 		assertEquals("test.txt", new String(blobFile.getFileName()));
-		//TODO uncomment and find out why
-		//assertEquals(true, blobFile.getCreated().before(new Date()));
+		assertFalse(blobFile.getCreated().after(new Date()));
 
 		Context ctx = Context.findAllContexts().get(0);
 		assertEquals(OWNER, ctx.getOwner());
-		//TODO uncomment and check why
-		//assertEquals(true, ctx.getStarted().before(new Date()));
+		assertFalse(ctx.getStarted().after(new Date()));
 		assertEquals(null, ctx.getFinished());
 		assertEquals(Status.UPLOADED, ctx.getStatus());
 		
 		ImportSession session = ImportSession.findAllImportSessions().iterator().next();
-		//TODO uncomment and check why
-		//assertEquals(true,  session.getCreationDate().before(new Date()));
+		assertFalse(session.getCreationDate().after(new Date()));
 		assertEquals(ctx, session.getContext());
 		
 		BlobFile uploadedFile = session.getBlobFile();
@@ -73,18 +70,15 @@ public class ImportServiceIntegrationTest extends AbstractIntegrationTest {
 
 		BlobFile blobFile = BlobFile.findAllBlobFiles().iterator().next();
 		assertEquals("testzip.zip", new String(blobFile.getFileName()));
-		//TODO uncomment and find out why ?!
-		//assertEquals(true, blobFile.getCreated().before(new Date()));
+		assertFalse(blobFile.getCreated().after(new Date()));
 		Context ctx = Context.findAllContexts().get(0);
 		assertEquals(OWNER, ctx.getOwner());
-		//TODO uncomment and find out why
-		//assertEquals(true, ctx.getStarted().before(new Date()));
+		assertFalse(ctx.getStarted().after(new Date()));
 		assertEquals(null, ctx.getFinished());
 		assertEquals(Status.UPLOADED, ctx.getStatus());
 		
 		ImportSession session = ImportSession.findAllImportSessions().iterator().next();
-		//TODO uncomment and find out why
-		//assertEquals(true,  session.getCreationDate().before(new Date()));
+		assertFalse(session.getCreationDate().after(new Date()));
 		assertEquals(ctx, session.getContext());
 		
 		BlobFile uploadedFile = session.getBlobFile();

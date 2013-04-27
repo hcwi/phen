@@ -1,13 +1,16 @@
 package pl.poznan.igr.service;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 import java.io.File;
+import java.util.Date;
 
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import pl.poznan.igr.AbstractIntegrationTest;
+import pl.poznan.igr.domain.BlobFile;
 import pl.poznan.igr.domain.Context;
 import pl.poznan.igr.domain.type.Status;
 import pl.poznan.igr.service.impor.ImportService;
@@ -50,10 +53,17 @@ public class StatsServiceIntegrationTest extends AbstractIntegrationTest {
 
 		statsService.calculateStats(ctx);
 
-		assertEquals(Status.ANALYSED, ctx.getStatus());
+		//TODO uncomment and remove second stage to other test
+		//assertEquals(Status.ANALYSED, ctx.getStatus());
 		File stats = new File(OUT_PATH + "/" + ctx.getId() + "/" + FILE_NAME
 				+ "/output/stats.txt");
 		assertEquals("Stats file does not exist.", true, stats.exists());
+		
+		BlobFile blobFile = BlobFile.findAllBlobFiles().get((int) (BlobFile.countBlobFiles()-1));
+		assertEquals("stats.txt", new String(blobFile.getFileName()));
+		assertFalse(blobFile.getCreated().after(new Date()));
+		assertEquals(Status.ANALYSED_SAVED, ctx.getStatus());
+		
 
 	}
 

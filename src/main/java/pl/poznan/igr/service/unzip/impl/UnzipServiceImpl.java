@@ -71,12 +71,15 @@ public class UnzipServiceImpl implements UnzipService {
 			System.out.printf("name: %s \n size: %d \n compressed size: %d\n",
 					name, size, compressedSize);
 
+			//TODO change to 'create temporary file'
+			//File myTempDir = Files.createTempDir()
 			File file = new File(wd, name);
 			if (name.endsWith("/")) {
 				file.mkdirs();
 				continue;
 			}
 
+			
 			File parent = file.getParentFile();
 			if (parent != null) {
 				parent.mkdirs();

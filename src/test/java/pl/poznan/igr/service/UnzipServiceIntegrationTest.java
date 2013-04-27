@@ -9,6 +9,8 @@ import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.google.common.io.Files;
+
 import pl.poznan.igr.AbstractIntegrationTest;
 import pl.poznan.igr.domain.Context;
 import pl.poznan.igr.domain.type.Status;
@@ -65,8 +67,9 @@ public class UnzipServiceIntegrationTest extends AbstractIntegrationTest {
 		try {
 			if (f.isFile())
 				f.delete();
-			else
+			else {
 				FileUtils.deleteDirectory(f);
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
