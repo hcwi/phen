@@ -6,7 +6,6 @@ import java.util.Date;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 
 import pl.poznan.igr.domain.BlobFile;
 import pl.poznan.igr.domain.Context;
@@ -26,14 +25,13 @@ public class ImportServiceImpl implements ImportService {
 	public void importFile(String owner, String path) {
 
 		try {
-			
+
 			final Context ctx = createContext(owner);
 
 			final File f = new File(path);
 			byte[] content = Files.toByteArray(f);
 			String fileName = f.getName();
-			final BlobFile blobFile = createBlobFile(fileName, content,
-					DEFAULT_CONTENT_TYPE);
+			final BlobFile blobFile = createBlobFile(fileName, content);
 
 			createImportSessionForContext(blobFile, ctx);
 
@@ -48,10 +46,11 @@ public class ImportServiceImpl implements ImportService {
 		is.setBlobFile(blobFile);
 		is.setCreationDate(new Date());
 		is.setContext(ctx);
-		is.persist(); //no need to persist() because of cascade=CascadeType.PERSIST set in Context
-		
+		is.persist(); // no need to persist() because of
+						// cascade=CascadeType.PERSIST set in Context
+
 		ctx.setStatus(Status.UPLOADED);
-		//ctx.setImportSession(is);
+		// ctx.setImportSession(is);
 		ctx = ctx.merge();
 	}
 
@@ -61,30 +60,24 @@ public class ImportServiceImpl implements ImportService {
 		return ctx;
 	}
 
-	private BlobFile createBlobFile(String fileName, byte[] content,
-			String string) {
+	private BlobFile createBlobFile(String fileName, byte[] content) {
 		final BlobFile blobFile = new BlobFile();
 		blobFile.setCreated(new Date());
 		blobFile.setContent(content);
 		blobFile.setFileName(fileName);
-		//blobFile.persist();
+		// blobFile.persist();
 		return blobFile;
 	}
 
 	@Override
-	public void importFile(String owner, MultipartFile file) {
-		try {
+	public void importFile(String owner, String fileName, byte[] content) {
 
-			final Context ctx = createContext(owner);
-			
-			BlobFile blobFile = createBlobFile(file.getName(), file.getBytes(),
-					file.getContentType());
-			
-			createImportSessionForContext(blobFile, ctx);
+		final Context ctx = createContext(owner);
 
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		BlobFile blobFile = createBlobFile(fileName, content);
+
+		createImportSessionForContext(blobFile, ctx);
+
 	}
 
 }
