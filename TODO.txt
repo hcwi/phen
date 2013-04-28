@@ -1,3 +1,2 @@
-  git branches: develop master
-  generate web
-  
+[v] git branches: develop master
+[ ] generate web
