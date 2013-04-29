@@ -1,10 +1,13 @@
 package pl.poznan.igr.domain;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.util.Date;
 
 import javax.persistence.CascadeType;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
+import javax.persistence.Query;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
@@ -21,6 +24,9 @@ import org.springframework.roo.addon.tostring.RooToString;
 @RooJpaActiveRecord
 @RooEquals
 public class StatsSession {
+
+	private static final String STATS_SESSION_FOR_CONTEXT_QUERY = "SELECT z FROM StatsSession z join z.context c "
+			+ "WHERE c.id = :contextId";
 
 	@NotNull
 	@Temporal(TemporalType.TIMESTAMP)
@@ -41,5 +47,14 @@ public class StatsSession {
 	
 	public StatsSession() {
 		this.setCreationDate(new Date());
+	}
+	
+	
+	public static StatsSession findStatsSessionForContext(Context context) {
+		checkNotNull(context);
+		Query query = entityManager()
+				.createQuery(STATS_SESSION_FOR_CONTEXT_QUERY);
+		query.setParameter("contextId", context.getId());
+		return (StatsSession) query.getSingleResult();
 	}
 }

@@ -38,15 +38,15 @@ public class Context {
 
     @Enumerated
     private Status status;
-    
-    @OneToOne(mappedBy = "context", cascade=CascadeType.PERSIST)
+        
+    @OneToOne(mappedBy = "context")
 	private ImportSession importSession;
     
-    @OneToOne(mappedBy = "context", cascade=CascadeType.PERSIST)
+    @OneToOne(mappedBy = "context")
 	private UnzipSession unzipSession;
     
-    @OneToOne(mappedBy = "context", cascade=CascadeType.PERSIST)
-	private UnzipSession statsSession;
+    @OneToOne(mappedBy = "context")
+	private StatsSession statsSession;
     
     public Context(String owner) {
     	this.setStarted(new Date());

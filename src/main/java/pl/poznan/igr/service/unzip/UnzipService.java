@@ -6,5 +6,7 @@ public interface UnzipService {
 
 	void unzipFile(Context context);
 	
-	void unzipFile(String path);
+	String unzipFile(String path);
+
+	void process(Context ctx);
 }

@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 import pl.poznan.igr.domain.Context;
 import pl.poznan.igr.domain.ContextDataOnDemand;
 import pl.poznan.igr.domain.ImportSessionDataOnDemand;
+import pl.poznan.igr.domain.StatsSessionDataOnDemand;
 import pl.poznan.igr.domain.UnzipSessionDataOnDemand;
 import pl.poznan.igr.domain.type.Status;
 
@@ -31,6 +32,9 @@ privileged aspect ContextDataOnDemand_Roo_DataOnDemand {
     
     @Autowired
     ImportSessionDataOnDemand ContextDataOnDemand.importSessionDataOnDemand;
+    
+    @Autowired
+    StatsSessionDataOnDemand ContextDataOnDemand.statsSessionDataOnDemand;
     
     @Autowired
     UnzipSessionDataOnDemand ContextDataOnDemand.unzipSessionDataOnDemand;

@@ -9,4 +9,7 @@ public interface StatsService {
 	void calculateStats(Context ctx);
 
 	void calculateStats(String fileName) throws IOException, InterruptedException;
+
+	void process(Context ctx);
+
 }

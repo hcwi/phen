@@ -7,6 +7,8 @@ import org.springframework.format.support.FormattingConversionServiceFactoryBean
 import org.springframework.roo.addon.web.mvc.controller.converter.RooConversionService;
 
 import pl.poznan.igr.domain.ImportSession;
+import pl.poznan.igr.domain.StatsSession;
+import pl.poznan.igr.domain.UnzipSession;
 
 /**
  * A central place to register application converters and formatters.
@@ -21,8 +23,8 @@ public class ApplicationConversionServiceFactoryBean extends
 		super.installFormatters(registry);
 		// Register application converters and formatters
 		registry.addConverter(getImportSessionToStringConverter());
-
-
+		registry.addConverter(getUnzipSessionToStringConverter());
+		registry.addConverter(getStatsSessionToStringConverter());
 	}
 
 	public Converter<ImportSession, String> getImportSessionToStringConverter() {
@@ -35,4 +37,22 @@ public class ApplicationConversionServiceFactoryBean extends
 	}
 
 
+	public Converter<UnzipSession, String> getUnzipSessionToStringConverter() {
+		return new Converter<UnzipSession, String>() {
+			public String convert(UnzipSession us) {
+				return new StringBuilder()./*append(us.getUnzipPath()).*/append(' ')
+						.append(us.getCreationDate()).toString();
+			}
+		};
+	}
+	
+
+	public Converter<StatsSession, String> getStatsSessionToStringConverter() {
+		return new Converter<StatsSession, String>() {
+			public String convert(StatsSession ss) {
+				return new StringBuilder().append(ss.getBlobFile().getFileName()).append(' ')
+						.append(ss.getCreationDate()).toString();
+			}
+		};
+	}
 }
