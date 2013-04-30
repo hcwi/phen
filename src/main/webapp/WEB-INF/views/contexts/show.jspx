@@ -10,5 +10,8 @@
         <field:display field="importSession" id="s_pl_poznan_igr_domain_Context_importSession" object="${context}" z="J/qsmIMXFMtnQZ6kcHapTSYtPqo="/>
         <field:display field="unzipSession" id="s_pl_poznan_igr_domain_Context_unzipSession" object="${context}" z="91OCJzMbLdsCTgtHBt+kbyaFbwY="/>
         <field:display field="statsSession" id="s_pl_poznan_igr_domain_Context_statsSession" object="${context}" z="0+xAo4C8eG4YUmpBNrb3nuSK8Do="/>
+        <ul>
+    		<li><a href="/igr/download/stats/${context.id}">Download statistics</a></li>
+    	</ul>
     </page:show>
 </div>

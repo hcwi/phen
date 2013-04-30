@@ -3,8 +3,8 @@ analyse <- function (path) {
 	barley <- load.data()
 	model <-model.data(barley)
 	means <- calculate.means(barley)
-	save(barley, model, means, file='output//savedObjects.R')
-	fname = 'output//stats.txt'
+	save(barley, model, means, file='output/savedObjects.R')
+	fname = 'output/stats.txt'
 	write.table(model@fixef, file=fname)
 	fname
 }
@@ -105,7 +105,7 @@ calculate.means <- function(barley) {
 #anova(m1,m1.null)
 
 args <- commandArgs(TRUE)
-#analyse(args[1])
-#write(c(1:10),file='C:/Users/Hania/Desktop/fileup/target/output/1/Phenotyping/output/stats.txt')
-f <- paste(args[1], '/output/stats.txt', sep='')
-write(c(1:10),file=f)
+analyse(args[1])
+#write(c(1:10),file='/output/stats.txt')
+#f <- paste(args[1], '/output/stats.txt', sep='')
+#write(c(1:10),file=f)

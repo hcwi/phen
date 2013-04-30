@@ -6,6 +6,7 @@ package pl.poznan.igr.domain;
 import java.util.Date;
 import pl.poznan.igr.domain.Context;
 import pl.poznan.igr.domain.ImportSession;
+import pl.poznan.igr.domain.StatsSession;
 import pl.poznan.igr.domain.UnzipSession;
 import pl.poznan.igr.domain.type.Status;
 
@@ -59,11 +60,11 @@ privileged aspect Context_Roo_JavaBean {
         this.unzipSession = unzipSession;
     }
     
-    public UnzipSession Context.getStatsSession() {
+    public StatsSession Context.getStatsSession() {
         return this.statsSession;
     }
     
-    public void Context.setStatsSession(UnzipSession statsSession) {
+    public void Context.setStatsSession(StatsSession statsSession) {
         this.statsSession = statsSession;
     }
     

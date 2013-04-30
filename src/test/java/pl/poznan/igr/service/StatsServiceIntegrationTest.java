@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import pl.poznan.igr.AbstractIntegrationTest;
 import pl.poznan.igr.domain.BlobFile;
 import pl.poznan.igr.domain.Context;
+import pl.poznan.igr.domain.UnzipSession;
 import pl.poznan.igr.domain.type.Status;
 import pl.poznan.igr.service.impor.ImportService;
 import pl.poznan.igr.service.stats.StatsService;
@@ -46,8 +47,14 @@ public class StatsServiceIntegrationTest extends AbstractIntegrationTest {
 		assertEquals(Status.UPLOADED, ctx.getStatus());
 
 		unzipService.unzipFile(ctx);
+		
+		assertEquals(Status.UNZIPPED, ctx.getStatus());
 
-		File f = new File(OUT_PATH + "/" + ctx.getId() + "/" + FILE_NAME);
+		UnzipSession us = UnzipSession.findUnzipSessionForContext(ctx);
+		assertFalse("Unzip session is null.", us == null);
+
+		//TODO co jesli w wd sa zagniezdzone katalogi (Phenotyping/data/...) albo od razu pliki bez katalogu
+		File f = new File(us.getUnzipPath());
 		assertEquals("Unzipped file does not exist.", true, f.exists());
 		assertEquals(Status.UNZIPPED, ctx.getStatus());
 
@@ -55,8 +62,7 @@ public class StatsServiceIntegrationTest extends AbstractIntegrationTest {
 
 		//TODO uncomment and remove second stage to other test
 		//assertEquals(Status.ANALYSED, ctx.getStatus());
-		File stats = new File(OUT_PATH + "/" + ctx.getId() + "/" + FILE_NAME
-				+ "/output/stats.txt");
+		File stats = new File(us.getUnzipPath() + "/output/stats.txt");
 		assertEquals("Stats file does not exist.", true, stats.exists());
 		
 		BlobFile blobFile = BlobFile.findAllBlobFiles().get((int) (BlobFile.countBlobFiles()-1));
