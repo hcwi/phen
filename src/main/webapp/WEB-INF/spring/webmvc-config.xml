@@ -71,9 +71,5 @@
       </list>
     </property>
   </bean>
-<<<<<<< HEAD
-=======
-  
   <bean class="pl.poznan.igr.web.ApplicationConversionServiceFactoryBean" id="applicationConversionService"/>
->>>>>>> develop
 </beans>
