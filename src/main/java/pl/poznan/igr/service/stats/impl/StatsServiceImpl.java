@@ -44,6 +44,7 @@ public class StatsServiceImpl implements StatsService {
 		output.mkdirs();
 
 		try {
+			//TODO wydzieliæ statystyki do osobnego watku, bo sie dlugo wczytuje 
 			calculateStats(path);
 			
 			ctx.setStatus(Status.ANALYSED);

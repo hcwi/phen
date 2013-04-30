@@ -24,6 +24,8 @@ import pl.poznan.igr.domain.type.Status;
 @RooEquals
 public class Context {
 
+	//TODO uporz¹dkowaæ labele przy wyswietlaniu weba - teraz 'List all Analyses' -> List all Contexts
+	
     @NotNull
     @Size(max = 64)
     private String owner;
