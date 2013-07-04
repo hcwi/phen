@@ -1,0 +1,31 @@
+2013-07-04 10:57:29 INFO  infoLogger:140 - Loading required package: gdata
+2013-07-04 10:57:30 INFO  infoLogger:140 - gdata: read.xls support for 'XLS' (Excel 97-2004) files ENABLED.
+2013-07-04 10:57:30 INFO  infoLogger:140 - 
+2013-07-04 10:57:30 INFO  infoLogger:140 - gdata: Unable to load perl libaries needed by read.xls()
+2013-07-04 10:57:30 INFO  infoLogger:140 - gdata: to support 'XLSX' (Excel 2007+) files.
+2013-07-04 10:57:30 INFO  infoLogger:140 - 
+2013-07-04 10:57:30 INFO  infoLogger:140 - gdata: Run the function 'installXLSXsupport()'
+2013-07-04 10:57:30 INFO  infoLogger:140 - gdata: to automatically download and install the perl
+2013-07-04 10:57:30 INFO  infoLogger:140 - gdata: libaries needed to support Excel XLS and XLSX formats.
+2013-07-04 10:57:30 INFO  infoLogger:140 - 
+2013-07-04 10:57:30 INFO  infoLogger:140 - Attaching package: 'gdata'
+2013-07-04 10:57:30 INFO  infoLogger:140 - 
+2013-07-04 10:57:30 INFO  infoLogger:140 - The following object is masked from 'package:stats':
+2013-07-04 10:57:30 INFO  infoLogger:140 - 
+2013-07-04 10:57:30 INFO  infoLogger:140 -     nobs
+2013-07-04 10:57:30 INFO  infoLogger:140 - 
+2013-07-04 10:57:30 INFO  infoLogger:140 - The following object is masked from 'package:utils':
+2013-07-04 10:57:30 INFO  infoLogger:140 - 
+2013-07-04 10:57:30 INFO  infoLogger:140 -     object.size
+2013-07-04 10:57:30 INFO  infoLogger:140 - 
+2013-07-04 10:57:30 INFO  infoLogger:140 - Loading required package: lme4
+2013-07-04 10:57:30 INFO  infoLogger:140 - Loading required package: methods
+2013-07-04 10:57:30 INFO  infoLogger:140 - Loading required package: Matrix
+2013-07-04 10:57:30 INFO  infoLogger:140 - Loading required package: lattice
+2013-07-04 10:57:34 INFO  infoLogger:140 - 
+2013-07-04 10:57:34 INFO  infoLogger:140 - Attaching package: 'lme4'
+2013-07-04 10:57:34 INFO  infoLogger:140 - 
+2013-07-04 10:57:34 INFO  infoLogger:140 - The following object is masked from 'package:stats':
+2013-07-04 10:57:34 INFO  infoLogger:140 - 
+2013-07-04 10:57:34 INFO  infoLogger:140 -     AIC, BIC
+2013-07-04 10:57:34 INFO  infoLogger:140 - 

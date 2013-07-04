@@ -10,6 +10,8 @@ import java.io.InputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +24,7 @@ import pl.poznan.igr.domain.ImportSession;
 import pl.poznan.igr.domain.UnzipSession;
 import pl.poznan.igr.domain.type.Status;
 import pl.poznan.igr.service.router.RouterService;
+import pl.poznan.igr.service.stats.impl.StatsServiceImpl;
 import pl.poznan.igr.service.unzip.UnzipService;
 
 @Service
@@ -31,6 +34,11 @@ public class UnzipServiceImpl implements UnzipService {
 
 	@Autowired
 	RouterService routerService;
+
+	private final static Logger log = LoggerFactory
+			.getLogger(StatsServiceImpl.class);
+
+	// .getLogger("infoLogger");
 
 	@Override
 	@Transactional
@@ -51,8 +59,6 @@ public class UnzipServiceImpl implements UnzipService {
 
 			context.setStatus(Status.UNZIPPED);
 			context.merge();
-			
-			
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -84,16 +90,16 @@ public class UnzipServiceImpl implements UnzipService {
 			String name = zipEntry.getName();
 			long size = zipEntry.getSize();
 			long compressedSize = zipEntry.getCompressedSize();
-			System.out.printf("name: %s \n size: %d \n compressed size: %d\n",
-					name, size, compressedSize);
+			log.debug("Unzipped file: " + name + "\n size " + compressedSize
+					+ " -> " + size);
 
 			File file = new File(wd, name);
 			if (name.endsWith("/")) {
 				file.mkdirs();
-				//TODO think what to do with stats.txt file
-				//in this version it gets saved in wd/inDir
+				// TODO think what to do with stats.txt file
+				// in this version it gets saved in wd/inDir
 				if (inDir == null) {
-					inDir = name.substring(0, name.length()-1);
+					inDir = name.substring(0, name.length() - 1);
 				}
 				continue;
 			}
@@ -129,7 +135,7 @@ public class UnzipServiceImpl implements UnzipService {
 			String unzippedPath = extractFiles(new FileInputStream(path));
 			System.out.println("Unzipped path: " + unzippedPath);
 			return unzippedPath;
-			
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

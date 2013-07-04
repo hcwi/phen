@@ -29,16 +29,17 @@ public class StatsServiceImpl implements StatsService {
 
 	@Autowired
 	RouterService routerService;
-	
+
 	private final static Logger log = LoggerFactory
-			.getLogger(StatsServiceImpl.class);
-	
+			//.getLogger(StatsServiceImpl.class);
+			.getLogger("infoLogger");
+
 	@Override
 	public void process(Context ctx) {
 		calculateStats(ctx);
 		routerService.runNext(ctx);
 	}
-	
+
 	@Override
 	public void calculateStats(Context ctx) {
 
@@ -49,24 +50,25 @@ public class StatsServiceImpl implements StatsService {
 		output.mkdirs();
 
 		try {
-			//TODO wydzieliæ statystyki do osobnego watku, bo sie dlugo wczytuje 
+			// TODO wydzieliæ statystyki do osobnego watku, bo sie dlugo
+			// wczytuje
 			calculateStats(path);
-			
+
 			ctx.setStatus(Status.ANALYSED);
-			
-			//TODO separate -- think of moving to its own service
-			//TODO get result file name, set in statsSession and put into DB
+
+			// TODO separate -- think of moving to its own service
+			// TODO get result file name, set in statsSession and put into DB
 			String fname = path + "/output/stats.txt";
-			System.err.println(fname);
+			log.info(fname);
 			final File f = new File(fname);
 			byte[] content = Files.toByteArray(f);
-			
-			//TODO redesign blob creation, here and import service
+
+			// TODO redesign blob creation, here and import service
 			final BlobFile blobFile = new BlobFile();
 			blobFile.setCreated(new Date());
 			blobFile.setContent(content);
 			blobFile.setFileName("stats.txt");
-			//blobFile.persist();
+			// blobFile.persist();
 
 			StatsSession ss = new StatsSession();
 			ss.setBlobFile(blobFile);
@@ -93,50 +95,64 @@ public class StatsServiceImpl implements StatsService {
 
 	@Override
 	public void calculateStats(String fileName) throws Exception {
-		
+
+		log.info("Logger name: " + log.getName());
+		log.info("trace: " + log.isTraceEnabled());
+		log.info("debug: " + log.isDebugEnabled());
+		log.info("info: " + log.isInfoEnabled());
+		log.info("warn: " + log.isWarnEnabled());
+		log.info("error: " + log.isErrorEnabled());
+
 		// TODO check if R is installed - win/linux
-		
+
 		String rHome = System.getenv("R_HOME");
 		if (rHome == null) {
 			throw new Exception("System variable R_HOME is missing.");
 		}
-		String exe = rHome+"/bin/x64/Rscript.exe";
-		System.out.println("==========\nR exe = "+exe);
+		String exe = rHome + "/bin/x64/Rscript.exe";
+		log.debug("==========\nR exe = " + exe);
 		boolean can = new File(exe).canExecute();
-		System.out.println("can execute = " + can); 
+		log.debug("can execute = " + can);
 		if (!can) {
 			throw new Exception("R executable not found. Analysis failed.");
 		}
-		
-		URL scriptUrl = this.getClass().getClassLoader().getResource("analyse.R");
+
+		URL scriptUrl = this.getClass().getClassLoader()
+				.getResource("analyse.R");
 		if (scriptUrl == null) {
 			throw new Exception("Couldn't find script analyse.R");
 		}
 		String script = scriptUrl.getFile().substring(1);
-		System.out.println("script = " + script);
-		
+		log.debug("script = " + script);
+
 		String wd = fileName;
-		System.out.println("working dir = " + wd);
-		
+		log.debug("working dir = " + wd);
+
 		Process p;
-		p = Runtime.getRuntime().exec(new String[] {exe, script, wd});
+		p = Runtime.getRuntime().exec(new String[] { exe, script, wd });
 		p.getErrorStream();
-		
-		//TODO return error when R isn't there + when libraries are missing (they won't install on their own unless cran mirror is chosen)
-		
-		BufferedReader br = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+
+		// TODO return error when R isn't there + when libraries are missing
+		// (they won't install on their own unless cran mirror is chosen)
+
+		BufferedReader br = new BufferedReader(new InputStreamReader(
+				p.getErrorStream()));
 		String line;
 		while ((line = br.readLine()) != null) {
 			log.info(line);
 		}
 		p.waitFor();
 		int success = p.exitValue();
-		System.err.println("Process exited with " + success);
+		log.info("Process exited with " + success);
 		if (success != 0) {
 			// TODO recognize and handle errors
+			// TODO throw RExceptions for R errors?
+			log.error("Process exited with " + success);
+			throw new Exception("R analysis failed. Process exited with "
+					+ success);
 		}
-		
-		//TODO don't show "Download statistics" if analysis failed
+
+		// TODO don't show "Download statistics" if analysis failed
 	}
 
 	/*
@@ -144,12 +160,10 @@ public class StatsServiceImpl implements StatsService {
 	 * 
 	 * @Transactional public void calculateStats(String fileName) {
 	 * 
-	 * //TODO rethink using JRI 
-	 * //cannot be initialized twice 
-	 * //R_HOME, R.dll in path, jri.dll in path 
+	 * //TODO rethink using JRI //cannot be initialized twice //R_HOME, R.dll in
+	 * path, jri.dll in path
 	 * 
-	 * Rengine re = new Rengine (new
-	 * String[]{"--no-save"}, false, null);
+	 * Rengine re = new Rengine (new String[]{"--no-save"}, false, null);
 	 * System.out.println("Rengine created, waiting for R");
 	 * 
 	 * if (!re.waitForR()) { System.out.println("Cannot load R"); return; }
@@ -168,17 +182,13 @@ public class StatsServiceImpl implements StatsService {
 	 * 
 	 * REXP ans = re.eval(
 	 * "source('c://Users//hcwi//Documents//workspace-sts-3.2.0.RELEASE//fileup//src//main//resources//analyse.R')"
-	 * ); 
-	 * //re.eval("write(mean(t$V1), file='source.txt');"); 
-	 * // 
-	 * //String command = "analyse('" + fileName + "')"; //ans = re.eval("mean(1:10)");
-	 * System.err.println("\n\n R call result: " + ans + "\n\n"); 
-	 * //re.run();
+	 * ); //re.eval("write(mean(t$V1), file='source.txt');"); // //String
+	 * command = "analyse('" + fileName + "')"; //ans = re.eval("mean(1:10)");
+	 * System.err.println("\n\n R call result: " + ans + "\n\n"); //re.run();
 	 * 
 	 * System.err.println(re.eval("getwd()").asString());
 	 * 
 	 * re.end(); }
 	 */
-
 
 }
