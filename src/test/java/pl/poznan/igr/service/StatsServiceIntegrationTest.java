@@ -61,7 +61,7 @@ public class StatsServiceIntegrationTest extends AbstractIntegrationTest {
 		statsService.calculateStats(ctx);
 
 		//TODO uncomment and remove second stage to other test
-		//assertEquals(Status.ANALYSED, ctx.getStatus());
+		assertEquals(Status.ANALYSED_SAVED, ctx.getStatus());
 		File stats = new File(us.getUnzipPath() + "/output/stats.txt");
 		assertEquals("Stats file does not exist.", true, stats.exists());
 		

@@ -1,7 +1,9 @@
 analyse <- function (path) {
 	setwd(path)
+	print(path)
+	#TODO return errors when libraries are missing (they do not install on their own unless cran mirror is chosen)
 	barley <- load.data()
-	model <-model.data(barley)
+	model <- model.data(barley)
 	means <- calculate.means(barley)
 	save(barley, model, means, file='output/savedObjects.R')
 	fname = 'output/stats.txt'
@@ -17,9 +19,9 @@ load.data <- function () {
 
 	if(!require("gdata")) {install.packages("gdata")}
 	library(gdata)
-	d <- read.xls("a_study1_processed_data.xlsx", perl="C:/strawberry/perl/bin/perl.exe")
+	# d <- read.xls("a_study1_processed_data.xlsx", perl="C:/strawberry/perl/bin/perl.exe")
 	# alternative to gdata (which requires perl) is transformation to txt file:
-	# d <- read.table("Phenotyping/a_study1_processed_data.txt", header=T, sep='\t')
+	d <- read.table("a_study1_processed_data.txt", header=T, sep='\t')
 
 	sa <- merge(s,a, by="Source.Name", all=T)
 	sad <- merge(sa, d, by="Sample.Name", all=T)
@@ -47,7 +49,9 @@ model.data <- function(barley) {
 
 #CONSTRUCTING MODEL
 
-	if(!require("lme4")) {install.packages("lme4")}
+	if(!require("lme4")) {
+		install.packages("lme4")
+		}
 	library(lme4)
 	model <- lmer(t.length~infraname*f.treatment+(1|f.block), barley)
 	#model.coef <- coef(model)
