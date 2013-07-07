@@ -1,5 +1,7 @@
 package pl.poznan.igr.service.stats.impl;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -119,6 +121,9 @@ public class StatsServiceImpl implements StatsService {
 
 		URL scriptUrl = this.getClass().getClassLoader()
 				.getResource("analyse.R");
+		
+		//TODO checkNotNull
+		//checkNotNull(scriptUrl, "Couldn't find script analyse.R");
 		if (scriptUrl == null) {
 			throw new Exception("Couldn't find script analyse.R");
 		}
