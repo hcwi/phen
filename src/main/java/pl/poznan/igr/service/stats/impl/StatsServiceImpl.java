@@ -52,7 +52,7 @@ public class StatsServiceImpl implements StatsService {
 
 		try {
 			// TODO wydzieliæ statystyki do osobnego watku, bo sie dlugo
-			// wczytuje
+			// wczytuje -> dynamiczne stona z lista analiz i odswiezanie stanu 
 			calculateStats(path);
 
 			ctx.setStatus(Status.ANALYSED);
@@ -136,7 +136,7 @@ public class StatsServiceImpl implements StatsService {
 				p.getErrorStream()));
 		String line;
 		while ((line = br.readLine()) != null) {
-			log.info(line);
+			log.debug(line);
 		}
 		p.waitFor();
 		int success = p.exitValue();
