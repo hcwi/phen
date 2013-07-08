@@ -38,8 +38,6 @@ public class UnzipServiceImpl implements UnzipService {
 	private final static Logger log = LoggerFactory
 			.getLogger(StatsServiceImpl.class);
 
-	// .getLogger("infoLogger");
-
 	@Override
 	@Transactional
 	public void unzipFile(Context context) {
@@ -133,7 +131,7 @@ public class UnzipServiceImpl implements UnzipService {
 
 		try {
 			String unzippedPath = extractFiles(new FileInputStream(path));
-			System.out.println("Unzipped path: " + unzippedPath);
+			log.debug("Unzipped path: " + unzippedPath);
 			return unzippedPath;
 
 		} catch (IOException e) {

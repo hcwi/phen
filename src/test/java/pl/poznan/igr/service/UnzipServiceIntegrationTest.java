@@ -7,6 +7,8 @@ import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import pl.poznan.igr.AbstractIntegrationTest;
@@ -29,6 +31,8 @@ public class UnzipServiceIntegrationTest extends AbstractIntegrationTest {
 
 	@Autowired
 	private UnzipService unzipService;
+	
+	private final static Logger log = LoggerFactory.getLogger(UnzipServiceIntegrationTest.class);
 
 	/*public void testUnzipFromContext() {
 
@@ -79,7 +83,7 @@ public class UnzipServiceIntegrationTest extends AbstractIntegrationTest {
 	@SuppressWarnings("unused")
 	private void deleteFile(File f) {
 		if (!f.exists()) {
-			System.out.println(f.getName() + " not exist");
+			log.debug(f.getName() + " not exist");
 		}
 		if (f.isFile()) {
 			f.delete();

@@ -1,7 +1,5 @@
 package pl.poznan.igr.service.stats.impl;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -24,6 +22,8 @@ import pl.poznan.igr.service.stats.StatsService;
 
 import com.google.common.io.Files;
 
+// CLEAN up logging mechanisms: slf4j, log4j, *.jars
+
 @Service
 public class StatsServiceImpl implements StatsService {
 
@@ -33,8 +33,7 @@ public class StatsServiceImpl implements StatsService {
 	RouterService routerService;
 
 	private final static Logger log = LoggerFactory
-			//.getLogger(StatsServiceImpl.class);
-			.getLogger("infoLogger");
+			.getLogger(StatsServiceImpl.class);
 
 	@Override
 	public void process(Context ctx) {
@@ -98,13 +97,6 @@ public class StatsServiceImpl implements StatsService {
 	@Override
 	public void calculateStats(String fileName) throws Exception {
 
-		log.info("Logger name: " + log.getName());
-		log.info("trace: " + log.isTraceEnabled());
-		log.info("debug: " + log.isDebugEnabled());
-		log.info("info: " + log.isInfoEnabled());
-		log.info("warn: " + log.isWarnEnabled());
-		log.info("error: " + log.isErrorEnabled());
-
 		// TODO check if R is installed - win/linux
 
 		String rHome = System.getenv("R_HOME");
@@ -121,9 +113,9 @@ public class StatsServiceImpl implements StatsService {
 
 		URL scriptUrl = this.getClass().getClassLoader()
 				.getResource("analyse.R");
-		
-		//TODO checkNotNull
-		//checkNotNull(scriptUrl, "Couldn't find script analyse.R");
+
+		// TODO checkNotNull
+		// checkNotNull(scriptUrl, "Couldn't find script analyse.R");
 		if (scriptUrl == null) {
 			throw new Exception("Couldn't find script analyse.R");
 		}
