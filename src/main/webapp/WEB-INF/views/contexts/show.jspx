@@ -12,6 +12,7 @@
         <field:display field="statsSession" id="s_pl_poznan_igr_domain_Context_statsSession" object="${context}" z="0+xAo4C8eG4YUmpBNrb3nuSK8Do="/>
         <ul>
     		<li><a href="/igr/download/stats/${context.id}">Download statistics</a></li>
+    		<li><a href="/igr/download/data/${context.id}">Download original dataset</a></li>
     	</ul>
     </page:show>
 </div>

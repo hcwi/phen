@@ -5,8 +5,8 @@ analyse <- function (path) {
 	barley <- load.data()
 	model <- model.data(barley)
 	means <- calculate.means(barley)
-	save(barley, model, means, file='output/savedObjects.R')
-	fname = 'output/stats.txt'
+	save(barley, model, means, file="output/savedObjects.R")
+	fname = "output/stats.txt"
 	write.table(model@fixef, file=fname)
 	fname
 }
@@ -21,7 +21,7 @@ load.data <- function () {
 	library(gdata)
 	# d <- read.xls("a_study1_processed_data.xlsx", perl="C:/strawberry/perl/bin/perl.exe")
 	# alternative to gdata (which requires perl) is transformation to txt file:
-	d <- read.table("a_study1_processed_data.txt", header=T, sep='\t')
+	d <- read.table("a_study1_processed_data.txt", header=T, sep="\t")
 
 	sa <- merge(s,a, by="Source.Name", all=T)
 	sad <- merge(sa, d, by="Sample.Name", all=T)

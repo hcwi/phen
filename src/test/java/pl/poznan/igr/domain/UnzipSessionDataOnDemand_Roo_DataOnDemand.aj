@@ -11,12 +11,14 @@ import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
-
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import pl.poznan.igr.domain.Context;
+import pl.poznan.igr.domain.ContextDataOnDemand;
+import pl.poznan.igr.domain.UnzipSession;
+import pl.poznan.igr.domain.UnzipSessionDataOnDemand;
 
 privileged aspect UnzipSessionDataOnDemand_Roo_DataOnDemand {
     

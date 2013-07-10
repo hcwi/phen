@@ -18,13 +18,12 @@ import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
 import org.springframework.roo.addon.tostring.RooToString;
 
-
 @RooJavaBean
 @RooToString
 @RooJpaActiveRecord
 @RooEquals
 public class ImportSession {
-	
+
 	private static final String IMPORT_SESSION_FOR_CONTEXT_QUERY = "SELECT z FROM ImportSession z join z.context c "
 			+ "WHERE c.id = :contextId";
 
@@ -37,18 +36,18 @@ public class ImportSession {
 	@OneToOne
 	private Context context;
 
-	@ManyToOne(cascade=CascadeType.PERSIST)
+	@ManyToOne(cascade = CascadeType.PERSIST)
 	private BlobFile blobFile;
-	
+
 	public ImportSession(BlobFile blob) {
 		this.setCreationDate(new Date());
 		this.setBlobFile(blob);
 	}
-	
+
 	public static ImportSession findImportSessionForContext(Context context) {
 		checkNotNull(context);
-		Query query = entityManager()
-				.createQuery(IMPORT_SESSION_FOR_CONTEXT_QUERY);
+		Query query = entityManager().createQuery(
+				IMPORT_SESSION_FOR_CONTEXT_QUERY);
 		query.setParameter("contextId", context.getId());
 		return (ImportSession) query.getSingleResult();
 	}

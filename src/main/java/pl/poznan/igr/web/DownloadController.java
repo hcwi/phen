@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import pl.poznan.igr.domain.BlobFile;
 import pl.poznan.igr.domain.Context;
+import pl.poznan.igr.domain.ImportSession;
 import pl.poznan.igr.domain.StatsSession;
 
 @RequestMapping("/download/**")
@@ -43,4 +44,26 @@ public class DownloadController {
 			throw new RuntimeException(e);
 		}
 	}
+
+	@RequestMapping(method = RequestMethod.GET, value = "data/{contextId}")
+	public void downloadImportSessionForContext(@PathVariable Long contextId,
+			HttpServletResponse response) {
+
+		Context ctx = Context.findContext(contextId);
+		final ImportSession is = checkNotNull(ImportSession.findImportSessionForContext(ctx),
+				"No data for context {0}", contextId);
+
+		try {
+			BlobFile blob = is.getBlobFile();
+			response.setContentType("plain/text");
+			response.setHeader("Content-Disposition", "attachment; filename="
+					+ blob.getFileName());
+			response.getOutputStream().write(blob.getContent());
+		} catch (IOException e) {
+			log.error("Can't send the file", e);
+			throw new RuntimeException(e);
+		}
+	}
+	
+	
 }

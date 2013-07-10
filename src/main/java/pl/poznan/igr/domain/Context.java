@@ -2,6 +2,7 @@ package pl.poznan.igr.domain;
 
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Enumerated;
 import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
@@ -40,13 +41,13 @@ public class Context {
     @Enumerated
     private Status status;
         
-    @OneToOne(mappedBy = "context")
+    @OneToOne(mappedBy = "context", cascade=CascadeType.ALL)
 	private ImportSession importSession;
     
-    @OneToOne(mappedBy = "context")
+    @OneToOne(mappedBy = "context", cascade=CascadeType.ALL)
 	private UnzipSession unzipSession;
     
-    @OneToOne(mappedBy = "context")
+    @OneToOne(mappedBy = "context", cascade=CascadeType.ALL)
 	private StatsSession statsSession;
     
     public Context(String owner) {

@@ -18,7 +18,6 @@ import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
 import org.springframework.roo.addon.tostring.RooToString;
 
-
 @RooJavaBean
 @RooToString
 @RooJpaActiveRecord
@@ -37,23 +36,22 @@ public class StatsSession {
 	@OneToOne
 	private Context context;
 
-	@ManyToOne(cascade=CascadeType.PERSIST)
+	@ManyToOne(cascade = CascadeType.PERSIST)
 	private BlobFile blobFile;
-	
-	public StatsSession(BlobFile blob) {
-		this.setCreationDate(new Date());
-		this.setBlobFile(blob);
-	}
-	
+
+	/*
+	 * public StatsSession(BlobFile blob) { this.setCreationDate(new Date());
+	 * this.setBlobFile(blob); }
+	 */
+
 	public StatsSession() {
 		this.setCreationDate(new Date());
 	}
-	
-	
+
 	public static StatsSession findStatsSessionForContext(Context context) {
 		checkNotNull(context);
-		Query query = entityManager()
-				.createQuery(STATS_SESSION_FOR_CONTEXT_QUERY);
+		Query query = entityManager().createQuery(
+				STATS_SESSION_FOR_CONTEXT_QUERY);
 		query.setParameter("contextId", context.getId());
 		return (StatsSession) query.getSingleResult();
 	}
