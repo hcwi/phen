@@ -67,7 +67,7 @@ public class UnzipServiceIntegrationTest extends AbstractIntegrationTest {
 
 	private void removeUnzipped(File f) {
 				
-		//TODO find out why top directories are not removed (target/output/ctxId)
+		//CLEAN find out why top directories are not removed (target/output/ctxId)
 		try {
 			if (f.isFile())
 				f.delete();

@@ -2,30 +2,37 @@ package pl.poznan.igr;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import pl.poznan.igr.domain.BlobFile;
+import pl.poznan.igr.domain.Context;
+import pl.poznan.igr.domain.ImportSession;
+import pl.poznan.igr.domain.StatsSession;
+import pl.poznan.igr.domain.UnzipSession;
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = "classpath:/META-INF/spring/applicationContext*.xml")
 @Transactional
 public abstract class AbstractIntegrationTest {
 
-	/*@PersistenceContext
+	@PersistenceContext
 	transient EntityManager entityManager;
-*/
+
 	/*@Before
 	public void setUpMocks() {
 		MockitoAnnotations.initMocks(this);
 	}*/
 
-	/*public void cleanUpDatabase() {
+	public void cleanUpDatabase() {
 		hqlDelete(ImportSession.class);
-		hqlDelete(ZipSession.class);
-		hqlDelete(BlobItem.class);
-		hqlDelete(StatisticsSession.class);
+		hqlDelete(StatsSession.class);
+		hqlDelete(UnzipSession.class);
+		hqlDelete(BlobFile.class);
 		hqlDelete(Context.class);
 	}
 
@@ -34,5 +41,5 @@ public abstract class AbstractIntegrationTest {
 		Query query = entityManager.createQuery(hql);
 		return query.executeUpdate();
 	}
-*/
+
 }

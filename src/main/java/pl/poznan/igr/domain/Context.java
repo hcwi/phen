@@ -24,36 +24,34 @@ import pl.poznan.igr.domain.type.Status;
 @RooEquals
 public class Context {
 
-	//TODO uporz¹dkowaæ labele przy wyswietlaniu weba - teraz 'List all Analyses' -> List all Contexts
-	
-    @NotNull
-    @Size(max = 64)
-    private String owner;
+	@NotNull
+	@Size(max = 64)
+	private String owner;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @DateTimeFormat(style = "M-")
-    private Date started;
+	@Temporal(TemporalType.TIMESTAMP)
+	@DateTimeFormat(style = "M-")
+	private Date started;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @DateTimeFormat(style = "M-")
-    private Date finished;
+	@Temporal(TemporalType.TIMESTAMP)
+	@DateTimeFormat(style = "M-")
+	private Date finished;
 
-    @Enumerated
-    private Status status;
-        
-    @OneToOne(mappedBy = "context", cascade=CascadeType.ALL)
+	@Enumerated
+	private Status status;
+
+	@OneToOne(mappedBy = "context", cascade = CascadeType.ALL)
 	private ImportSession importSession;
-    
-    @OneToOne(mappedBy = "context", cascade=CascadeType.ALL)
+
+	@OneToOne(mappedBy = "context", cascade = CascadeType.ALL)
 	private UnzipSession unzipSession;
-    
-    @OneToOne(mappedBy = "context", cascade=CascadeType.ALL)
+
+	@OneToOne(mappedBy = "context", cascade = CascadeType.ALL)
 	private StatsSession statsSession;
-    
-    public Context(String owner) {
-    	this.setStarted(new Date());
-    	this.setStatus(Status.NEW);
-    	this.setOwner(owner);
+
+	public Context(String owner) {
+		this.setStarted(new Date());
+		this.setStatus(Status.NEW);
+		this.setOwner(owner);
 	}
-    
+
 }

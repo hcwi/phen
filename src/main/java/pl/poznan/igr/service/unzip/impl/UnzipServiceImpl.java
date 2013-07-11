@@ -72,6 +72,8 @@ public class UnzipServiceImpl implements UnzipService {
 		routerService.runNext(ctx);
 	}
 
+	// extracts only ZIP
+	// TODO think of rar archives - error (on IN filter) or unrar
 	private String extractFiles(InputStream from) throws IOException,
 			FileNotFoundException {
 

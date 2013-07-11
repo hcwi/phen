@@ -5,6 +5,7 @@ import static org.junit.Assert.assertFalse;
 
 import java.io.File;
 import java.util.Date;
+import java.util.List;
 
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,6 +65,11 @@ public class StatsServiceIntegrationTest extends AbstractIntegrationTest {
 		assertEquals(Status.ANALYSED_SAVED, ctx.getStatus());
 		File stats = new File(us.getUnzipPath() + "/output/stats.txt");
 		assertEquals("Stats file does not exist.", true, stats.exists());
+		
+		List<BlobFile> blobs = BlobFile.findAllBlobFiles();
+		for (BlobFile blob : blobs) {
+			System.out.println(blob.getId() + "\t" + blob.getFileName() + "\t" + blob.getCreated());
+		}
 		
 		BlobFile blobFile = BlobFile.findAllBlobFiles().get((int) (BlobFile.countBlobFiles()-1));
 		assertEquals("stats.txt", new String(blobFile.getFileName()));

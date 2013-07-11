@@ -32,11 +32,11 @@ public class ImportSession {
 	@DateTimeFormat(style = "M-")
 	private Date creationDate;
 
-	@NotNull
+	//@NotNull
 	@OneToOne
 	private Context context;
 
-	@ManyToOne(cascade = CascadeType.PERSIST)
+	@ManyToOne(cascade = CascadeType.ALL)
 	private BlobFile blobFile;
 
 	public ImportSession(BlobFile blob) {

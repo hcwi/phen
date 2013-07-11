@@ -74,6 +74,7 @@ public class StatsServiceImpl implements StatsService {
 			StatsSession ss = new StatsSession();
 			ss.setBlobFile(blobFile);
 			ss.setContext(ctx);
+			//ss.merge();
 			ss.persist();
 
 			ctx.setStatus(Status.ANALYSED_SAVED);
@@ -97,7 +98,7 @@ public class StatsServiceImpl implements StatsService {
 	@Override
 	public void calculateStats(String fileName) throws Exception {
 
-		// TODO check if R is installed - win/linux
+		// CLEAN check if R is installed - win/linux
 
 		String rHome = System.getenv("R_HOME");
 		if (rHome == null) {
