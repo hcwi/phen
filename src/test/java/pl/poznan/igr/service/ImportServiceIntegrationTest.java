@@ -17,7 +17,6 @@ import pl.poznan.igr.domain.Context;
 import pl.poznan.igr.domain.ImportSession;
 import pl.poznan.igr.domain.type.Status;
 import pl.poznan.igr.service.impor.ImportService;
-import pl.poznan.igr.service.impor.impl.ImportServiceImpl;
 import pl.poznan.igr.service.router.RouterService;
 
 public class ImportServiceIntegrationTest extends AbstractIntegrationTest {
@@ -42,8 +41,6 @@ public class ImportServiceIntegrationTest extends AbstractIntegrationTest {
 	@Test
 	public void testImportFile() {
 
-		ImportServiceImpl.checkDBState();
-		
 		assertEquals(0, BlobFile.countBlobFiles());
 		assertEquals(0, Context.countContexts());
 
@@ -80,8 +77,6 @@ public class ImportServiceIntegrationTest extends AbstractIntegrationTest {
 	@Test
 	public void testImportZip() {
 
-		ImportServiceImpl.checkDBState();
-		
 		assertEquals(0, BlobFile.countBlobFiles());
 		assertEquals(0, Context.countContexts());
 

@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
-import java.util.Date;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,6 +16,7 @@ import pl.poznan.igr.domain.Context;
 import pl.poznan.igr.domain.StatsSession;
 import pl.poznan.igr.domain.UnzipSession;
 import pl.poznan.igr.domain.type.Status;
+import pl.poznan.igr.service.ServiceImpl;
 import pl.poznan.igr.service.router.RouterService;
 import pl.poznan.igr.service.stats.StatsService;
 
@@ -25,7 +25,7 @@ import com.google.common.io.Files;
 // CLEAN up logging mechanisms: slf4j, log4j, *.jars
 
 @Service
-public class StatsServiceImpl implements StatsService {
+public class StatsServiceImpl extends ServiceImpl implements StatsService {
 
 	public static final String OUT_PATH = "target/output";
 
@@ -44,17 +44,18 @@ public class StatsServiceImpl implements StatsService {
 	@Override
 	public void calculateStats(Context ctx) {
 
-		UnzipSession us = UnzipSession.findUnzipSessionForContext(ctx);
+		UnzipSession us = ctx.getUnzipSession();
 
 		String path = us.getUnzipPath();
 		File output = new File(path + "/output");
 		output.mkdirs();
 
 		try {
-			// TODO wydzieliæ statystyki do osobnego watku, bo sie dlugo
-			// wczytuje -> dynamiczne stona z lista analiz i odswiezanie stanu 
+			// TODO wydzieliæ statystyki do osobnego watku
+			// bo sie dlugo wczytuje 
+			// dynamiczne stona z lista analiz i odswiezanie stanu 
+			
 			calculateStats(path);
-
 			ctx.setStatus(Status.ANALYSED);
 
 			// TODO separate -- think of moving to its own service
@@ -64,19 +65,16 @@ public class StatsServiceImpl implements StatsService {
 			final File f = new File(fname);
 			byte[] content = Files.toByteArray(f);
 
-			// TODO redesign blob creation, here and import service
+			// CLEAN redesign blob creation, here and import service
 			final BlobFile blobFile = new BlobFile();
-			blobFile.setCreated(new Date());
 			blobFile.setContent(content);
 			blobFile.setFileName("stats.txt");
-			// blobFile.persist();
-
+			
 			StatsSession ss = new StatsSession();
 			ss.setBlobFile(blobFile);
 			ss.setContext(ctx);
-			//ss.merge();
-			ss.persist();
-
+			
+			ctx.setStatsSession(ss);
 			ctx.setStatus(Status.ANALYSED_SAVED);
 
 		} catch (IOException e) {

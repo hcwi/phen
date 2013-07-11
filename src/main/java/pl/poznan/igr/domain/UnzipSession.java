@@ -34,13 +34,6 @@ public class UnzipSession {
 	@OneToOne
 	private Context context;
 
-	/*
-	 * @ManyToOne(cascade=CascadeType.PERSIST) private BlobFile blobFile;
-	 * 
-	 * public UnzipSession(BlobFile blob) { this.setCreationDate(new Date());
-	 * this.setBlobFile(blob); }
-	 */
-
 	@NotNull
 	private String unzipPath;
 

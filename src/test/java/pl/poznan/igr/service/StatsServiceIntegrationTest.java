@@ -48,34 +48,38 @@ public class StatsServiceIntegrationTest extends AbstractIntegrationTest {
 		assertEquals(Status.UPLOADED, ctx.getStatus());
 
 		unzipService.unzipFile(ctx);
-		
+
 		assertEquals(Status.UNZIPPED, ctx.getStatus());
 
 		UnzipSession us = UnzipSession.findUnzipSessionForContext(ctx);
 		assertFalse("Unzip session is null.", us == null);
 
-		//TODO co jesli w wd sa zagniezdzone katalogi (Phenotyping/data/...) albo od razu pliki bez katalogu
+		// TODO obsluga struktury katalogu
+		// co jesli w wd sa zagniezdzone katalogi (Phenotyping/data/...)
+		// albo od razu pliki bez katalogu
+		
 		File f = new File(us.getUnzipPath());
 		assertEquals("Unzipped file does not exist.", true, f.exists());
 		assertEquals(Status.UNZIPPED, ctx.getStatus());
 
 		statsService.calculateStats(ctx);
 
-		//TODO uncomment and remove second stage to other test
+		// TODO uncomment and remove second stage to other test
 		assertEquals(Status.ANALYSED_SAVED, ctx.getStatus());
 		File stats = new File(us.getUnzipPath() + "/output/stats.txt");
 		assertEquals("Stats file does not exist.", true, stats.exists());
-		
+
 		List<BlobFile> blobs = BlobFile.findAllBlobFiles();
 		for (BlobFile blob : blobs) {
-			System.out.println(blob.getId() + "\t" + blob.getFileName() + "\t" + blob.getCreated());
+			System.out.println(blob.getId() + "\t" + blob.getFileName() + "\t"
+					+ blob.getCreated());
 		}
-		
-		BlobFile blobFile = BlobFile.findAllBlobFiles().get((int) (BlobFile.countBlobFiles()-1));
+
+		BlobFile blobFile = BlobFile.findAllBlobFiles().get(
+				(int) (BlobFile.countBlobFiles() - 1));
 		assertEquals("stats.txt", new String(blobFile.getFileName()));
 		assertFalse(blobFile.getCreated().after(new Date()));
 		assertEquals(Status.ANALYSED_SAVED, ctx.getStatus());
-		
 
 	}
 

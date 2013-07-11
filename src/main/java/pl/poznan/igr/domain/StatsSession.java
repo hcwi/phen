@@ -36,7 +36,7 @@ public class StatsSession {
 	@OneToOne
 	private Context context;
 
-	@ManyToOne(cascade = CascadeType.PERSIST)
+	@ManyToOne(cascade = CascadeType.ALL)
 	private BlobFile blobFile;
 
 	/*

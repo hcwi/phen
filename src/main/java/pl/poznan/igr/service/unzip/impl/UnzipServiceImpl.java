@@ -16,19 +16,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.google.common.io.Files;
-
 import pl.poznan.igr.domain.BlobFile;
 import pl.poznan.igr.domain.Context;
-import pl.poznan.igr.domain.ImportSession;
 import pl.poznan.igr.domain.UnzipSession;
 import pl.poznan.igr.domain.type.Status;
+import pl.poznan.igr.service.ServiceImpl;
 import pl.poznan.igr.service.router.RouterService;
 import pl.poznan.igr.service.stats.impl.StatsServiceImpl;
 import pl.poznan.igr.service.unzip.UnzipService;
 
+import com.google.common.io.Files;
+
 @Service
-public class UnzipServiceImpl implements UnzipService {
+public class UnzipServiceImpl extends ServiceImpl implements UnzipService {
 
 	public static final String OUT_PATH = "target/output";
 
@@ -42,8 +42,7 @@ public class UnzipServiceImpl implements UnzipService {
 	@Transactional
 	public void unzipFile(Context context) {
 
-		ImportSession imp = ImportSession.findImportSessionForContext(context);
-		BlobFile blob = imp.getBlobFile();
+		BlobFile blob = context.getImportSession().getBlobFile();
 		byte[] content = blob.getContent();
 
 		try {
@@ -53,10 +52,9 @@ public class UnzipServiceImpl implements UnzipService {
 			UnzipSession uz = new UnzipSession();
 			uz.setUnzipPath(unzippedPath);
 			uz.setContext(context);
-			uz.persist();
 
+			context.setUnzipSession(uz);
 			context.setStatus(Status.UNZIPPED);
-			context.merge();
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -77,8 +75,6 @@ public class UnzipServiceImpl implements UnzipService {
 	private String extractFiles(InputStream from) throws IOException,
 			FileNotFoundException {
 
-		// File wd = new File(OUT_PATH, id);
-		// wd.mkdirs();
 		File wd = Files.createTempDir();
 		String inDir = null;
 

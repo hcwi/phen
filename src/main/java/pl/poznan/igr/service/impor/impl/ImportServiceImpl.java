@@ -15,21 +15,20 @@ import pl.poznan.igr.domain.BlobFile;
 import pl.poznan.igr.domain.Context;
 import pl.poznan.igr.domain.ImportSession;
 import pl.poznan.igr.domain.type.Status;
+import pl.poznan.igr.service.ServiceImpl;
 import pl.poznan.igr.service.impor.ImportService;
 import pl.poznan.igr.service.router.impl.RouterServiceImpl;
 
 import com.google.common.io.Files;
 
 @Service
-public class ImportServiceImpl implements ImportService {
-
-	// TODO add content type
-	private static final String DEFAULT_CONTENT_TYPE = "application/octet-stream";
+public class ImportServiceImpl extends ServiceImpl implements ImportService {
 
 	@Autowired
 	private RouterServiceImpl routerService;
-	
-	private static final Logger log = LoggerFactory.getLogger(ImportServiceImpl.class); 
+
+	private static final Logger log = LoggerFactory
+			.getLogger(ImportServiceImpl.class);
 
 	@Override
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
@@ -49,7 +48,7 @@ public class ImportServiceImpl implements ImportService {
 			final BlobFile blobFile = createBlobFile(fileName, content);
 
 			createImportSessionForContext(blobFile, ctx);
-			
+
 			if (log.isDebugEnabled()) {
 				checkDBState();
 			}
@@ -60,49 +59,18 @@ public class ImportServiceImpl implements ImportService {
 
 	}
 
-	public static void checkDBState() {
-
-		log.debug("-------- CHECK DB ---------");
-		
-		long size = Context.countContexts();
-		log.debug(size + " contexts");
-		for (int i = 0; i < size; i++) {
-			log.debug(Context.findAllContexts().get(i).toString());
-		}
-
-		size = ImportSession.countImportSessions();
-		log.debug(size + " imports");
-		for (int i = 0; i < size; i++) {
-			log.debug(ImportSession.findAllImportSessions().get(i).toString());
-		}
-
-		size = BlobFile.countBlobFiles();
-		log.debug(size + " blobs");
-		for (int i = 0; i < size; i++) {
-			log.debug(BlobFile.findAllBlobFiles().get(i).toString());
-		}
-		
-		log.debug("---------------------------");
-
-	}
-
 	private void createImportSessionForContext(BlobFile blobFile, Context ctx) {
 
-		//ctx = ctx.merge();
-		
 		ImportSession is = new ImportSession();
 		is.setBlobFile(blobFile);
 		is.setCreationDate(new Date());
 		is.setContext(ctx);
 
-		//is.persist(); // no need to persist because of
-		// cascade=CascadeType.PERSIST set in Context
-
 		ctx.setImportSession(is);
 		ctx.setStatus(Status.UPLOADED);
-		
-		System.out.println(is);
-		System.out.println(blobFile);
+
+		log.debug(is.toString());
+		log.debug(blobFile.toString());
 	}
 
 	private Context createContext(String owner) {
@@ -118,7 +86,6 @@ public class ImportServiceImpl implements ImportService {
 		blobFile.setCreated(new Date());
 		blobFile.setContent(content);
 		blobFile.setFileName(fileName);
-		// blobFile.persist();
 		return blobFile;
 	}
 

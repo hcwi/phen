@@ -31,4 +31,8 @@ public class BlobFile {
     @Temporal(TemporalType.TIMESTAMP)
     @DateTimeFormat(style = "M-")
     private Date created;
+    
+    public BlobFile() {
+    	this.setCreated(new Date());
+    }
 }

@@ -7,12 +7,13 @@ import org.springframework.stereotype.Service;
 
 import pl.poznan.igr.domain.Context;
 import pl.poznan.igr.domain.type.Status;
+import pl.poznan.igr.service.ServiceImpl;
 import pl.poznan.igr.service.router.RouterService;
 import pl.poznan.igr.service.stats.StatsService;
 import pl.poznan.igr.service.unzip.UnzipService;
 
 @Service
-public class RouterServiceImpl implements RouterService {
+public class RouterServiceImpl extends ServiceImpl implements RouterService {
 
 	@Autowired
 	UnzipService unzipService;
