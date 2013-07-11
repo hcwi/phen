@@ -18,6 +18,7 @@ import pl.poznan.igr.domain.UnzipSession;
 import pl.poznan.igr.domain.type.Status;
 import pl.poznan.igr.service.ServiceImpl;
 import pl.poznan.igr.service.router.RouterService;
+import pl.poznan.igr.service.stats.RException;
 import pl.poznan.igr.service.stats.StatsService;
 
 import com.google.common.io.Files;
@@ -52,9 +53,9 @@ public class StatsServiceImpl extends ServiceImpl implements StatsService {
 
 		try {
 			// TODO wydzieliæ statystyki do osobnego watku
-			// bo sie dlugo wczytuje 
-			// dynamiczne stona z lista analiz i odswiezanie stanu 
-			
+			// bo sie dlugo wczytuje
+			// dynamiczne stona z lista analiz i odswiezanie stanu
+
 			calculateStats(path);
 			ctx.setStatus(Status.ANALYSED);
 
@@ -69,19 +70,15 @@ public class StatsServiceImpl extends ServiceImpl implements StatsService {
 			final BlobFile blobFile = new BlobFile();
 			blobFile.setContent(content);
 			blobFile.setFileName("stats.txt");
-			
+
 			StatsSession ss = new StatsSession();
 			ss.setBlobFile(blobFile);
 			ss.setContext(ctx);
-			
+
 			ctx.setStatsSession(ss);
 			ctx.setStatus(Status.ANALYSED_SAVED);
 
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			ctx.setStatus(Status.ANALYSIS_FAILED);
-		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			ctx.setStatus(Status.ANALYSIS_FAILED);
@@ -94,58 +91,67 @@ public class StatsServiceImpl extends ServiceImpl implements StatsService {
 	}
 
 	@Override
-	public void calculateStats(String fileName) throws Exception {
+	public void calculateStats(String fileName) {
 
 		// CLEAN check if R is installed - win/linux
 
 		String rHome = System.getenv("R_HOME");
 		if (rHome == null) {
-			throw new Exception("System variable R_HOME is missing.");
+			throw new RException(
+					"Environmental variable R_HOME is missing. Analysis failed.");
 		}
 		String exe = rHome + "/bin/x64/Rscript.exe";
 		log.debug("==========\nR exe = " + exe);
 		boolean can = new File(exe).canExecute();
 		log.debug("can execute = " + can);
 		if (!can) {
-			throw new Exception("R executable not found. Analysis failed.");
+			throw new RException("Cannot run R executable at " + exe
+					+ ". Analysis failed.");
 		}
 
 		URL scriptUrl = this.getClass().getClassLoader()
 				.getResource("analyse.R");
-
-		// TODO checkNotNull
-		// checkNotNull(scriptUrl, "Couldn't find script analyse.R");
 		if (scriptUrl == null) {
-			throw new Exception("Couldn't find script analyse.R");
+			throw new RException("Couldn't find script analyse.R at "
+					+ scriptUrl + ". Analysis failed.");
 		}
+
 		String script = scriptUrl.getFile().substring(1);
 		log.debug("script = " + script);
 
 		String wd = fileName;
 		log.debug("working dir = " + wd);
 
-		Process p;
-		p = Runtime.getRuntime().exec(new String[] { exe, script, wd });
-		p.getErrorStream();
+		try {
+			Process p = Runtime.getRuntime().exec(
+					new String[] { exe, script, wd });
 
-		// TODO return error when R isn't there + when libraries are missing
-		// (they won't install on their own unless cran mirror is chosen)
+			p.getErrorStream();
 
-		BufferedReader br = new BufferedReader(new InputStreamReader(
-				p.getErrorStream()));
-		String line;
-		while ((line = br.readLine()) != null) {
-			log.debug(line);
-		}
-		p.waitFor();
-		int success = p.exitValue();
-		log.info("Process exited with " + success);
-		if (success != 0) {
-			// TODO recognize and handle errors
-			// TODO throw RExceptions for R errors?
-			log.error("Process exited with " + success);
-			throw new Exception("R analysis failed. Process exited with "
-					+ success);
+			BufferedReader br = new BufferedReader(new InputStreamReader(
+					p.getErrorStream()));
+			String line;
+
+			while ((line = br.readLine()) != null) {
+				log.debug(line);
+			}
+
+			p.waitFor();
+			int success = p.exitValue();
+			log.info("Process exited with " + success);
+			if (success != 0) {
+
+				log.error("Process exited with " + success);
+				throw new RException(
+						"R analysis failed. Probably there are errors in the processed ISA-TAB file.");
+			}
+		} catch (IOException e) {
+			// TODO handle technical errors - retry and be sorry to the user
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 
 		// TODO don't show "Download statistics" if analysis failed
