@@ -16,7 +16,6 @@ import javax.validation.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pl.poznan.igr.domain.BlobFileDataOnDemand;
-import pl.poznan.igr.domain.Context;
 import pl.poznan.igr.domain.ContextDataOnDemand;
 import pl.poznan.igr.domain.ImportSession;
 import pl.poznan.igr.domain.ImportSessionDataOnDemand;
@@ -37,14 +36,8 @@ privileged aspect ImportSessionDataOnDemand_Roo_DataOnDemand {
     
     public ImportSession ImportSessionDataOnDemand.getNewTransientImportSession(int index) {
         ImportSession obj = new ImportSession();
-        setContext(obj, index);
         setCreationDate(obj, index);
         return obj;
-    }
-    
-    public void ImportSessionDataOnDemand.setContext(ImportSession obj, int index) {
-        Context context = contextDataOnDemand.getSpecificContext(index);
-        obj.setContext(context);
     }
     
     public void ImportSessionDataOnDemand.setCreationDate(ImportSession obj, int index) {

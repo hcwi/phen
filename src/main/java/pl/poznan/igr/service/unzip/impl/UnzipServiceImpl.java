@@ -7,7 +7,10 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Enumeration;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipException;
+import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
 import org.slf4j.Logger;
@@ -23,6 +26,7 @@ import pl.poznan.igr.domain.type.Status;
 import pl.poznan.igr.service.ServiceImpl;
 import pl.poznan.igr.service.router.RouterService;
 import pl.poznan.igr.service.stats.impl.StatsServiceImpl;
+import pl.poznan.igr.service.unzip.UnzipException;
 import pl.poznan.igr.service.unzip.UnzipService;
 
 import com.google.common.io.Files;
@@ -40,12 +44,21 @@ public class UnzipServiceImpl extends ServiceImpl implements UnzipService {
 
 	@Override
 	@Transactional
+	public void process(Context ctx) {
+		unzipFile(ctx);
+		routerService.runNext(ctx);
+	}
+
+	@Override
+	@Transactional
 	public void unzipFile(Context context) {
 
 		BlobFile blob = context.getImportSession().getBlobFile();
 		byte[] content = blob.getContent();
 
 		try {
+
+			checkZip(content);
 
 			String unzippedPath = extractFiles(new ByteArrayInputStream(content));
 
@@ -56,18 +69,14 @@ public class UnzipServiceImpl extends ServiceImpl implements UnzipService {
 			context.setUnzipSession(uz);
 			context.setStatus(Status.UNZIPPED);
 
+		} catch (UnzipException e) {
+			e.printStackTrace();
+			// TODO pass on to the user
+			context.setStatus(Status.UNZIP_FAILED);
 		} catch (IOException e) {
 			e.printStackTrace();
 			context.setStatus(Status.UNZIP_FAILED);
 		}
-
-	}
-
-	@Override
-	@Transactional
-	public void process(Context ctx) {
-		unzipFile(ctx);
-		routerService.runNext(ctx);
 	}
 
 	// extracts only ZIP
@@ -76,7 +85,7 @@ public class UnzipServiceImpl extends ServiceImpl implements UnzipService {
 			FileNotFoundException {
 
 		File wd = Files.createTempDir();
-		String inDir = null;
+		String inDir = "";
 
 		ZipInputStream zis = new ZipInputStream(from);
 
@@ -94,15 +103,11 @@ public class UnzipServiceImpl extends ServiceImpl implements UnzipService {
 				file.mkdirs();
 				// TODO think what to do with stats.txt file
 				// in this version it gets saved in wd/inDir
-				if (inDir == null) {
+				/*if (inDir == null) {
 					inDir = name.substring(0, name.length() - 1);
-				}
+				}*/
+				inDir = name.substring(0, name.length()-1);
 				continue;
-			}
-
-			File parent = file.getParentFile();
-			if (parent != null) {
-				parent.mkdirs();
 			}
 
 			FileOutputStream fos = new FileOutputStream(file);
@@ -118,25 +123,59 @@ public class UnzipServiceImpl extends ServiceImpl implements UnzipService {
 		zis.close();
 
 		String unzippedPath = wd.getAbsolutePath();
-		if (inDir != null) {
+		//TODO which path? general or deepest
+		if (inDir != "") {
 			unzippedPath += "/" + inDir;
 		}
 		return unzippedPath;
 	}
 
 	@Override
-	public String unzipFile(String path) {
+	// for test purposes only
+	public String unzipFile(String path) throws IOException {
 
-		try {
-			String unzippedPath = extractFiles(new FileInputStream(path));
-			log.debug("Unzipped path: " + unzippedPath);
-			return unzippedPath;
-
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return null;
+		checkZip(path);
+		String unzippedPath = extractFiles(new FileInputStream(path));
+		log.debug("Unzipped path: " + unzippedPath);
+		return unzippedPath;
 
 	}
 
+	// for test purposes only
+	private void checkZip(String path) throws IOException {
+
+		try {
+			ZipFile zf = new ZipFile(new File(path));
+			Enumeration<? extends ZipEntry> entries = zf.entries();
+			while (entries.hasMoreElements()) {
+				ZipEntry zipEntry = (ZipEntry) entries.nextElement();
+				System.out.println(zipEntry);
+			}
+			zf.close();
+		} catch (ZipException e) {
+			throw new UnzipException(
+					"Unzip failed. Probably your file in not in a proper zip format");
+		}
+	}
+
+	private void checkZip(byte[] content) throws IOException {
+
+		File f = File.createTempFile("igr", "tmpFile.zip");
+		FileOutputStream fos = new FileOutputStream(f);
+		fos.write(content);
+		fos.close();
+
+		try {
+			ZipFile zf = new ZipFile(f);
+			Enumeration<? extends ZipEntry> entries = zf.entries();
+			while (entries.hasMoreElements()) {
+				ZipEntry zipEntry = (ZipEntry) entries.nextElement();
+				System.out.println(zipEntry);
+			}
+			zf.close();
+		} catch (ZipException e) {
+			throw new UnzipException(
+					"Unzip failed. Probably your file in not in a proper zip format");
+		}
+	}
 }

@@ -41,7 +41,7 @@ privileged aspect ContextController_Roo_Controller {
     }
     
     void ContextController.addDateTimeFormatPatterns(Model uiModel) {
-        uiModel.addAttribute("context_started_date_format", DateTimeFormat.patternForStyle("M-", LocaleContextHolder.getLocale()));
+        uiModel.addAttribute("context_started_date_format", DateTimeFormat.patternForStyle("MM", LocaleContextHolder.getLocale()));
         uiModel.addAttribute("context_finished_date_format", DateTimeFormat.patternForStyle("M-", LocaleContextHolder.getLocale()));
     }
     

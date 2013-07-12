@@ -29,11 +29,11 @@ public class Context {
 	private String owner;
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@DateTimeFormat(style = "M-")
+	@DateTimeFormat(style = "MM")
 	private Date started;
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@DateTimeFormat(style = "M-")
+	@DateTimeFormat(style = "MM")
 	private Date finished;
 
 	@Enumerated

@@ -53,6 +53,7 @@ public class StatsServiceIntegrationTest extends AbstractIntegrationTest {
 
 		UnzipSession us = UnzipSession.findUnzipSessionForContext(ctx);
 		assertFalse("Unzip session is null.", us == null);
+		assertEquals(us, ctx.getUnzipSession());
 
 		// TODO obsluga struktury katalogu
 		// co jesli w wd sa zagniezdzone katalogi (Phenotyping/data/...)
