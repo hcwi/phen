@@ -122,7 +122,6 @@ public class UnzipServiceIntegrationTest extends AbstractIntegrationTest {
 			assertEquals("Unzipped file has not been deleted.", false,
 					f.exists());
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 

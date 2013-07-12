@@ -56,9 +56,8 @@ public class StatsServiceIntegrationTest extends AbstractIntegrationTest {
 		assertEquals(us, ctx.getUnzipSession());
 
 		// TODO obsluga struktury katalogu
-		// co jesli w wd sa zagniezdzone katalogi (Phenotyping/data/...)
-		// albo od razu pliki bez katalogu
-		
+		// obecnie jako wd podajemy katalog na najnizszym poziomie, z plikami
+
 		File f = new File(us.getUnzipPath());
 		assertEquals("Unzipped file does not exist.", true, f.exists());
 		assertEquals(Status.UNZIPPED, ctx.getStatus());

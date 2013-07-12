@@ -57,7 +57,6 @@ public class UnzipServiceImpl extends ServiceImpl implements UnzipService {
 		byte[] content = blob.getContent();
 
 		try {
-
 			checkZip(content);
 
 			String unzippedPath = extractFiles(new ByteArrayInputStream(content));
@@ -71,7 +70,7 @@ public class UnzipServiceImpl extends ServiceImpl implements UnzipService {
 
 		} catch (UnzipException e) {
 			e.printStackTrace();
-			// TODO pass on to the user
+			// TODO show exception comment to the user
 			context.setStatus(Status.UNZIP_FAILED);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -79,8 +78,7 @@ public class UnzipServiceImpl extends ServiceImpl implements UnzipService {
 		}
 	}
 
-	// extracts only ZIP
-	// TODO think of rar archives - error (on IN filter) or unrar
+	// extracts only proper ZIP files
 	private String extractFiles(InputStream from) throws IOException,
 			FileNotFoundException {
 
@@ -101,12 +99,10 @@ public class UnzipServiceImpl extends ServiceImpl implements UnzipService {
 			File file = new File(wd, name);
 			if (name.endsWith("/")) {
 				file.mkdirs();
+				// TODO add stats.txt to ISA_TAB
 				// TODO think what to do with stats.txt file
 				// in this version it gets saved in wd/inDir
-				/*if (inDir == null) {
-					inDir = name.substring(0, name.length() - 1);
-				}*/
-				inDir = name.substring(0, name.length()-1);
+				inDir = name.substring(0, name.length() - 1);
 				continue;
 			}
 
@@ -123,7 +119,7 @@ public class UnzipServiceImpl extends ServiceImpl implements UnzipService {
 		zis.close();
 
 		String unzippedPath = wd.getAbsolutePath();
-		//TODO which path? general or deepest
+		// TODO which path? general or deepest (as now)
 		if (inDir != "") {
 			unzippedPath += "/" + inDir;
 		}
@@ -138,7 +134,6 @@ public class UnzipServiceImpl extends ServiceImpl implements UnzipService {
 		String unzippedPath = extractFiles(new FileInputStream(path));
 		log.debug("Unzipped path: " + unzippedPath);
 		return unzippedPath;
-
 	}
 
 	// for test purposes only

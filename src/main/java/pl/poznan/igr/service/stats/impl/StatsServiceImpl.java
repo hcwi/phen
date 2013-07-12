@@ -93,7 +93,8 @@ public class StatsServiceImpl extends ServiceImpl implements StatsService {
 	}
 
 	@Override
-	public void calculateStats(String fileName) throws InterruptedException, IOException {
+	public void calculateStats(String fileName) throws InterruptedException,
+			IOException {
 
 		// CLEAN check if R is installed - win/linux
 
@@ -133,7 +134,7 @@ public class StatsServiceImpl extends ServiceImpl implements StatsService {
 		}
 		br.close();
 
-		//p.waitFor();
+		// p.waitFor();
 		int success = p.waitFor();
 		log.info("Process exited with " + success);
 		if (success != 0) {
