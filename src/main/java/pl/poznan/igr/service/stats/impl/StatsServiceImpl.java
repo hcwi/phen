@@ -79,11 +79,13 @@ public class StatsServiceImpl extends ServiceImpl implements StatsService {
 			ctx.setStatus(Status.ANALYSED_SAVED);
 
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			ctx.setStatus(Status.ANALYSIS_FAILED);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
+		} catch (RException e) {
+			// TODO show exception comment to the user
+			e.printStackTrace();
+			ctx.setStatus(Status.ANALYSIS_FAILED);
+		} catch (InterruptedException e) {
 			e.printStackTrace();
 			ctx.setStatus(Status.ANALYSIS_FAILED);
 		}
@@ -91,7 +93,7 @@ public class StatsServiceImpl extends ServiceImpl implements StatsService {
 	}
 
 	@Override
-	public void calculateStats(String fileName) {
+	public void calculateStats(String fileName) throws InterruptedException, IOException {
 
 		// CLEAN check if R is installed - win/linux
 
@@ -118,40 +120,27 @@ public class StatsServiceImpl extends ServiceImpl implements StatsService {
 
 		String script = scriptUrl.getFile().substring(1);
 		log.debug("script = " + script);
-
 		String wd = fileName;
 		log.debug("working dir = " + wd);
 
-		try {
-			Process p = Runtime.getRuntime().exec(
-					new String[] { exe, script, wd });
+		Process p = Runtime.getRuntime().exec(new String[] { exe, script, wd });
 
-			p.getErrorStream();
+		BufferedReader br = new BufferedReader(new InputStreamReader(
+				p.getErrorStream()));
+		String line;
+		while ((line = br.readLine()) != null) {
+			log.debug(line);
+		}
+		br.close();
 
-			BufferedReader br = new BufferedReader(new InputStreamReader(
-					p.getErrorStream()));
-			String line;
+		//p.waitFor();
+		int success = p.waitFor();
+		log.info("Process exited with " + success);
+		if (success != 0) {
 
-			while ((line = br.readLine()) != null) {
-				log.debug(line);
-			}
-
-			p.waitFor();
-			int success = p.exitValue();
-			log.info("Process exited with " + success);
-			if (success != 0) {
-
-				log.error("Process exited with " + success);
-				throw new RException(
-						"R analysis failed. Probably there are errors in the processed ISA-TAB file.");
-			}
-		} catch (IOException e) {
-			// TODO handle technical errors - retry and be sorry to the user
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error("Process exited with " + success);
+			throw new RException(
+					"R analysis failed. Probably there are errors in the processed ISA-TAB file.");
 		}
 
 		// TODO don't show "Download statistics" if analysis failed

@@ -4,10 +4,8 @@ public class RException extends RuntimeException {
 
 	private static final long serialVersionUID = 1L;
 
-	public final String comment;
-
-	public RException(String comment) {
-		this.comment = comment;
+	public RException(String message) {
+		super(message);
 	}
 
 }
