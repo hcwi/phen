@@ -1,15 +1,24 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<div xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
-    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
-    <jsp:output omit-xml-declaration="yes"/>
-    <page:list id="pl_pl_poznan_igr_domain_Context" items="${contexts}" z="2IheaGeIjSwsZCFVGw/C+EC2Dow=">
-        <table:table data="${contexts}" delete="true" id="l_pl_poznan_igr_domain_Context" path="/contexts" update="false" z="user-managed">
-            <table:column id="c_pl_poznan_igr_domain_Context_owner" property="owner" z="vaEYUs+DMDbgoyNNHhyonzmmFwk="/>
-            <table:column date="true" dateTimePattern="${context_started_date_format}" id="c_pl_poznan_igr_domain_Context_started" property="started" z="1BjVoO9OqSVEknoxxh3ivx3RKEs="/> 
-            <!--  <table:column date="true" dateTimePattern="${context_finished_date_format}" id="c_pl_poznan_igr_domain_Context_finished" property="finished" z="H6eHn2Kzx7q28h81etYUjkdXbXA="/> -->
-            <table:column id="c_pl_poznan_igr_domain_Context_status" property="status" z="FnGgy14YSzLHxJvA/+8NQnB1z3o="/>
-            <table:column id="c_pl_poznan_igr_domain_Context_importSession" property="importSession" z="ZYljPxqJmSZ98VgkGP+UKCCvAEQ="/>
-            <!--  <table:column id="c_pl_poznan_igr_domain_Context_unzipSession" property="unzipSession" z="Q1H700i6V3acYvW6++GhG9qPsIU="/> -->
-        </table:table>
-    </page:list>
+<div xmlns:jsp="http://java.sun.com/JSP/Page"
+	xmlns:page="urn:jsptagdir:/WEB-INF/tags/form"
+	xmlns:table="urn:jsptagdir:/WEB-INF/tags/form/fields" version="2.0">
+	<jsp:directive.page contentType="text/html;charset=UTF-8" />
+	<jsp:output omit-xml-declaration="yes" />
+	<page:list id="pl_pl_poznan_igr_domain_Context" items="${contexts}"
+		z="2IheaGeIjSwsZCFVGw/C+EC2Dow=">
+		<table:table data="${contexts}" delete="true"
+			id="l_pl_poznan_igr_domain_Context" path="/contexts" update="false"
+			z="user-managed">
+			<table:column id="c_pl_poznan_igr_domain_Context_owner"
+				property="owner" z="vaEYUs+DMDbgoyNNHhyonzmmFwk=" />
+			<!-- <table:column date="true" dateTimePattern="${context_started_date_format}" id="c_pl_poznan_igr_domain_Context_started" property="started" z="1BjVoO9OqSVEknoxxh3ivx3RKEs="/> -->
+			<!--  <table:column date="true" dateTimePattern="${context_finished_date_format}" id="c_pl_poznan_igr_domain_Context_finished" property="finished" z="H6eHn2Kzx7q28h81etYUjkdXbXA="/> -->
+			<table:column id="c_pl_poznan_igr_domain_Context_status"
+				property="status" z="FnGgy14YSzLHxJvA/+8NQnB1z3o=" />
+			<table:column id="c_pl_poznan_igr_domain_Context_importSession"
+				property="importSession" z="ZYljPxqJmSZ98VgkGP+UKCCvAEQ=" />
+			<!--  <table:column id="c_pl_poznan_igr_domain_Context_unzipSession" property="unzipSession" z="Q1H700i6V3acYvW6++GhG9qPsIU="/> -->
+			<!--  <table:column date="true" dateTimePattern="${context_finished_date_format}" id="c_pl_poznan_igr_domain_Context_finished" property="finished" z="H6eHn2Kzx7q28h81etYUjkdXbXA="/> -->
+		</table:table>
+	</page:list>
 </div>

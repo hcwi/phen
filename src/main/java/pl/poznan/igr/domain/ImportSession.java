@@ -13,7 +13,6 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.roo.addon.equals.RooEquals;
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
 import org.springframework.roo.addon.tostring.RooToString;
@@ -21,7 +20,6 @@ import org.springframework.roo.addon.tostring.RooToString;
 @RooJavaBean
 @RooToString
 @RooJpaActiveRecord
-@RooEquals
 public class ImportSession {
 
 	private static final String IMPORT_SESSION_FOR_CONTEXT_QUERY = "SELECT z FROM ImportSession z join z.context c "
@@ -51,4 +49,5 @@ public class ImportSession {
 		query.setParameter("contextId", context.getId());
 		return (ImportSession) query.getSingleResult();
 	}
+	
 }
