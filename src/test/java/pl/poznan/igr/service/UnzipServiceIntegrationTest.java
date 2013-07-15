@@ -53,8 +53,8 @@ public class UnzipServiceIntegrationTest extends AbstractIntegrationTest {
 
 		importService.importFile(OWNER, BIG_ZIP_PATH);
 
-		Context ctx = Context.findAllContexts().get(
-				(int) Context.countContexts() - 1);
+		System.err.println(Context.countContexts());
+		Context ctx = Context.findAllContexts().get(0);
 		assertEquals(Status.UPLOADED, ctx.getStatus());
 
 		unzipService.unzipFile(ctx);

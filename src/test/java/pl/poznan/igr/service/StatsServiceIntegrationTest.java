@@ -45,8 +45,7 @@ public class StatsServiceIntegrationTest extends AbstractIntegrationTest {
 
 		importService.importFile(OWNER, ZIP_PATH);
 
-		Context ctx = Context.findAllContexts().get(
-				(int) Context.countContexts() - 1);
+		Context ctx = Context.findAllContexts().get(0);
 		assertEquals(Status.UPLOADED, ctx.getStatus());
 
 		unzipService.unzipFile(ctx);
@@ -77,8 +76,7 @@ public class StatsServiceIntegrationTest extends AbstractIntegrationTest {
 					+ blob.getCreated());
 		}
 
-		BlobFile blobFile = BlobFile.findAllBlobFiles().get(
-				(int) (BlobFile.countBlobFiles() - 1));
+		BlobFile blobFile = BlobFile.findAllBlobFiles().get(1);
 		assertEquals("stats.txt", new String(blobFile.getFileName()));
 		assertFalse(blobFile.getCreated().after(new Date()));
 		assertEquals(Status.ANALYSIS_SAVED, ctx.getStatus());
