@@ -28,8 +28,6 @@ import com.google.common.io.Files;
 @Service
 public class StatsServiceImpl extends ServiceImpl implements StatsService {
 
-	public static final String OUT_PATH = "target/output";
-
 	@Autowired
 	RouterService routerService;
 
@@ -76,7 +74,7 @@ public class StatsServiceImpl extends ServiceImpl implements StatsService {
 			ss.setContext(ctx);
 
 			ctx.setStatsSession(ss);
-			ctx.setStatus(Status.ANALYSED_SAVED);
+			ctx.setStatus(Status.ANALYSIS_SAVED);
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -89,7 +87,6 @@ public class StatsServiceImpl extends ServiceImpl implements StatsService {
 			e.printStackTrace();
 			ctx.setStatus(Status.ANALYSIS_FAILED);
 		}
-
 	}
 
 	@Override
@@ -104,7 +101,7 @@ public class StatsServiceImpl extends ServiceImpl implements StatsService {
 					"Environmental variable R_HOME is missing. Analysis failed.");
 		}
 		String exe = rHome + "/bin/x64/Rscript.exe";
-		log.debug("==========\nR exe = " + exe);
+		log.info("R exe = " + exe);
 		boolean can = new File(exe).canExecute();
 		log.debug("can execute = " + can);
 		if (!can) {
@@ -120,9 +117,9 @@ public class StatsServiceImpl extends ServiceImpl implements StatsService {
 		}
 
 		String script = scriptUrl.getFile().substring(1);
-		log.debug("script = " + script);
+		log.info("script = " + script);
 		String wd = fileName;
-		log.debug("working dir = " + wd);
+		log.info("working dir = " + wd);
 
 		Process p = Runtime.getRuntime().exec(new String[] { exe, script, wd });
 
@@ -134,7 +131,6 @@ public class StatsServiceImpl extends ServiceImpl implements StatsService {
 		}
 		br.close();
 
-		// p.waitFor();
 		int success = p.waitFor();
 		log.info("Process exited with " + success);
 		if (success != 0) {
@@ -161,24 +157,24 @@ public class StatsServiceImpl extends ServiceImpl implements StatsService {
 	 * if (!re.waitForR()) { System.out.println("Cannot load R"); return; }
 	 * 
 	 * re.assign("a", new int[]{36}); REXP ans = re.eval("sqrt(a)"); Double
-	 * result = ans.asDouble(); System.err.println("\n\n R call result: " +
-	 * result + "\n\n");
+	 * result = ans.asDouble(); log.info("\n\n R call result: " + result +
+	 * "\n\n");
 	 * 
 	 * re.eval("t <- read.table('test.txt')");
 	 * re.eval("write(mean(t$V1), file='src//test.out.txt')");
 	 * re.eval("write(getwd(), file='test.out.txt', append=T)");
 	 * re.eval("sink('test.sink.txt'); print(10); sink()"); ans =
 	 * re.eval("mean(t$V1)"); result = ans.asDouble();
-	 * System.err.println("\n\n R call result: " + result + "\n\n");
+	 * log.info("\n\n R call result: " + result + "\n\n");
 	 * 
 	 * 
 	 * REXP ans = re.eval(
 	 * "source('c://Users//hcwi//Documents//workspace-sts-3.2.0.RELEASE//fileup//src//main//resources//analyse.R')"
 	 * ); //re.eval("write(mean(t$V1), file='source.txt');"); // //String
 	 * command = "analyse('" + fileName + "')"; //ans = re.eval("mean(1:10)");
-	 * System.err.println("\n\n R call result: " + ans + "\n\n"); //re.run();
+	 * log.info("\n\n R call result: " + ans + "\n\n"); //re.run();
 	 * 
-	 * System.err.println(re.eval("getwd()").asString());
+	 * log.info(re.eval("getwd()").asString());
 	 * 
 	 * re.end(); }
 	 */

@@ -1,14 +1,15 @@
 package pl.poznan.igr.service;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import pl.poznan.igr.AbstractIntegrationTest;
@@ -29,16 +30,12 @@ public class UnzipServiceIntegrationTest extends AbstractIntegrationTest {
 	public static final String SMALL_FILE_PATH = "src/test/resources/test.txt";
 	public static final String DOUBLE_ZIP_PATH = "src/test/resources/PhenotypingDouble.zip";
 	public static final String TRIPLE_ZIP_PATH = "src/test/resources/PhenotypingTriple.zip";
-	
-	
+
 	@Autowired
 	private ImportService importService;
 
 	@Autowired
 	private UnzipService unzipService;
-
-	private final static Logger log = LoggerFactory
-			.getLogger(UnzipServiceIntegrationTest.class);
 
 	/*
 	 * public void testUnzipFromContext() {
@@ -52,7 +49,7 @@ public class UnzipServiceIntegrationTest extends AbstractIntegrationTest {
 	public void testFromContext() {
 
 		File zip = new File(BIG_ZIP_PATH);
-		assertEquals("Zip file does not exist.", true, zip.exists());
+		assertTrue("Zip file does not exist.", zip.exists());
 
 		importService.importFile(OWNER, BIG_ZIP_PATH);
 
@@ -63,19 +60,16 @@ public class UnzipServiceIntegrationTest extends AbstractIntegrationTest {
 		unzipService.unzipFile(ctx);
 
 		UnzipSession us = UnzipSession.findUnzipSessionForContext(ctx);
-		assertEquals(true, us != null);
+		assertNotNull(us);
 		File f = new File(us.getUnzipPath());
-		assertEquals("Unzipped file does not exist.", true, f.exists());
+		assertTrue("Unzipped file does not exist.", f.exists());
 
-		// deleteFile(f);
 		removeUnzipped(f);
 
 	}
 
 	private void removeUnzipped(File f) {
 
-		// CLEAN find out why top directories are not removed
-		// (target/output/ctxId)
 		try {
 			if (f.isFile())
 				f.delete();
@@ -85,42 +79,22 @@ public class UnzipServiceIntegrationTest extends AbstractIntegrationTest {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		assertEquals("Unzipped file has not been deleted.", false, f.exists());
-	}
-
-	private void deleteFile(File f) {
-		if (!f.exists()) {
-			log.debug(f.getName() + " not exist");
-		}
-		if (f.isFile()) {
-			f.delete();
-		} else {
-			String[] fnames = f.list();
-			if (fnames != null) {
-				for (String fname : fnames) {
-					File f2 = new File(f, fname);
-					deleteFile(f2);
-				}
-			}
-			f.delete();
-		}
+		assertFalse("Unzipped file has not been deleted.", f.exists());
 	}
 
 	@Test
 	public void testFromPath_SmallZip() {
 		File zip = new File(SMALL_ZIP_PATH);
-		assertEquals("Zip file does not exist.", true, zip.exists());
+		assertTrue("Zip file does not exist.", zip.exists());
 
 		String unzippedFile;
 		try {
 			unzippedFile = unzipService.unzipFile(SMALL_ZIP_PATH);
 			String fname = unzippedFile; // + "/" + SMALL_FILE_NAME;
-			System.err.println(fname);
+			log.debug("Unzip path: " + fname);
 			File f = new File(fname);
-			assertEquals("Unzipped file does not exist.", true, f.exists());
-			deleteFile(f);
-			assertEquals("Unzipped file has not been deleted.", false,
-					f.exists());
+			assertTrue("Unzipped file does not exist.", f.exists());
+			removeUnzipped(f);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -129,42 +103,35 @@ public class UnzipServiceIntegrationTest extends AbstractIntegrationTest {
 
 	@Test
 	public void testFromPath_BigZip() {
-		
+
 		File zip = new File(BIG_ZIP_PATH);
-		assertEquals("Zip file does not exist.", true, zip.exists());
+		assertTrue("Zip file does not exist.", zip.exists());
 
 		String unzippedFile;
 		try {
 			unzippedFile = unzipService.unzipFile(BIG_ZIP_PATH);
-			String fname = unzippedFile ;//+ "/" + BIG_FILE_NAME;
-			System.err.println(fname);
+			String fname = unzippedFile;// + "/" + BIG_FILE_NAME;
+			log.debug("Unzip path: " + fname);
 			File f = new File(fname);
-			assertEquals("Unzipped file does not exist.", true, f.exists());
-			deleteFile(f);
-			assertEquals("Unzipped file has not been deleted.", false,
-					f.exists());
+			assertTrue("Unzipped file does not exist.", f.exists());
+			removeUnzipped(f);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
 	}
-	
+
 	@Test
 	public void testFromPath_DoubleZip() {
-		
-		File zip = new File(DOUBLE_ZIP_PATH);
-		assertEquals("Zip file does not exist.", true, zip.exists());
 
-		String unzippedFile;
+		File zip = new File(DOUBLE_ZIP_PATH);
+		assertTrue("Zip file does not exist.", zip.exists());
+
 		try {
-			unzippedFile = unzipService.unzipFile(DOUBLE_ZIP_PATH);
-			String fname = unzippedFile ;
-			System.err.println(fname);
-			File f = new File(fname);
-			assertEquals("Unzipped file does not exist.", true, f.exists());
-			deleteFile(f);
-			assertEquals("Unzipped file has not been deleted.", false,
-					f.exists());
+			String unzippedFile = unzipService.unzipFile(DOUBLE_ZIP_PATH);
+			File f = new File(unzippedFile);
+			assertTrue("Unzipped file does not exist.", f.exists());
+			removeUnzipped(f);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -173,31 +140,29 @@ public class UnzipServiceIntegrationTest extends AbstractIntegrationTest {
 
 	@Test
 	public void testFromPath_TripleZip() {
-		
+
 		File zip = new File(TRIPLE_ZIP_PATH);
-		assertEquals("Zip file does not exist.", true, zip.exists());
+		assertTrue("Zip file does not exist.", zip.exists());
 
 		String unzippedFile;
 		try {
 			unzippedFile = unzipService.unzipFile(TRIPLE_ZIP_PATH);
-			String fname = unzippedFile ;
-			System.err.println(fname);
+			String fname = unzippedFile;
+			log.debug("Unzip path: " + fname);
 			File f = new File(fname);
-			assertEquals("Unzipped file does not exist.", true, f.exists());
-			deleteFile(f);
-			assertEquals("Unzipped file has not been deleted.", false,
-					f.exists());
+			assertTrue("Unzipped file does not exist.", f.exists());
+			removeUnzipped(f);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
 	}
-	
+
 	@Test(expected = UnzipException.class)
 	public void testFromPath_NotZip() {
-		
+
 		File zip = new File(SMALL_FILE_PATH);
-		assertEquals("Zip file does not exist.", true, zip.exists());
+		assertTrue("Zip file does not exist.", zip.exists());
 
 		try {
 			unzipService.unzipFile(SMALL_FILE_PATH);

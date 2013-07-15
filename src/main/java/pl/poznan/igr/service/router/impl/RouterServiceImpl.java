@@ -17,14 +17,13 @@ public class RouterServiceImpl extends ServiceImpl implements RouterService {
 
 	@Autowired
 	UnzipService unzipService;
-	
+
 	@Autowired
 	StatsService statsService;
-	
-	
+
 	@Override
 	public void runNext(Context ctx) {
-		
+
 		Status status = ctx.getStatus();
 		switch (status) {
 		case UPLOADED:
@@ -33,13 +32,12 @@ public class RouterServiceImpl extends ServiceImpl implements RouterService {
 		case UNZIPPED:
 			statsService.process(ctx);
 			break;
-		case ANALYSED_SAVED:
+		case ANALYSIS_SAVED:
 			ctx.setFinished(new Date());
 			break;
 		default:
 			break;
 		}
-
 	}
 
 }

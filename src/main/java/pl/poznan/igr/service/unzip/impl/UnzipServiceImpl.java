@@ -3,7 +3,6 @@ package pl.poznan.igr.service.unzip.impl;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -79,8 +78,7 @@ public class UnzipServiceImpl extends ServiceImpl implements UnzipService {
 	}
 
 	// extracts only proper ZIP files
-	private String extractFiles(InputStream from) throws IOException,
-			FileNotFoundException {
+	private String extractFiles(InputStream from) throws IOException {
 
 		File wd = Files.createTempDir();
 		String inDir = "";
@@ -93,8 +91,8 @@ public class UnzipServiceImpl extends ServiceImpl implements UnzipService {
 			String name = zipEntry.getName();
 			long size = zipEntry.getSize();
 			long compressedSize = zipEntry.getCompressedSize();
-			log.debug("Unzipped file: " + name + "\n size " + compressedSize
-					+ " -> " + size);
+			log.debug("Unzipped file: " + name);
+			log.debug("Unzipped size " + compressedSize + " -> " + size);
 
 			File file = new File(wd, name);
 			if (name.endsWith("/")) {
@@ -144,7 +142,7 @@ public class UnzipServiceImpl extends ServiceImpl implements UnzipService {
 			Enumeration<? extends ZipEntry> entries = zf.entries();
 			while (entries.hasMoreElements()) {
 				ZipEntry zipEntry = (ZipEntry) entries.nextElement();
-				System.out.println(zipEntry);
+				log.debug(zipEntry.toString());
 			}
 			zf.close();
 		} catch (ZipException e) {
@@ -165,7 +163,7 @@ public class UnzipServiceImpl extends ServiceImpl implements UnzipService {
 			Enumeration<? extends ZipEntry> entries = zf.entries();
 			while (entries.hasMoreElements()) {
 				ZipEntry zipEntry = (ZipEntry) entries.nextElement();
-				System.out.println(zipEntry);
+				log.debug(zipEntry.toString());
 			}
 			zf.close();
 		} catch (ZipException e) {

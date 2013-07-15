@@ -2,6 +2,8 @@ package pl.poznan.igr.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.util.Date;
@@ -39,7 +41,7 @@ public class StatsServiceIntegrationTest extends AbstractIntegrationTest {
 	public void testCalculateStats() {
 
 		File zip = new File(ZIP_PATH);
-		assertEquals("Zip file does not exist.", true, zip.exists());
+		assertTrue("Zip file does not exist.", zip.exists());
 
 		importService.importFile(OWNER, ZIP_PATH);
 
@@ -52,26 +54,26 @@ public class StatsServiceIntegrationTest extends AbstractIntegrationTest {
 		assertEquals(Status.UNZIPPED, ctx.getStatus());
 
 		UnzipSession us = UnzipSession.findUnzipSessionForContext(ctx);
-		assertFalse("Unzip session is null.", us == null);
+		assertNotNull("Unzip session is null.", us);
 		assertEquals(us, ctx.getUnzipSession());
 
 		// TODO obsluga struktury katalogu
 		// obecnie jako wd podajemy katalog na najnizszym poziomie, z plikami
 
 		File f = new File(us.getUnzipPath());
-		assertEquals("Unzipped file does not exist.", true, f.exists());
+		assertTrue("Unzipped file does not exist.", f.exists());
 		assertEquals(Status.UNZIPPED, ctx.getStatus());
 
 		statsService.calculateStats(ctx);
 
 		// TODO uncomment and remove second stage to other test
-		assertEquals(Status.ANALYSED_SAVED, ctx.getStatus());
+		assertEquals(Status.ANALYSIS_SAVED, ctx.getStatus());
 		File stats = new File(us.getUnzipPath() + "/output/stats.txt");
-		assertEquals("Stats file does not exist.", true, stats.exists());
+		assertTrue("Stats file does not exist.", stats.exists());
 
 		List<BlobFile> blobs = BlobFile.findAllBlobFiles();
 		for (BlobFile blob : blobs) {
-			System.out.println(blob.getId() + "\t" + blob.getFileName() + "\t"
+			log.debug(blob.getId() + "\t" + blob.getFileName() + "\t"
 					+ blob.getCreated());
 		}
 
@@ -79,8 +81,7 @@ public class StatsServiceIntegrationTest extends AbstractIntegrationTest {
 				(int) (BlobFile.countBlobFiles() - 1));
 		assertEquals("stats.txt", new String(blobFile.getFileName()));
 		assertFalse(blobFile.getCreated().after(new Date()));
-		assertEquals(Status.ANALYSED_SAVED, ctx.getStatus());
-
+		assertEquals(Status.ANALYSIS_SAVED, ctx.getStatus());
 	}
 
 }

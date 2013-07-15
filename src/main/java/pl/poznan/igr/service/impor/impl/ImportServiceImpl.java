@@ -4,8 +4,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -27,18 +25,13 @@ public class ImportServiceImpl extends ServiceImpl implements ImportService {
 	@Autowired
 	private RouterServiceImpl routerService;
 
-	private static final Logger log = LoggerFactory
-			.getLogger(ImportServiceImpl.class);
-
 	@Override
 	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public void importFile(String owner, String path) {
 
 		try {
 
-			if (log.isDebugEnabled()) {
-				checkDBState();
-			}
+			checkDBState();
 
 			final Context ctx = createContext(owner);
 
@@ -49,9 +42,7 @@ public class ImportServiceImpl extends ServiceImpl implements ImportService {
 
 			createImportSessionForContext(blobFile, ctx);
 
-			if (log.isDebugEnabled()) {
-				checkDBState();
-			}
+			checkDBState();
 
 		} catch (IOException e) {
 			e.printStackTrace();
