@@ -46,8 +46,7 @@ public class StatsServiceImpl extends ServiceImpl implements StatsService {
 		UnzipSession us = ctx.getUnzipSession();
 
 		String path = us.getUnzipPath();
-		File output = new File(path + "/output");
-		output.mkdirs();
+		new File(path + "/output").mkdir();
 
 		try {
 			// TODO wydzieliæ statystyki do osobnego watku
@@ -90,7 +89,7 @@ public class StatsServiceImpl extends ServiceImpl implements StatsService {
 	}
 
 	@Override
-	public void calculateStats(String fileName) throws InterruptedException,
+	public void calculateStats(String workingDir) throws InterruptedException,
 			IOException {
 
 		// CLEAN check if R is installed - win/linux
@@ -118,10 +117,10 @@ public class StatsServiceImpl extends ServiceImpl implements StatsService {
 
 		String script = scriptUrl.getFile().substring(1);
 		log.info("script = " + script);
-		String wd = fileName;
-		log.info("working dir = " + wd);
+		log.info("working dir = " + workingDir);
 
-		Process p = Runtime.getRuntime().exec(new String[] { exe, script, wd });
+		Process p = Runtime.getRuntime().exec(
+				new String[] { exe, script, workingDir });
 
 		BufferedReader br = new BufferedReader(new InputStreamReader(
 				p.getErrorStream()));
