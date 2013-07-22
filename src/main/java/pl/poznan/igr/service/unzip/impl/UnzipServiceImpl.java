@@ -3,6 +3,7 @@ package pl.poznan.igr.service.unzip.impl;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,6 +12,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,6 +78,42 @@ public class UnzipServiceImpl extends ServiceImpl implements UnzipService {
 			context.setStatus(Status.UNZIP_FAILED);
 		}
 	}
+	
+	private void packFiles(String path) throws FileNotFoundException {
+		 
+		File fin = new File(path);
+		FileInputStream fis = new FileInputStream(fin);
+		
+		String foutPath = path + "out";
+		File fout = new File(foutPath);
+		FileOutputStream fos = new FileOutputStream(fout);
+		ZipOutputStream zos = new ZipOutputStream(fos);
+
+		byte[] buffer = new byte[102400];
+		try {
+			zos.putNextEntry(new ZipEntry(fin.getName()));
+			int len;
+			while ((len = fis.read(buffer)) > 0) {
+				zos.write(buffer, 0, len);
+			}
+			zos.closeEntry();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		
+
+		try {
+			zos.close();
+			fos.close();
+			fis.close();
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+	
 
 	// extracts only proper ZIP files
 	private String extractFiles(InputStream from) throws IOException {
