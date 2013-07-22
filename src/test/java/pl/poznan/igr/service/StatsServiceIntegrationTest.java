@@ -9,6 +9,7 @@ import java.io.File;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -67,7 +68,14 @@ public class StatsServiceIntegrationTest extends AbstractIntegrationTest {
 
 		// TODO uncomment and remove second stage to other test
 		assertEquals(Status.ANALYSIS_SAVED, ctx.getStatus());
-		File stats = new File(us.getUnzipPath() + "/output/stats.txt");
+
+		File dir = new File(us.getUnzipPath() + "/output");
+		assertTrue(dir.isDirectory());
+
+		String[] list = dir.list(new SuffixFileFilter("stat.txt"));
+		assertEquals(list.length + "stat files found in the output folder "
+				+ dir.getPath(), 1, list.length);
+		File stats = new File(dir.getPath() + "/" + list[0]);
 		assertTrue("Stats file does not exist.", stats.exists());
 
 		List<BlobFile> blobs = BlobFile.findAllBlobFiles();
@@ -77,7 +85,7 @@ public class StatsServiceIntegrationTest extends AbstractIntegrationTest {
 		}
 
 		BlobFile blobFile = BlobFile.findAllBlobFiles().get(1);
-		assertEquals("stats.txt", new String(blobFile.getFileName()));
+		assertTrue(blobFile.getFileName().endsWith("stat.txt"));
 		assertFalse(blobFile.getCreated().after(new Date()));
 		assertEquals(Status.ANALYSIS_SAVED, ctx.getStatus());
 	}

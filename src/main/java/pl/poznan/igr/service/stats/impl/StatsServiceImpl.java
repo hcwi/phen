@@ -2,10 +2,12 @@ package pl.poznan.igr.service.stats.impl;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 
+import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,15 +60,18 @@ public class StatsServiceImpl extends ServiceImpl implements StatsService {
 
 			// TODO separate -- think of moving to its own service
 			// TODO get result file name, set in statsSession and put into DB
-			String fname = path + "/output/stats.txt";
-			log.info(fname);
+			// TODO manage multiple statistics files
+			File dir = new File(path + "/output");
+			String[] list = dir.list(new SuffixFileFilter("stat.txt"));
+			String fname = path + "/output/" + list[0];
+			log.info("Found stats file name: " + fname);
 			final File f = new File(fname);
 			byte[] content = Files.toByteArray(f);
 
 			// CLEAN redesign blob creation, here and import service
 			final BlobFile blobFile = new BlobFile();
 			blobFile.setContent(content);
-			blobFile.setFileName("stats.txt");
+			blobFile.setFileName(fname);
 
 			StatsSession ss = new StatsSession();
 			ss.setBlobFile(blobFile);
