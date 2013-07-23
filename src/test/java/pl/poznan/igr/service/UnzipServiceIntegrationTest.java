@@ -170,5 +170,18 @@ public class UnzipServiceIntegrationTest extends AbstractIntegrationTest {
 			e.printStackTrace();
 		}
 	}
+	
+	@Test
+	public void testUnzipAndZipBack() {
+		
+		String path = "src/test/resources/Phenotyping/test.txt";
+		String packedAgain = unzipService.packFiles(path);
+		System.err.println("Packed again here: " + packedAgain);
+		
+		File f = new File(packedAgain);
+		assertTrue("Zip file does not exist.", f.exists());
+	
+	}
+
 
 }

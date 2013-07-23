@@ -11,4 +11,6 @@ public interface UnzipService {
 	String unzipFile(String path) throws IOException;
 
 	void process(Context ctx);
+
+	abstract String packFiles(String path);
 }

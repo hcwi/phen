@@ -3,7 +3,6 @@ package pl.poznan.igr.service.unzip.impl;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -73,47 +72,51 @@ public class UnzipServiceImpl extends ServiceImpl implements UnzipService {
 			e.printStackTrace();
 			// TODO show exception comment to the user
 			context.setStatus(Status.UNZIP_FAILED);
+			context.setStatusMessage(e.getMessage());
 		} catch (IOException e) {
 			e.printStackTrace();
 			context.setStatus(Status.UNZIP_FAILED);
 		}
 	}
-	
-	private void packFiles(String path) throws FileNotFoundException {
-		 
-		File fin = new File(path);
-		FileInputStream fis = new FileInputStream(fin);
-		
-		String foutPath = path + "out";
-		File fout = new File(foutPath);
-		FileOutputStream fos = new FileOutputStream(fout);
-		ZipOutputStream zos = new ZipOutputStream(fos);
 
-		byte[] buffer = new byte[102400];
+	@Override
+	public String packFiles(String path) {
+
+		String foutPath = "";
 		try {
+			
+			File fin = new File(path);
+			FileInputStream fis = new FileInputStream(fin);
+
+			foutPath = "rezipped.zip";
+			File fout = new File(foutPath);
+			FileOutputStream fos = new FileOutputStream(fout);
+			ZipOutputStream zos = new ZipOutputStream(fos);
+
+			byte[] buffer = new byte[102400];
 			zos.putNextEntry(new ZipEntry(fin.getName()));
 			int len;
 			while ((len = fis.read(buffer)) > 0) {
 				zos.write(buffer, 0, len);
 			}
-			zos.closeEntry();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}		
 
-		try {
+			zos.closeEntry();
+
 			zos.close();
 			fos.close();
 			fis.close();
 			
+			foutPath = fout.getAbsolutePath();
+			
+			checkZip(foutPath);
+
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
+		return foutPath;
 	}
-	
 
 	// extracts only proper ZIP files
 	private String extractFiles(InputStream from) throws IOException {

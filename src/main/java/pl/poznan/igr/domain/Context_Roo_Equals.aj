@@ -17,11 +17,11 @@ privileged aspect Context_Roo_Equals {
             return true;
         }
         Context rhs = (Context) obj;
-        return new EqualsBuilder().append(finished, rhs.finished).append(id, rhs.id).append(importSession, rhs.importSession).append(owner, rhs.owner).append(started, rhs.started).append(statsSession, rhs.statsSession).append(status, rhs.status).append(unzipSession, rhs.unzipSession).isEquals();
+        return new EqualsBuilder().append(finished, rhs.finished).append(id, rhs.id).append(importSession, rhs.importSession).append(owner, rhs.owner).append(started, rhs.started).append(statsSession, rhs.statsSession).append(status, rhs.status).append(statusMessage, rhs.statusMessage).append(unzipSession, rhs.unzipSession).isEquals();
     }
     
     public int Context.hashCode() {
-        return new HashCodeBuilder().append(finished).append(id).append(importSession).append(owner).append(started).append(statsSession).append(status).append(unzipSession).toHashCode();
+        return new HashCodeBuilder().append(finished).append(id).append(importSession).append(owner).append(started).append(statsSession).append(status).append(statusMessage).append(unzipSession).toHashCode();
     }
     
 }

@@ -45,6 +45,7 @@ privileged aspect ContextDataOnDemand_Roo_DataOnDemand {
         setOwner(obj, index);
         setStarted(obj, index);
         setStatus(obj, index);
+        setStatusMessage(obj, index);
         return obj;
     }
     
@@ -69,6 +70,11 @@ privileged aspect ContextDataOnDemand_Roo_DataOnDemand {
     public void ContextDataOnDemand.setStatus(Context obj, int index) {
         Status status = Status.class.getEnumConstants()[0];
         obj.setStatus(status);
+    }
+    
+    public void ContextDataOnDemand.setStatusMessage(Context obj, int index) {
+        String statusMessage = "statusMessage_" + index;
+        obj.setStatusMessage(statusMessage);
     }
     
     public Context ContextDataOnDemand.getSpecificContext(int index) {

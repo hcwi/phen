@@ -86,6 +86,7 @@ public class StatsServiceImpl extends ServiceImpl implements StatsService {
 			// TODO show exception comment to the user
 			e.printStackTrace();
 			ctx.setStatus(Status.ANALYSIS_FAILED);
+			ctx.setStatusMessage(e.getMessage());
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 			ctx.setStatus(Status.ANALYSIS_FAILED);

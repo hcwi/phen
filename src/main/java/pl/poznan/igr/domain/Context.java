@@ -54,4 +54,7 @@ public class Context {
 		this.setOwner(owner);
 	}
 
+	private String statusMessage;
+	
+
 }

@@ -68,4 +68,12 @@ privileged aspect Context_Roo_JavaBean {
         this.statsSession = statsSession;
     }
     
+    public String Context.getStatusMessage() {
+        return this.statusMessage;
+    }
+    
+    public void Context.setStatusMessage(String statusMessage) {
+        this.statusMessage = statusMessage;
+    }
+    
 }

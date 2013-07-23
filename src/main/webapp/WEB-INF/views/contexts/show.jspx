@@ -13,13 +13,20 @@
 			dateTimePattern="${context_started_date_format}" field="started"
 			id="s_pl_poznan_igr_domain_Context_started" object="${context}"
 			z="OYLefk5cVns58YQeB8qtCUBDjlI=" />
+		<c:if test="${not empty context.finished}">
 		<field:display date="true"
 			dateTimePattern="${context_finished_date_format}" field="finished"
 			id="s_pl_poznan_igr_domain_Context_finished" object="${context}"
 			z="c8Bncl+r5iuOrfuDkVfT1mB86BE=" />
+		</c:if>
 		<field:display field="status"
 			id="s_pl_poznan_igr_domain_Context_status" object="${context}"
 			z="NwNQsGD7jhnylV6pIW5ddEUtKXc=" />
+		<c:if test="${not empty context.statusMessage}">
+			<field:display field="statusMessage"
+				id="s_pl_poznan_igr_domain_Context_statusMessage"
+				object="${context}" z="w34QKgDmVlcygtuTRvcPgatdBtY=" />
+		</c:if>
 		<field:display field="importSession"
 			id="s_pl_poznan_igr_domain_Context_importSession" object="${context}"
 			z="J/qsmIMXFMtnQZ6kcHapTSYtPqo=" />
