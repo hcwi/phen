@@ -10,7 +10,6 @@
             <table:column id="c_pl_poznan_igr_domain_Context_status" property="status" z="FnGgy14YSzLHxJvA/+8NQnB1z3o="/>
             <table:column id="c_pl_poznan_igr_domain_Context_importSession" property="importSession" z="ZYljPxqJmSZ98VgkGP+UKCCvAEQ="/>
             <!--  <table:column id="c_pl_poznan_igr_domain_Context_unzipSession" property="unzipSession" z="Q1H700i6V3acYvW6++GhG9qPsIU="/> -->
-            <!--  <table:column date="true" dateTimePattern="${context_finished_date_format}" id="c_pl_poznan_igr_domain_Context_finished" property="finished" z="H6eHn2Kzx7q28h81etYUjkdXbXA="/> -->
         </table:table>
     </page:list>
 </div>

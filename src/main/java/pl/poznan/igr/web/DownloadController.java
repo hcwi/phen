@@ -32,7 +32,7 @@ public class DownloadController {
 		Context ctx = Context.findContext(contextId);
 		final StatsSession ss = checkNotNull(StatsSession.findStatsSessionForContext(ctx),
 				"No zip for context {0}", contextId);
-
+		
 		try {
 			BlobFile blob = ss.getBlobFile();
 			response.setContentType("plain/text");
