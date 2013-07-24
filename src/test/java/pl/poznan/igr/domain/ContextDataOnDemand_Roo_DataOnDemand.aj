@@ -20,6 +20,7 @@ import pl.poznan.igr.domain.ContextDataOnDemand;
 import pl.poznan.igr.domain.ImportSessionDataOnDemand;
 import pl.poznan.igr.domain.StatsSessionDataOnDemand;
 import pl.poznan.igr.domain.UnzipSessionDataOnDemand;
+import pl.poznan.igr.domain.ZipSession;
 import pl.poznan.igr.domain.type.Status;
 
 privileged aspect ContextDataOnDemand_Roo_DataOnDemand {
@@ -46,6 +47,7 @@ privileged aspect ContextDataOnDemand_Roo_DataOnDemand {
         setStarted(obj, index);
         setStatus(obj, index);
         setStatusMessage(obj, index);
+        setZipSession(obj, index);
         return obj;
     }
     
@@ -75,6 +77,11 @@ privileged aspect ContextDataOnDemand_Roo_DataOnDemand {
     public void ContextDataOnDemand.setStatusMessage(Context obj, int index) {
         String statusMessage = "statusMessage_" + index;
         obj.setStatusMessage(statusMessage);
+    }
+    
+    public void ContextDataOnDemand.setZipSession(Context obj, int index) {
+        ZipSession zipSession = null;
+        obj.setZipSession(zipSession);
     }
     
     public Context ContextDataOnDemand.getSpecificContext(int index) {

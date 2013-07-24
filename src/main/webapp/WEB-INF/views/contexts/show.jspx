@@ -1,54 +1,42 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<div xmlns:c="http://java.sun.com/jsp/jstl/core"
-	xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields"
-	xmlns:jsp="http://java.sun.com/JSP/Page"
-	xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" version="2.0">
-	<jsp:directive.page contentType="text/html;charset=UTF-8" />
-	<jsp:output omit-xml-declaration="yes" />
-	<page:show create="false" id="ps_pl_poznan_igr_domain_Context"
-		object="${context}" path="/contexts" update="false" z="user-managed">
-		<field:display field="owner" id="s_pl_poznan_igr_domain_Context_owner"
-			object="${context}" z="52jwae8OZy+rfQTmOutB3mwMVUk=" />
-		<field:display date="true"
-			dateTimePattern="${context_started_date_format}" field="started"
-			id="s_pl_poznan_igr_domain_Context_started" object="${context}"
-			z="OYLefk5cVns58YQeB8qtCUBDjlI=" />
-		<c:if test="${not empty context.finished}">
-		<field:display date="true"
-			dateTimePattern="${context_finished_date_format}" field="finished"
-			id="s_pl_poznan_igr_domain_Context_finished" object="${context}"
-			z="c8Bncl+r5iuOrfuDkVfT1mB86BE=" />
-		</c:if>
-		<field:display field="status"
-			id="s_pl_poznan_igr_domain_Context_status" object="${context}"
-			z="NwNQsGD7jhnylV6pIW5ddEUtKXc=" />
-		<c:if test="${not empty context.statusMessage}">
-			<field:display field="statusMessage"
-				id="s_pl_poznan_igr_domain_Context_statusMessage"
-				object="${context}" z="w34QKgDmVlcygtuTRvcPgatdBtY=" />
-		</c:if>
-		<field:display field="importSession"
-			id="s_pl_poznan_igr_domain_Context_importSession" object="${context}"
-			z="J/qsmIMXFMtnQZ6kcHapTSYtPqo=" />
-		<field:display field="unzipSession"
-			id="s_pl_poznan_igr_domain_Context_unzipSession" object="${context}"
-			z="91OCJzMbLdsCTgtHBt+kbyaFbwY=" />
-		<c:if test="${not empty context.statsSession}">
-			<field:display field="statsSession"
-				id="s_pl_poznan_igr_domain_Context_statsSession" object="${context}"
-				z="0+xAo4C8eG4YUmpBNrb3nuSK8Do=" />
-		</c:if>
+<div xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" version="2.0">
+    <jsp:directive.page contentType="text/html;charset=UTF-8"/>
+    <jsp:output omit-xml-declaration="yes"/>
+    <page:show create="false" id="ps_pl_poznan_igr_domain_Context" object="${context}" path="/contexts" update="false" z="user-managed">
+        <field:display field="owner" id="s_pl_poznan_igr_domain_Context_owner" object="${context}" z="52jwae8OZy+rfQTmOutB3mwMVUk="/>
+        <field:display date="true" dateTimePattern="${context_started_date_format}" field="started" id="s_pl_poznan_igr_domain_Context_started" object="${context}" z="OYLefk5cVns58YQeB8qtCUBDjlI="/>
+        <c:if test="${not empty context.finished}">
+            <field:display date="true" dateTimePattern="${context_finished_date_format}" field="finished" id="s_pl_poznan_igr_domain_Context_finished" object="${context}" z="c8Bncl+r5iuOrfuDkVfT1mB86BE="/>
+        </c:if>
+        <field:display field="status" id="s_pl_poznan_igr_domain_Context_status" object="${context}" z="NwNQsGD7jhnylV6pIW5ddEUtKXc="/>
+        <c:if test="${not empty context.statusMessage}">
+            <field:display field="statusMessage" id="s_pl_poznan_igr_domain_Context_statusMessage" object="${context}" z="w34QKgDmVlcygtuTRvcPgatdBtY="/>
+        </c:if>
+        <field:display field="importSession" id="s_pl_poznan_igr_domain_Context_importSession" object="${context}" z="J/qsmIMXFMtnQZ6kcHapTSYtPqo="/>
+        <field:display field="unzipSession" id="s_pl_poznan_igr_domain_Context_unzipSession" object="${context}" z="91OCJzMbLdsCTgtHBt+kbyaFbwY="/>
+        <c:if test="${not empty context.statsSession}">
+            <field:display field="statsSession" id="s_pl_poznan_igr_domain_Context_statsSession" object="${context}" z="0+xAo4C8eG4YUmpBNrb3nuSK8Do="/>
+        </c:if>
+        <field:display field="zipSession" id="s_pl_poznan_igr_domain_Context_zipSession" object="${context}" z="18XNvCD2ilXjDH4GX7wzjDH3JUU="/>
 		
 		Download:
 		<ul>
-			<c:if test="${not empty context.importSession}">
-				<li><a href="/igr/download/data/${context.id}">Original
-						dataset</a></li>
-			</c:if>
-			<c:if test="${not empty context.statsSession}">
-				<li><a href="/igr/download/stats/${context.id}">Statistics</a>
-				</li>
-			</c:if>
-		</ul>
-	</page:show>
+            <c:if test="${not empty context.importSession}">
+                <li>
+                    <a href="/igr/download/data/${context.id}">Original
+						dataset</a>
+                </li>
+            </c:if>
+            <c:if test="${not empty context.statsSession}">
+                <li>
+                    <a href="/igr/download/stats/${context.id}">Statistics</a>
+                </li>
+            </c:if>
+            <c:if test="${not empty context.zipSession}">
+                <li>
+                    <a href="/igr/download/all/${context.id}">All</a>
+                </li>
+            </c:if>
+        </ul>
+    </page:show>
 </div>

@@ -17,6 +17,7 @@ import pl.poznan.igr.domain.BlobFile;
 import pl.poznan.igr.domain.Context;
 import pl.poznan.igr.domain.ImportSession;
 import pl.poznan.igr.domain.StatsSession;
+import pl.poznan.igr.domain.ZipSession;
 
 @RequestMapping("/download/**")
 @Controller
@@ -26,7 +27,7 @@ public class DownloadController {
 			.getLogger(DownloadController.class);
 
 	@RequestMapping(method = RequestMethod.GET, value = "stats/{contextId}")
-	public void downloadZipSessionForContext(@PathVariable Long contextId,
+	public void downloadStatSessionForContext(@PathVariable Long contextId,
 			HttpServletResponse response) {
 
 		Context ctx = Context.findContext(contextId);
@@ -65,5 +66,23 @@ public class DownloadController {
 		}
 	}
 	
-	
+	@RequestMapping(method = RequestMethod.GET, value = "all/{contextId}")
+	public void downloadZipSessionForContext(@PathVariable Long contextId,
+			HttpServletResponse response) {
+
+		Context ctx = Context.findContext(contextId);
+		final ZipSession zs = checkNotNull(ZipSession.findZipSessionForContext(ctx),
+				"No data for context {0}", contextId);
+
+		try {
+			BlobFile blob = zs.getBlobFile();
+			response.setContentType("plain/text");
+			response.setHeader("Content-Disposition", "attachment; filename="
+					+ blob.getFileName());
+			response.getOutputStream().write(blob.getContent());
+		} catch (IOException e) {
+			log.error("Can't send the file", e);
+			throw new RuntimeException(e);
+		}
+	}
 }

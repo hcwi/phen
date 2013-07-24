@@ -16,7 +16,7 @@ privileged aspect ApplicationConversionServiceFactoryBean_Roo_ConversionService 
     public Converter<Context, String> ApplicationConversionServiceFactoryBean.getContextToStringConverter() {
         return new org.springframework.core.convert.converter.Converter<pl.poznan.igr.domain.Context, java.lang.String>() {
             public String convert(Context context) {
-                return new StringBuilder().append(context.getOwner()).append(' ').append(context.getStarted()).append(' ').append(context.getFinished()).toString();
+                return new StringBuilder().append(context.getOwner()).append(' ').append(context.getStarted()).append(' ').append(context.getFinished()).append(' ').append(context.getStatusMessage()).toString();
             }
         };
     }

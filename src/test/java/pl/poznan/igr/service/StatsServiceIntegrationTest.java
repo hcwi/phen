@@ -69,7 +69,7 @@ public class StatsServiceIntegrationTest extends AbstractIntegrationTest {
 		// TODO uncomment and remove second stage to other test
 		assertEquals(Status.ANALYSIS_SAVED, ctx.getStatus());
 
-		File dir = new File(us.getUnzipPath() + "/output");
+		File dir = new File(us.getUnzipPath());
 		assertTrue(dir.isDirectory());
 
 		String[] list = dir.list(new SuffixFileFilter("stat.txt"));

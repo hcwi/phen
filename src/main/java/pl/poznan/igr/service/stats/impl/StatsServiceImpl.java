@@ -47,7 +47,7 @@ public class StatsServiceImpl extends ServiceImpl implements StatsService {
 		UnzipSession us = ctx.getUnzipSession();
 
 		String path = us.getUnzipPath();
-		new File(path + "/output").mkdir();
+		//new File(path + "/output").mkdir();
 
 		try {
 			// TODO wydzieliæ statystyki do osobnego watku
@@ -60,9 +60,10 @@ public class StatsServiceImpl extends ServiceImpl implements StatsService {
 			// TODO separate -- think of moving to its own service
 			// TODO get result file name, set in statsSession and put into DB
 			// TODO manage multiple statistics files
-			File dir = new File(path + "/output");
+			// File dir = new File(path + "/output");
+			File dir = new File(path);
 			String[] list = dir.list(new SuffixFileFilter("stat.txt"));
-			String fname = path + "/output/" + list[0];
+			String fname = path + "/" + list[0];
 			log.info("Found stats file name: " + fname);
 			final File f = new File(fname);
 			byte[] content = Files.toByteArray(f);
@@ -78,7 +79,7 @@ public class StatsServiceImpl extends ServiceImpl implements StatsService {
 
 			ctx.setStatsSession(ss);
 			ctx.setStatus(Status.ANALYSIS_SAVED);
-
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 			ctx.setStatus(Status.ANALYSIS_FAILED);

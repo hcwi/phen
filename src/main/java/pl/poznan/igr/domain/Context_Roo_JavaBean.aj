@@ -8,6 +8,7 @@ import pl.poznan.igr.domain.Context;
 import pl.poznan.igr.domain.ImportSession;
 import pl.poznan.igr.domain.StatsSession;
 import pl.poznan.igr.domain.UnzipSession;
+import pl.poznan.igr.domain.ZipSession;
 import pl.poznan.igr.domain.type.Status;
 
 privileged aspect Context_Roo_JavaBean {
@@ -66,6 +67,14 @@ privileged aspect Context_Roo_JavaBean {
     
     public void Context.setStatsSession(StatsSession statsSession) {
         this.statsSession = statsSession;
+    }
+    
+    public ZipSession Context.getZipSession() {
+        return this.zipSession;
+    }
+    
+    public void Context.setZipSession(ZipSession zipSession) {
+        this.zipSession = zipSession;
     }
     
     public String Context.getStatusMessage() {

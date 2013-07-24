@@ -88,16 +88,17 @@ save.results <- function (sFile, aFile, experiment, models) {
   sFile2 <- substr(sFile, start=0, stop=regexpr("[.]",sFile)-1)
   aFile2 <- substr(aFile, start=0, stop=regexpr("[.]",aFile)-1)
   
-  outDir <- "output"
-  if (!file.exists(outDir)) {
-    print("Creating outDir")
-    dir.create(outDir)
-  }
-  rFile <- paste(outDir, sep="/", paste(sFile2, aFile2, "obj.R", sep="_"))
+#  outDir <- "output"
+#  if (!file.exists(outDir)) {
+#    print("Creating outDir")
+#    dir.create(outDir)
+#  }
+#  rFile <- paste(outDir, sep="/", paste(sFile2, aFile2, "obj.R", sep="_"))
+  rFile <- paste(sFile2, aFile2, "obj.R", sep="_")
   save(experiment, models, file=rFile)
   print(paste("R objects saved to file:", rFile))
   
-  statFile <- paste(outDir, sep="/", paste(sFile2, aFile2, "stat.txt", sep="_"))    
+  statFile <- paste(sFile2, aFile2, "stat.txt", sep="_")    
   for (i in 1:length(models)) {
     if(i==1)
       write.table(models[[i]]$model@fixef, file=statFile)
@@ -112,9 +113,11 @@ save.results <- function (sFile, aFile, experiment, models) {
 } 
 
 update.file <- function(aFile, statFile) {
-  a <- read.table(aFile, header=T, check.names=F)
+  print("Updating..")
+  a <- read.table(aFile, header=T, check.names=F, sep="\t")
   a <- cbind(a, "Sufficient Data File"=statFile)
-  write.table(a, na="", row.names=F, sep="\t", file=paste(aFile, 2, ".txt", sep=""))
+  #write.table(a, na="", row.names=F, sep="\t", file=paste(aFile, 2, ".txt", sep=""))
+  write.table(a, na="", row.names=F, sep="\t", aFile)
   
 }
 
@@ -124,7 +127,7 @@ load.files <- function(sName, aName) {
   
   print(paste(sName, aName))
   study <- read.table(sName, header=T)
-  assay <- read.table(aName, header=T)
+  assay <- read.table(aName, header=T, fill=T, sep="\t")
   s <<- study
   a <<- assay
   
@@ -247,9 +250,9 @@ load.xls <- function(file) {
 #Find name of data file to use for study/assay pair
 findDataFile <- function (sa) {
   
-  are.files <- grep("Data.File", names(sa), value=T)
+  are.files <- grep("(Raw)|(Derived)|(Processed).Data.File", names(sa), value=T)
   print(paste("Data files: ", toString(are.files)))
-  
+     
   have.all <- function(x) !any(is.na(x))
   are.full <- sapply(sa[are.files], have.all)
   

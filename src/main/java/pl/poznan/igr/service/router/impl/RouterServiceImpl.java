@@ -11,6 +11,7 @@ import pl.poznan.igr.service.ServiceImpl;
 import pl.poznan.igr.service.router.RouterService;
 import pl.poznan.igr.service.stats.StatsService;
 import pl.poznan.igr.service.unzip.UnzipService;
+import pl.poznan.igr.service.zip.ZipService;
 
 @Service
 public class RouterServiceImpl extends ServiceImpl implements RouterService {
@@ -20,6 +21,9 @@ public class RouterServiceImpl extends ServiceImpl implements RouterService {
 
 	@Autowired
 	StatsService statsService;
+
+	@Autowired
+	ZipService zipService;
 
 	@Override
 	public void runNext(Context ctx) {
@@ -33,6 +37,7 @@ public class RouterServiceImpl extends ServiceImpl implements RouterService {
 			statsService.process(ctx);
 			break;
 		case ANALYSIS_SAVED:
+			zipService.process(ctx);
 			ctx.setFinished(new Date());
 			break;
 		default:

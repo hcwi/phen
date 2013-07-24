@@ -11,7 +11,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
-import java.util.zip.ZipOutputStream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,6 +44,7 @@ public class UnzipServiceImpl extends ServiceImpl implements UnzipService {
 	@Override
 	@Transactional
 	public void process(Context ctx) {
+		
 		unzipFile(ctx);
 		routerService.runNext(ctx);
 	}
@@ -77,92 +77,6 @@ public class UnzipServiceImpl extends ServiceImpl implements UnzipService {
 			e.printStackTrace();
 			context.setStatus(Status.UNZIP_FAILED);
 		}
-	}
-
-	@Override
-	public String packFiles(String path) {
-
-		String foutPath = "";
-		try {
-			
-			File fin = new File(path);
-			FileInputStream fis = new FileInputStream(fin);
-
-			foutPath = "rezipped.zip";
-			File fout = new File(foutPath);
-			FileOutputStream fos = new FileOutputStream(fout);
-			ZipOutputStream zos = new ZipOutputStream(fos);
-
-			byte[] buffer = new byte[102400];
-			zos.putNextEntry(new ZipEntry(fin.getName()));
-			int len;
-			while ((len = fis.read(buffer)) > 0) {
-				zos.write(buffer, 0, len);
-			}
-
-			zos.closeEntry();
-
-			zos.close();
-			fos.close();
-			fis.close();
-			
-			foutPath = fout.getAbsolutePath();
-			
-			checkZip(foutPath);
-
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		return foutPath;
-	}
-
-	// extracts only proper ZIP files
-	private String extractFiles(InputStream from) throws IOException {
-
-		File wd = Files.createTempDir();
-		String inDir = "";
-
-		ZipInputStream zis = new ZipInputStream(from);
-
-		ZipEntry zipEntry;
-		while ((zipEntry = zis.getNextEntry()) != null) {
-
-			String name = zipEntry.getName();
-			long size = zipEntry.getSize();
-			long compressedSize = zipEntry.getCompressedSize();
-			log.debug("Unzipped file: " + name);
-			log.debug("Unzipped size " + compressedSize + " -> " + size);
-
-			File file = new File(wd, name);
-			if (name.endsWith("/")) {
-				file.mkdirs();
-				// TODO add stats.txt to ISA_TAB
-				// TODO think what to do with stats.txt file
-				// in this version it gets saved in wd/inDir
-				inDir = name.substring(0, name.length() - 1);
-				continue;
-			}
-
-			FileOutputStream fos = new FileOutputStream(file);
-
-			byte[] bytes = new byte[1024];
-			int length;
-
-			while ((length = zis.read(bytes)) >= 0) {
-				fos.write(bytes, 0, length);
-			}
-			fos.close();
-		}
-		zis.close();
-
-		String unzippedPath = wd.getAbsolutePath();
-		// TODO which path? general or deepest (as now)
-		if (inDir != "") {
-			unzippedPath += "/" + inDir;
-		}
-		return unzippedPath;
 	}
 
 	@Override
@@ -212,4 +126,52 @@ public class UnzipServiceImpl extends ServiceImpl implements UnzipService {
 					"Unzip failed. Probably your file in not in a proper zip format");
 		}
 	}
+
+	// extracts only proper ZIP files
+	private String extractFiles(InputStream from) throws IOException {
+
+		File wd = Files.createTempDir();
+		String inDir = "";
+
+		ZipInputStream zis = new ZipInputStream(from);
+
+		ZipEntry zipEntry;
+		while ((zipEntry = zis.getNextEntry()) != null) {
+
+			String name = zipEntry.getName();
+			long size = zipEntry.getSize();
+			long compressedSize = zipEntry.getCompressedSize();
+			log.debug("Unzipped file: " + name);
+			log.debug("Unzipped size " + compressedSize + " -> " + size);
+
+			File file = new File(wd, name);
+			if (name.endsWith("/")) {
+				file.mkdirs();
+				// TODO add stats.txt to ISA_TAB
+				// TODO think what to do with stats.txt file
+				// in this version it gets saved in wd/inDir
+				inDir = name.substring(0, name.length() - 1);
+				continue;
+			}
+
+			FileOutputStream fos = new FileOutputStream(file);
+
+			byte[] bytes = new byte[1024];
+			int length;
+
+			while ((length = zis.read(bytes)) >= 0) {
+				fos.write(bytes, 0, length);
+			}
+			fos.close();
+		}
+		zis.close();
+
+		String unzippedPath = wd.getAbsolutePath();
+		// TODO which path? general or deepest (as now)
+		if (inDir != "") {
+			unzippedPath += "/" + inDir;
+		}
+		return unzippedPath;
+	}
+
 }

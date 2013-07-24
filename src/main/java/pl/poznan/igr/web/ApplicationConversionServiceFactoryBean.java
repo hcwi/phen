@@ -9,6 +9,7 @@ import org.springframework.roo.addon.web.mvc.controller.converter.RooConversionS
 import pl.poznan.igr.domain.ImportSession;
 import pl.poznan.igr.domain.StatsSession;
 import pl.poznan.igr.domain.UnzipSession;
+import pl.poznan.igr.domain.ZipSession;
 
 /**
  * A central place to register application converters and formatters.
@@ -25,7 +26,8 @@ public class ApplicationConversionServiceFactoryBean extends
 		registry.addConverter(getImportSessionToStringConverter());
 		registry.addConverter(getUnzipSessionToStringConverter());
 		registry.addConverter(getStatsSessionToStringConverter());
-	}
+		registry.addConverter(getZipSessionToStringConverter());
+		}
 
 	public Converter<ImportSession, String> getImportSessionToStringConverter() {
 		return new Converter<ImportSession, String>() {
@@ -52,6 +54,15 @@ public class ApplicationConversionServiceFactoryBean extends
 			public String convert(StatsSession ss) {
 				return new StringBuilder().append(ss.getBlobFile().getFileName()).append(' ')
 						.append(ss.getCreationDate()).toString();
+			}
+		};
+	}
+	
+	public Converter<ZipSession, String> getZipSessionToStringConverter() {
+		return new Converter<ZipSession, String>() {
+			public String convert(ZipSession zs) {
+				return new StringBuilder().append(zs.getBlobFile().getFileName()).append(' ')
+						.append(zs.getCreationDate()).toString();
 			}
 		};
 	}

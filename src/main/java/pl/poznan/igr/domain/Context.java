@@ -48,6 +48,9 @@ public class Context {
 	@OneToOne(mappedBy = "context", cascade = CascadeType.ALL)
 	private StatsSession statsSession;
 
+	@OneToOne(mappedBy = "context", cascade = CascadeType.ALL)
+	private ZipSession zipSession;
+
 	public Context(String owner) {
 		this.setStarted(new Date());
 		this.setStatus(Status.NEW);
