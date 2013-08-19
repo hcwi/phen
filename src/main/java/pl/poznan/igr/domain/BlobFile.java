@@ -35,4 +35,10 @@ public class BlobFile {
     public BlobFile() {
     	this.setCreated(new Date());
     }
+    
+    public BlobFile(String name, byte[] content) {
+    	this.setCreated(new Date());
+    	this.setFileName(name);
+    	this.setContent(content);    	
+    }
 }

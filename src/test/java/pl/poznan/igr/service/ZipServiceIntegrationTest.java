@@ -50,6 +50,10 @@ public class ZipServiceIntegrationTest extends AbstractIntegrationTest {
 		
 		File f = new File(packedAgain);
 		assertTrue("Zip file does not exist.", f.exists());
+		
+		removeUnzipped(f);
+		assertFalse("Didn't remove zip file.", f.exists());
+		log.info("Packed file removed");
 	}
 
 

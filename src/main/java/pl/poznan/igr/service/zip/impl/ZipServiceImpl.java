@@ -1,10 +1,10 @@
 package pl.poznan.igr.service.zip.impl;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Date;
 import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
@@ -52,37 +52,35 @@ public class ZipServiceImpl extends ServiceImpl implements ZipService {
 			String path = ctx.getUnzipSession().getUnzipPath();
 			String rezipped = rezipFiles(path);
 
+			byte[] content = new byte[100000];
+			ByteArrayOutputStream os = new ByteArrayOutputStream();
+			
+			FileInputStream fis = new FileInputStream(new File(rezipped));
+			int len = fis.read(content);
+			while (len > -1) {
+				os.write(content, 0, len);
+				len = fis.read(content);
+			}
+			fis.close();
+			
+			os.close();
+			
+			BlobFile blob = new BlobFile(rezipped, os.toByteArray());
 			ZipSession zs = new ZipSession();
-			zs.setCreationDate(new Date());
+			zs.setBlobFile(blob);
 			zs.setContext(ctx);
 
-			byte[] content = new byte[100000];
-			FileInputStream fis = new FileInputStream(new File(rezipped));
-			fis.read(content);
-			fis.close();
-
-			BlobFile blob = createBlobFile(rezipped, content);
-			zs.setBlobFile(blob);
-
-			System.err.println(zs);
+			log.debug(zs.toString());
 
 			ctx.setStatus(Status.REZIPPED);
 			ctx.setZipSession(zs);
-					
-			//TODO delete zip files
-			
+
+			File f = new File(rezipped);
+			f.delete();
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	}
-
-	private BlobFile createBlobFile(String fileName, byte[] content) {
-
-		final BlobFile blobFile = new BlobFile();
-		blobFile.setCreated(new Date());
-		blobFile.setContent(content);
-		blobFile.setFileName(fileName);
-		return blobFile;
 	}
 
 	@Override
