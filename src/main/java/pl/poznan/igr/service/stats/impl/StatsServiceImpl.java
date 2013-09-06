@@ -19,6 +19,7 @@ import pl.poznan.igr.domain.UnzipSession;
 import pl.poznan.igr.domain.type.Status;
 import pl.poznan.igr.service.ServiceImpl;
 import pl.poznan.igr.service.router.RouterService;
+import pl.poznan.igr.service.stats.RHandler;
 import pl.poznan.igr.service.stats.RException;
 import pl.poznan.igr.service.stats.StatsService;
 
@@ -128,14 +129,12 @@ public class StatsServiceImpl extends ServiceImpl implements StatsService {
 		Process p = Runtime.getRuntime().exec(
 				new String[] { exe, script, workingDir });
 
-		BufferedReader br = new BufferedReader(new InputStreamReader(
-				p.getErrorStream()));
-		String line;
-		while ((line = br.readLine()) != null) {
-			log.debug(line);
-		}
-		br.close();
+		RHandler is = new RHandler(p.getInputStream(), "INPUT", log);
+		RHandler es = new RHandler(p.getErrorStream(), "ERROR", log);
 
+		is.start();
+		es.start();
+		
 		int success = p.waitFor();
 		log.info("Process exited with " + success);
 		if (success != 0) {

@@ -1,6 +1,8 @@
 #Find pairs of study/assay file names in investigation file
 find.files <- function(inv) {
   
+  print("[debug] find.files")
+  
   files <- data.frame(studyName=character(0), assayName=character(0), stringsAsFactors=FALSE)
   
   inv.studies <- as.matrix(subset(inv, V1=="Study File Name")) 
@@ -24,6 +26,9 @@ find.files <- function(inv) {
 
 #Read standard investigation file in given folder
 read.inv <- function(folder=".", file="i_Investigation.txt") {
+  
+  print("[debug] read.inv")
+  
   inv = tryCatch({
     fname = paste(folder, file, sep="/")
     read.delim(fname, header=F)
@@ -42,6 +47,9 @@ read.inv <- function(folder=".", file="i_Investigation.txt") {
 
 #Find non-standard investigation file in given folder
 find.inv <- function(dir) {
+  
+  print("[debug] find.inv")
+  
   nums <- grep("^i_.*", list.files(path=dir))
   if (length(nums) == 0) {
     stop(paste("No investigation files were found in folder", dir))
@@ -55,6 +63,9 @@ find.inv <- function(dir) {
 
 #Run finding files - first investigation, then study/assay pairs
 get.files <- function(dir=".") {
+  
+  print("[debug] get.files")
+  
   inv <- read.inv(dir);
   files <- find.files(inv)
   files
@@ -63,19 +74,28 @@ get.files <- function(dir=".") {
 #Run processing: find, read, model, save
 run <- function() {
   
-  if (file.exists("C:/strawberry/perl/bin/perl.exe")) {
-    PERL <- "C:/strawberry/perl/bin/perl.exe"
-  }
+  print("[debug] run")
+  
+  if (file.exists("C:/strawberry/perl/bin/perl.exe")) 
+    PERL <<- "C:/strawberry/perl/bin/perl.exe"
   
   studyAssayPairs <<- get.files()
   
-  for (i in 1:dim(studyAssayPairs)) {
+  for (i in 1:dim(studyAssayPairs)[1]) {
     
     sFile <- studyAssayPairs[i,1]
-    aFile <- studyAssayPairs[i,2]
+    aFile <- studyAssayPairs[i,2]  
+    sa <- load.files(sFile, aFile)
     
-    experiment <<- load.files(sFile, aFile)   
-    results <<- get.models(experiment)
+    dFile <- find.dFile(sa)
+    studyAssayPairs[i,3] <<- dFile
+    dat <- load.data(dFile)
+    d <- dat[[1]]
+    d.names <- dat[[2]]
+    
+    experiment <<- get.experiment(sa, d)
+    
+    results <- get.models(experiment, d.names)
     
     save.results(sFile, aFile, experiment, results)
     
@@ -85,15 +105,28 @@ run <- function() {
 # save results to files
 save.results <- function (sFile, aFile, experiment, results) {
   
+  print("[debug] save.results")
+  
+  means <- results[[1]]
+  models <- results[[2]]
+  
   sFile2 <- substr(sFile, start=0, stop=regexpr("[.]",sFile)-1)
   aFile2 <- substr(aFile, start=0, stop=regexpr("[.]",aFile)-1)
   
   rFile <- paste(sFile2, aFile2, "obj.R", sep="_")
+  
+  
   save(experiment, file=rFile)
+  save(models, file=rFile)
   print(paste("R objects saved to file:", rFile))
   
+  a <- read.table(aFile, header=T, check.names=F, sep="\t")
+  names <- names(a)
+  print(names)
+  
   statFile <- paste(sFile2, aFile2, "stat.txt", sep="_")
-  write.table(results, file=statFile)
+  warning("Results rounded to 2 decimals")
+  write.table(round(means,2), file=statFile, sep="\t")
   print(paste("Sufficient statistics saved to file: ", statFile))
   
   # update isa-tab file to include sufficient data file
@@ -102,6 +135,9 @@ save.results <- function (sFile, aFile, experiment, results) {
 } 
 
 update.file <- function(aFile, statFile) {
+  
+  print("[debug] update.file")
+  
   print("Updating..")
   a <- read.table(aFile, header=T, check.names=F, sep="\t")
   a <- cbind(a, "Sufficient Data File"=statFile)
@@ -114,9 +150,13 @@ update.file <- function(aFile, statFile) {
 #Load metadata for study/assay pair
 load.files <- function(sName, aName) {
   
+  print("[debug] load.files")
+  
   print(paste(sName, aName))
-  study <- read.table(sName, header=T)
-  assay <- read.table(aName, header=T, fill=T, sep="\t")
+  study <- read.table(sName, header=T, sep='\t')
+  print("[debug]     read.table study")
+  assay <- read.table(aName, header=T, sep='\t', fill=T)
+  print("[debug]     read.table assay")
   s <<- study
   a <<- assay
   
@@ -124,34 +164,58 @@ load.files <- function(sName, aName) {
   print(paste("Common columns: ", toString(dupNames)))
   dupNames.nontrivial <- grep("(REF)|(Accession.Number)", dupNames, invert=T)
   dupNames <- dupNames[dupNames.nontrivial]
-  sa <- merge(study, assay, by=dupNames, all=T)
+  warning("Parameter 'all' in merging changed to FALSE -- rows not matching study/assay will be removed. Rethink!")
+  sa <- merge(study, assay, by=dupNames, all=F)
   print(paste("Merged by", dupNames))
   
-  obs <- load.data(sa)
-  d <<- obs
-  dupNames <- subset(names(sa), match(names(sa), names(obs)) > 0)
+  sa  
+}
+
+
+get.experiment <- function(sa, d) {
+  
+  print("[debug] get.experiment")
+  
+  dupNames <- subset(names(sa), match(names(sa), names(d)) > 0)
   print(paste("Common columns: ", toString(dupNames)))
-  sad <- merge(sa, obs, by=dupNames, all=T)
+  sad <- merge(sa, d, by=dupNames, all=T)
   print(paste("Merged by: ", toString(dupNames)))
   
   sad
 }
 
 
-get.models <- function(sad) {
+get.models <- function(sad, d.names) {
+  
+  print("[debug] get.models")
   
   if(!require("lme4")) {
     install.packages("lme4")
   }
   library(lme4)
+  if(!require("reshape")) {
+    install.packages("reshape")
+  }
+  library(reshape)
   
-  effects <- prepareEffects(sad)
+  
+  effects <- prepare.effects(sad)
   traits <- effects$traits
   random <- effects$random
   fixed <- effects$fixed
   
-  factorize <- function(x) {if (!is.numeric(x)) factor(x) else x}
-  sadf <- lapply(sad, factorize)
+  #   factorize <- function(x) {if (!is.numeric(x)) factor(x) else x}
+  #   sadf <- lapply(sad, factorize)
+  
+  factorizenames <- function(x) {
+    if (is.numeric(sad[,x]) && 
+          length(grep("Trait[.]Value", names(sad)[x])) > 0) 
+      sad[,x] 
+    else factor(sad[,x])
+  }
+  sadf <- lapply(seq_along(sad), factorizenames)
+  names(sadf) <- names(sad)
+  
   
   results <- matrix(nrow=dim(effects$x)[2], ncol=0)
   
@@ -159,16 +223,15 @@ get.models <- function(sad) {
   for (i in 1:length(traits)) {
     
     trait = traits[i] 
-    print(paste("Models for a new trait:", trait))
     
     result <- matrix(ncol=2, nrow=0)
-    colnames(result) <- c(paste(trait,"mean",sep=""), paste(trait,"s.e.", sep=""))
+    colnames(result) <- c(paste(d.names[trait],"Mean"), paste(d.names[trait],"s.e."))
     
     form <- paste(trait,"~",fixed,"+(1|",random,")", sep="")
     print(paste("Formula:", form))
     
     model <- lmer(form, sadf)
-    model.coef <- coef(model)
+    #model.coef <- coef(model)
     
     x <- unique(model@X)
     est <- x %*% model@fixef
@@ -176,7 +239,9 @@ get.models <- function(sad) {
     est.cov <- x %*% vcov(model) %*% t(x)
     
     for (j in 1:length(effects$x.list)) {
+    
       factor <- effects$x.list[[j]]$factor
+      
       from <- effects$x.list[[j]]$from
       to <- effects$x.list[[j]]$to
       
@@ -189,88 +254,112 @@ get.models <- function(sad) {
       means.var <- diag(m %*% est.cov %*% t(m))
       
       result <- rbind(result, cbind(means, sqrt(means.var)))
-      
     }  
     
-    #l <- list(trait=trait, fixed=fixed, random=random, model=model)
-    #models <- c(models,list(l))
+    l <- list(trait=trait, fixed=fixed, random=random, model=model)
+    models <- c(models,list(l))
     results <- cbind(results, result)
   }
   
-  results
+  list(results, models)
   #models
 }
 
 
-prepareEffects <- function (sad) {
+prepare.effects <- function (sad) {
+  
+  print("[debug] prepare.effects")
   
   factorize <- function(x) {if (!is.numeric(x)) factor(x) else x}
   sadf <- lapply(sad, factorize)
   
   are.traits <- grep("Trait[.]Value", names(sad), value=T)
   
-  are.levels <- grep("(Characteristics)|(Factor)", names(sad), value=T)
-  have.var <- function(x) length(unique(x))>1
+  #warning("Removing traits with no variation")
+  #have.var <- function(x) length(unique(x))>1
+  #are.var <- sapply(sad[are.traits], have.var)
+  #sare.traits <- are.traits[are.var]
+  
+  are.levels <- grep("((Characteristics)|(Factor))", names(sad), value=T)
+  
+  # Only for Keygene data testing
+  warning("Filtering factors to exclude *id* names -- only for Keygene data. Remove for other analyses!")
+  are.levels <- grep("[Ii]d", are.levels, value=T, invert=T)
+  
   are.var <- sapply(sad[are.levels], have.var)
   
-  are.random <- grep("(Block)|(Field)", are.levels[are.var], value=T)
-  are.fixed  <- grep("(Block)|(Field)", are.levels[are.var], value=T, invert=T)
+  are.random <- grep("(Block)|(Field)|(Rank)|(Plot)|(Replic)|(Column)|(Row)", are.levels[are.var], value=T)
+  are.fixed  <- grep("(Block)|(Field)|(Rank)|(Plot)|(Replic)|(Column)|(Row)", are.levels[are.var], value=T, invert=T)
   
-  #analysis <- list(data=sadf, traits=are.traits, levels=are.levels, models)
-  
-  random <- are.random[1]
-  if (length(are.random) > 1) {
-    for (j in 2:length(are.random)) {
-      random <- paste(random, are.random[j], sep="*")
+  if (length(are.random) > 0) {
+    random <- are.random[1]
+    if (length(are.random) > 1) {
+      for (j in 2:length(are.random)) {
+        random <- paste(random, are.random[j], sep="*")
+      }
     }
   }
+  else {
+    random <- grep("Source.Name", names(sad), value=T)
+  }
+  print(paste("[debug]      random: ", random, sep=""))
   
   fixed = are.fixed[1]
   fixed.noconst = are.fixed[1]
   if (length(are.fixed) > 1) {
     for (j in 2:length(are.fixed)) {
-      fixed <- paste(fixed, are.fixed[j], sep="*")  
-      fixed.noconst <- paste(fixed.noconst, are.fixed[j], sep=":")  
+      #if (j>2) {
+      #  print(" -------- More than 2 fixed effects! System is not preapred to deal with multiple fixed factors which usually lead to  not positive definite matrices. Only 2 first factors will be used -------- ")
+      #} else 
+{
+  fixed <- paste(fixed, are.fixed[j], sep="*")  
+  fixed.noconst <- paste(fixed.noconst, are.fixed[j], sep=":")  
+}
     }
+  }
+  print(paste("[debug]      fixed: ", fixed, sep=""))
+  
+  # pivot
+  
+  names <- vector()
+  for (i in 1:length(are.fixed)) {
+    
+    com <- combn(are.fixed, i)
+    for (j in 1:dim(com)[2]) {
+      name <- com[1,j]
+      if (dim(com)[1] > 1) {
+        for (k in 2:dim(com)[1]) {
+          name <- paste(name, com[k,j], sep="*")
+        }
+      }
+      names <- rbind(names, name)
+    }
+    
   }
   
   
-  # generation of full model matrices for fixed effects
-  print("Generation of full model matrices for fixed effects")
-  
-  # vector 1
   x.list <- list()
   x.full <- matrix(1, nrow=dim(sad)[1])
   colnames(x.full) <- "all"
   l.to <- 1
   x.list <- c(x.list, list(list(factor="const", from=1, to=l.to)))
-  # single trait vectors
-  for (j in 1:length(are.fixed)) {
+  
+  for (i in 1:length(names)) {
     
-    f <- paste(are.traits[1],"~",are.fixed[j],"+(1|",random,")-1", sep="")
-    print(paste("  Tmp model formula:", f))
-    mod <- lmer(f, sadf)
-    m <- mod@X
-    colnames(m) <- names(mod@fixef)
-    x.full <- cbind(x.full, m)
+    formula <- paste("Sample.Name", sep="~", names[i])
+    print(paste("[debug]           names: ", names[i], sep=""))
+    print(paste("[debug]           formu: ", formula, sep=""))
+    
+    x <- cast(sad, formula, length)
+    x <- x[-1]
+    
+    x.full <- cbind(x.full, x)
     l.from <- l.to + 1
-    l.to <- l.to + dim(m)[2]
-    x.list <- c(x.list, list(list(factor=are.fixed[j], from=l.from, to=l.to)))   
-  }  
+    l.to <- l.to + dim(x)[2]
+    x.list <- c(x.list, list(list(factor=names[i], from=l.from, to=l.to)))   
+  }
   
-  # all traits combination vector
-  f <- paste(are.traits[1],"~",fixed.noconst,"+(1|",random,")-1", sep="")
-  print(paste("  Tmp model formula:", f))
-  mod <- lmer(f, sadf)
-  m <- mod@X
-  colnames(m) <- names(mod@fixef)
-  x.full <- cbind(x.full, m)
-  l.from <- l.to + 1
-  l.to <- l.to + dim(m)[2]
-  x.list <- c(x.list, list(list(factor=fixed.noconst, from=l.from, to=l.to)))
-  
-  
-  x.full.unique <- unique(x.full)
+  x.full.unique <- as.matrix(unique(x.full))  
   
   list(traits=are.traits, random=random, fixed=fixed, x=x.full.unique, x.list=x.list)
 }
@@ -278,20 +367,19 @@ prepareEffects <- function (sad) {
 
 
 #Load data for study/assay pair
-load.data <- function(sa) {
+load.data <- function(dFile) {
   
-  dataName <- findDataFile(sa)
+  print("[debug] load.data")
+  print(paste("Loading", dFile))
+  
+  f <- paste(getwd(),dFile, sep="/")
+  
   d <- tryCatch({
-    if (grep("xls", dataName)) {
-      if (exists("PERL")) {
-        print(paste("Loading", dataName,"with xls"))
-        load.xls(paste(getwd(),dataName, sep="/"))
-      }
-      else {
-        dataName2 <- gsub("([.]xls)|([.]xlsx)", ".txt", dataName)
-        print(paste("Trying", dataName2,"with read.table"))
-        read.table(dataName2, header=T, sep="\t")    
-      }
+    if (grep("xls", dFile)) {
+      if (exists("PERL"))
+        load.xls(f)
+      else
+        load.txt(f)
     }
     else {
       print(paste("Loading", dataName,"with read.table"))
@@ -313,14 +401,36 @@ load.data <- function(sa) {
 #Load data from xls file
 load.xls <- function(file) {
   
+  print("[debug] load.xls")
+  
   if(!require("gdata")) {install.packages("gdata")}
   library(gdata)
   d <- read.xls(file, perl="C:/strawberry/perl/bin/perl.exe")
-  d
+  d2 <- read.xls(file, perl="C:/strawberry/perl/bin/perl.exe", check.names=F)
+  d.names <- as.vector(names(d2))
+  names(d.names) <- names(d)
+  list(d, d.names)
 }
 
+#Load data from txt file
+load.txt <- function(file) {
+  
+  print("[debug] load.txt")
+  
+  dataName2 <- gsub("([.]xls)|([.]xlsx)", ".txt", dataName)
+  print(paste("Trying", dataName2,"with read.table"))
+  d <- read.table(dataName2, header=T, sep="\t")    
+  d2 <- read.table(dataName2, header=T, sep="\t", check.names=F)    
+  d.names <- as.vector(names(d2))
+  names(d.names) <- names(d)
+  list(d, d.names)
+}
+
+
 #Find name of data file to use for study/assay pair
-findDataFile <- function (sa) {
+find.dFile <- function (sa) {
+  
+  print("[debug] findDataFile")
   
   are.files <- grep("(Raw)|(Derived)|(Processed).Data.File", names(sa), value=T)
   print(paste("Data files: ", toString(are.files)))
@@ -334,7 +444,7 @@ findDataFile <- function (sa) {
   have.same <- function(x) length(unique(x))==1
   are.same <- sapply(sa[are.files][are.full], have.same)
   
-  nSame = length(are.same)
+  nSame = length(sa[are.files][are.full][are.same])
   if ( nSame < 1)
     stop("Among the columns referring to data there are no full columns with all same values")
   if ( nSame > 1)
@@ -352,131 +462,17 @@ setwd(args[1])
 options(stringsAsFactors=FALSE)
 run()
 
+#setwd("C:/Users/hcwi/Desktop/phen-stats/isatab")
+#setwd("C:/Users/hcwi/Desktop/phen/src/test/resources/DataWUR")
+#setwd("C:/Users/hcwi/Desktop/phen/src/test/resources/Phenotyping2")
+#setwd("C:/Users/hcwi/Desktop/phen/src/test/resources/IPGPASData")
+#setwd()
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-analyse <- function (path) {
-  
-  setwd(path)
-  print(path)
-  #TODO return errors when libraries are missing (they do not install on their own unless cran mirror is chosen)
-  barley <- load.data()
-  model <- model.data(barley)
-  means <- calculate.means(barley)
-  save(barley, model, means, file="output/savedObjects.R")
-  fname = "output/stats.txt"
-  write.table(model@fixef, file=fname)
-  fname
-}
-
-load.data <- function () {
-  
-  #LOADING DATA
-  s <- read.table("s_Study1.txt", header=T)
-  a <- read.table("a_study1_phenotyping.txt", header=T)
-  
-  if(!require("gdata")) {install.packages("gdata")}
-  library(gdata)
-  
-  # d <- read.xls("a_study1_processed_data.xlsx", perl="C:/strawberry/perl/bin/perl.exe")
-  # alternative to gdata (which requires perl) is transformation to txt file:
-  d <- read.table("a_study1_processed_data.txt", header=T, sep="\t")
-  
-  sa <- merge(s,a, by="Source.Name", all=T)
-  sad <- merge(sa, d, by="Sample.Name", all=T)
-  
-  sad$Term.Accession.Number <- factor(sad$Term.Accession.Number)
-  sad$Term.Accession.Number.1 <- factor(sad$Term.Accession.Number.1)
-  sad$Term.Accession.Number.2 <- factor(sad$Term.Accession.Number.2)
-  sad$Term.Accession.Number.3 <- factor(sad$Term.Accession.Number.3)
-  sad$Term.Accession.Number.y <- factor(sad$Term.Accession.Number.y)
-  sad$Term.Source.REF.3 <- factor(sad$Term.Source.REF.3)
-  sad$Term.Source.REF.y <- factor(sad$Term.Source.REF.y)
-  sad$Factor.Value.Block. <- factor(sad$Factor.Value.Block.)
-  sad$Raw.Data.File <- factor(sad$Raw.Data.File)
-  
-  sad$Trait.value.Stem.diameter. <- levels(sad$Trait.value.Stem.diameter.)[as.integer(sad$Trait.value.Stem.diameter.)]
-  
-  barley.full <- sad
-  barley <- barley.full[c(1,2,6,14,17,24,25,28)]
-  names(barley) <- c("sample", "source", "infraname", "f.treatment", "f.block", "t.length", "t.colour", "t.stemDiameter")
-  
-  barley
-}
-
-model.data <- function(barley) {
-  
-  #CONSTRUCTING MODEL
-  
-  if(!require("lme4")) {
-    install.packages("lme4")
-  }
-  library(lme4)
-  model <- lmer(t.length~infraname*f.treatment+(1|f.block), barley)
-  #model.coef <- coef(model)
-  
-  model
-}
-
-calculate.means <- function(barley) {
-  
-  #UGLY: CALCULATIING MEANS BY HAND
-  
-  #select factors and phenotype by hand:
-  #what <- "t.stemDiameter"
-  #byWhat <- c("infraname", "f.block")
-  
-  #calculate means for all obs~factor combinations
-  what <- names(barley[sapply(barley, is.numeric)])
-  byWhat <- names(barley[sapply(barley, is.factor)])
-  
-  results <- list()
-  for (j in 1:length(what)) {
-    results[what[j]] <- mean(barley[,what[j]])
-    for (i in 1:length(byWhat)) {
-      mChar <- aggregate(barley[,what[j]]~barley[,byWhat[i]], FUN=mean)
-      sdChar <- aggregate(barley[,what[j]]~barley[,byWhat[i]], FUN=sd)
-      seChar <- aggregate(barley[,what[j]]~barley[,byWhat[i]], FUN=function(x) sd(x)/sqrt(length(x)))
-      vChar <- cbind(mChar,sdChar[2],seChar[2])
-      names(vChar) <- c(byWhat[i], paste(what[j], "mean", sep="."), paste(what[j],"sd", sep="."))
-      results[[paste(what[j],byWhat[i],sep="~")]] <- vChar
-    }
-  }
-  
-  results
-}
-
-#CLEANUP
-#rm("a", "s", "d", "sa", "sad", "i", "j", "what", "byWhat", "seChar", "sdChar", "vChar", "mChar")
-#ls()
-
-#RESULTS
-#results
-#model
-#model.coef
-
-
-#ADDITIONAL 
+# calculate means for all obs~factor combinations
+#   what <- names(barley[sapply(barley, is.numeric)])
+#   byWhat <- names(barley[sapply(barley, is.factor)])
+#   mChar <- aggregate(barley[,what[j]]~barley[,byWhat[i]], FUN=mean)
+# 
 
 #P-VALS
 #if(!require("languageR")) {install.packages("languageR")}
@@ -486,10 +482,3 @@ calculate.means <- function(barley) {
 #NULL MODEL COMPARISION
 #m1.null <- lmer(t.length~1+(1|f.block), barley)
 #anova(m1,m1.null)
-
-#write(c(1:10),file='/output/stats.txt')
-#f <- paste(args[1], '/output/stats.txt', sep='')
-#write(c(1:10),file=f)
-
-#args <- commandArgs(TRUE)
-#analyse(args[1])
