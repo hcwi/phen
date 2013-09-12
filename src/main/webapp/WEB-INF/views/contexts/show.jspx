@@ -9,15 +9,6 @@
             <field:display date="true" dateTimePattern="${context_finished_date_format}" field="finished" id="s_pl_poznan_igr_domain_Context_finished" object="${context}" z="c8Bncl+r5iuOrfuDkVfT1mB86BE="/>
         </c:if>
         <field:display field="status" id="s_pl_poznan_igr_domain_Context_status" object="${context}" z="NwNQsGD7jhnylV6pIW5ddEUtKXc="/>
-        <c:if test="${not empty context.statusMessage}">
-            <field:display field="statusMessage" id="s_pl_poznan_igr_domain_Context_statusMessage" object="${context}" z="w34QKgDmVlcygtuTRvcPgatdBtY="/>
-        </c:if>
-        <field:display field="importSession" id="s_pl_poznan_igr_domain_Context_importSession" object="${context}" z="J/qsmIMXFMtnQZ6kcHapTSYtPqo="/>
-        <field:display field="unzipSession" id="s_pl_poznan_igr_domain_Context_unzipSession" object="${context}" z="91OCJzMbLdsCTgtHBt+kbyaFbwY="/>
-        <c:if test="${not empty context.statsSession}">
-            <field:display field="statsSession" id="s_pl_poznan_igr_domain_Context_statsSession" object="${context}" z="0+xAo4C8eG4YUmpBNrb3nuSK8Do="/>
-        </c:if>
-        <field:display field="zipSession" id="s_pl_poznan_igr_domain_Context_zipSession" object="${context}" z="18XNvCD2ilXjDH4GX7wzjDH3JUU="/>
 		
 		Download:
 		<ul>
@@ -38,5 +29,9 @@
                 </li>
             </c:if>
         </ul>
+        <c:if test="${not empty context.statusMessage}">
+	        <field:display field="statusMessage" id="s_pl_poznan_igr_domain_Context_statusMessage" object="${context}" z="w34QKgDmVlcygtuTRvcPgatdBtY="/>
+        </c:if>
+        
     </page:show>
 </div>

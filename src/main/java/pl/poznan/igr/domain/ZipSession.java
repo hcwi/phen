@@ -33,7 +33,7 @@ public class ZipSession {
 	@NotNull
 	@OneToOne
 	private Context context;
-	
+
 	@ManyToOne(cascade = CascadeType.ALL)
 	private BlobFile blobFile;
 
@@ -43,9 +43,17 @@ public class ZipSession {
 
 	public static ZipSession findZipSessionForContext(Context ctx) {
 		checkNotNull(ctx);
-		Query query = entityManager().createQuery(
-				ZIP_SESSION_FOR_CONTEXT_QUERY);
+		Query query = entityManager()
+				.createQuery(ZIP_SESSION_FOR_CONTEXT_QUERY);
 		query.setParameter("contextId", ctx.getId());
 		return (ZipSession) query.getSingleResult();
 	}
+
+	public String toString() {
+
+		String s = this.getClass() + ": id " + this.getId() + " date "
+				+ this.getCreationDate();
+		return s;
+	}
+
 }

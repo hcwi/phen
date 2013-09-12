@@ -15,10 +15,8 @@ import javax.validation.constraints.NotNull;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
-import org.springframework.roo.addon.tostring.RooToString;
 
 @RooJavaBean
-@RooToString
 @RooJpaActiveRecord
 public class StatsSession {
 
@@ -52,5 +50,12 @@ public class StatsSession {
 				STATS_SESSION_FOR_CONTEXT_QUERY);
 		query.setParameter("contextId", context.getId());
 		return (StatsSession) query.getSingleResult();
+	}
+
+	public String toString() {
+
+		String s = this.getClass() + ": id " + this.getId() + " date "
+				+ this.getCreationDate() + this.getBlobFile().toString();
+		return s;
 	}
 }

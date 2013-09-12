@@ -77,12 +77,4 @@ privileged aspect Context_Roo_JavaBean {
         this.zipSession = zipSession;
     }
     
-    public String Context.getStatusMessage() {
-        return this.statusMessage;
-    }
-    
-    public void Context.setStatusMessage(String statusMessage) {
-        this.statusMessage = statusMessage;
-    }
-    
 }

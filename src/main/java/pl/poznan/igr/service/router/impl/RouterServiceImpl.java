@@ -38,7 +38,11 @@ public class RouterServiceImpl extends ServiceImpl implements RouterService {
 			break;
 		case ANALYSIS_SAVED:
 			zipService.process(ctx);
-			ctx.setStatus(Status.FINISHED);
+			if (ctx.getStatusMessage().length() == 0) {
+				ctx.setStatus(Status.FINISHED);
+			} else {
+				ctx.setStatus(Status.FINISHED_WITH_ERRORS);
+			}
 			ctx.setFinished(new Date());
 			break;
 		default:

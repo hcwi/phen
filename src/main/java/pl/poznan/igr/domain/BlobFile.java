@@ -12,33 +12,40 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.roo.addon.equals.RooEquals;
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
-import org.springframework.roo.addon.tostring.RooToString;
 
 @RooJavaBean
-@RooToString
 @RooJpaActiveRecord
 @RooEquals
 public class BlobFile {
 
-    private String fileName;
+	private String fileName;
 
-    @Lob
-    @Basic(fetch = FetchType.LAZY)
-    private byte[] content;
+	@Lob
+	@Basic(fetch = FetchType.LAZY)
+	private byte[] content;
 
-    private String contentType;
+	private String contentType;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @DateTimeFormat(style = "M-")
-    private Date created;
-    
-    public BlobFile() {
-    	this.setCreated(new Date());
-    }
-    
-    public BlobFile(String name, byte[] content) {
-    	this.setCreated(new Date());
-    	this.setFileName(name);
-    	this.setContent(content);    	
-    }
+	@Temporal(TemporalType.TIMESTAMP)
+	@DateTimeFormat(style = "M-")
+	private Date created;
+
+	public BlobFile() {
+		this.setCreated(new Date());
+	}
+
+	public BlobFile(String name, byte[] content) {
+		this.setCreated(new Date());
+		this.setFileName(name);
+		this.setContent(content);
+	}
+
+	public String toString() {
+
+		String s = this.getClass() + ": id " + this.getId() + " date "
+				+ this.getCreated() + " name " + this.getFileName() + " type "
+				+ this.getContentType();
+		return s;
+	}
+
 }

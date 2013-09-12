@@ -1,8 +1,12 @@
 package pl.poznan.igr.domain;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Vector;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Enumerated;
 import javax.persistence.OneToOne;
 import javax.persistence.Temporal;
@@ -55,9 +59,36 @@ public class Context {
 		this.setStarted(new Date());
 		this.setStatus(Status.NEW);
 		this.setOwner(owner);
+		this.statusMessage = new Vector<String>();
 	}
 
-	private String statusMessage;
+	@Column
+    @ElementCollection(targetClass=String.class)
+	private List<String> statusMessage;
+
+	public void addStatusMessage(String message) {
+		
+		statusMessage.add(message);
+		System.err.println("Update of status message: " + statusMessage.listIterator());
+	}
+
+	public void setStatusMessage(String message) {
+		addStatusMessage(message);
+	}
 	
+	@SuppressWarnings("unused")
+	private void setStatusMessage(List<String> sMessage) {
+		this.statusMessage = sMessage;
+	}
+	
+	public String getStatusMessage() {
+		
+		StringBuilder sb = new StringBuilder();
+		for (String s : this.statusMessage) {
+			sb.append(s);
+			sb.append("\t\n");
+		}
+		return sb.toString();
+	}
 
 }

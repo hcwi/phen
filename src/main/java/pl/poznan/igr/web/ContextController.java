@@ -10,7 +10,7 @@ import pl.poznan.igr.domain.Context;
 
 @RequestMapping("/contexts")
 @Controller
-@RooWebScaffold(path = "contexts", formBackingObject = Context.class, update = false, delete = true, create = false)
+@RooWebScaffold(path = "contexts", formBackingObject = Context.class, update = false)
 public class ContextController {
 	
 	@RequestMapping(value = "/{id}", produces = "text/html")

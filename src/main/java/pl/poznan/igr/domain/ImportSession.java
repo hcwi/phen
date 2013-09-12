@@ -15,10 +15,8 @@ import javax.validation.constraints.NotNull;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.roo.addon.javabean.RooJavaBean;
 import org.springframework.roo.addon.jpa.activerecord.RooJpaActiveRecord;
-import org.springframework.roo.addon.tostring.RooToString;
 
 @RooJavaBean
-@RooToString
 @RooJpaActiveRecord
 public class ImportSession {
 
@@ -30,7 +28,7 @@ public class ImportSession {
 	@DateTimeFormat(style = "M-")
 	private Date creationDate;
 
-	//@NotNull
+	// @NotNull
 	@OneToOne
 	private Context context;
 
@@ -49,5 +47,11 @@ public class ImportSession {
 		query.setParameter("contextId", context.getId());
 		return (ImportSession) query.getSingleResult();
 	}
-	
+
+	public String toString() {
+
+		String s = this.getClass() + ": id " + this.getId() + " date "
+				+ this.getCreationDate();
+		return s;
+	}
 }

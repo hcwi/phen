@@ -32,8 +32,7 @@ public class ApplicationConversionServiceFactoryBean extends
 	public Converter<ImportSession, String> getImportSessionToStringConverter() {
 		return new Converter<ImportSession, String>() {
 			public String convert(ImportSession is) {
-				return new StringBuilder().append(is.getBlobFile().getFileName()).append(' ')
-						.append(is.getCreationDate()).toString();
+				return new StringBuilder().append(is.getBlobFile().getFileName()).toString();
 			}
 		};
 	}

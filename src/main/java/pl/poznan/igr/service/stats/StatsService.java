@@ -8,7 +8,7 @@ public interface StatsService {
 
 	void calculateStats(Context ctx);
 
-	void calculateStats(String fileName) throws IOException, InterruptedException, Exception;
+	void calculateStats(String fileName, Context ctx) throws IOException, InterruptedException, Exception;
 
 	void process(Context ctx);
 
