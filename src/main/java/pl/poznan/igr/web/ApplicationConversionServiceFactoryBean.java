@@ -60,7 +60,7 @@ public class ApplicationConversionServiceFactoryBean extends
 	public Converter<ZipSession, String> getZipSessionToStringConverter() {
 		return new Converter<ZipSession, String>() {
 			public String convert(ZipSession zs) {
-				return new StringBuilder().append(zs.getBlobFile().getFileName()).append(' ')
+				return new StringBuilder().append(zs.getBlobFileEnriched().getFileName()).append(' ').append(zs.getBlobFileReduced().getFileName())
 						.append(zs.getCreationDate()).toString();
 			}
 		};

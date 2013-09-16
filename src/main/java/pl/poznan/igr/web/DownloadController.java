@@ -66,8 +66,8 @@ public class DownloadController {
 		}
 	}
 	
-	@RequestMapping(method = RequestMethod.GET, value = "all/{contextId}")
-	public void downloadZipSessionForContext(@PathVariable Long contextId,
+	@RequestMapping(method = RequestMethod.GET, value = "enriched/{contextId}")
+	public void downloadEnrichedZipSessionForContext(@PathVariable Long contextId,
 			HttpServletResponse response) {
 
 		Context ctx = Context.findContext(contextId);
@@ -75,7 +75,27 @@ public class DownloadController {
 				"No data for context {0}", contextId);
 
 		try {
-			BlobFile blob = zs.getBlobFile();
+			BlobFile blob = zs.getBlobFileEnriched();
+			response.setContentType("plain/text");
+			response.setHeader("Content-Disposition", "attachment; filename="
+					+ blob.getFileName());
+			response.getOutputStream().write(blob.getContent());
+		} catch (IOException e) {
+			log.error("Can't send the file", e);
+			throw new RuntimeException(e);
+		}
+	}
+	
+	@RequestMapping(method = RequestMethod.GET, value = "reduced/{contextId}")
+	public void downloadReducedZipSessionForContext(@PathVariable Long contextId,
+			HttpServletResponse response) {
+
+		Context ctx = Context.findContext(contextId);
+		final ZipSession zs = checkNotNull(ZipSession.findZipSessionForContext(ctx),
+				"No data for context {0}", contextId);
+
+		try {
+			BlobFile blob = zs.getBlobFileReduced();
 			response.setContentType("plain/text");
 			response.setHeader("Content-Disposition", "attachment; filename="
 					+ blob.getFileName());

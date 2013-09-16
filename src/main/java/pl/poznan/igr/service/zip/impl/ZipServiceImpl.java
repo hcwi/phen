@@ -6,6 +6,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Enumeration;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
@@ -41,8 +43,79 @@ public class ZipServiceImpl extends ServiceImpl implements ZipService {
 	@Override
 	@Transactional
 	public void process(Context ctx) {
-		rezipFiles(ctx);
+		rezipFiles2(ctx);
 		routerService.runNext(ctx);
+	}
+
+	@Transactional(propagation = Propagation.REQUIRED)
+	private void rezipFiles2(Context ctx) {
+
+		ZipSession zs = new ZipSession();
+		zs.setContext(ctx);
+		ctx.setZipSession(zs);
+
+		try {
+			String path = ctx.getUnzipSession().getUnzipPath();
+			System.out.println(path);
+			Pattern p = Pattern.compile("(?<=.*)[^/]+$");
+			Matcher m = p.matcher(path);
+
+			if (m.find()) {
+				
+				String dir = m.group(0);
+				String enriched = dir + "_enriched.zip";
+
+				File f = new File(path + "/" + enriched);
+				if (f.exists()) {
+					
+					byte[] content = new byte[100000];
+					ByteArrayOutputStream os = new ByteArrayOutputStream();
+					
+					FileInputStream fis = new FileInputStream(f);
+					int len = fis.read(content);
+					while (len > -1) {
+						os.write(content, 0, len);
+						len = fis.read(content);
+					}
+					fis.close();
+
+					os.close();
+
+					BlobFile blob = new BlobFile(enriched, os.toByteArray());
+					zs.setBlobFileEnriched(blob);
+				}
+				
+
+				String reduced = dir + "_reduced.zip";
+				f = new File(path + "/" + reduced);
+				if (f.exists()) {
+					
+					byte[] content = new byte[100000];
+					ByteArrayOutputStream os = new ByteArrayOutputStream();
+					
+					FileInputStream fis = new FileInputStream(f);
+					int len = fis.read(content);
+					while (len > -1) {
+						os.write(content, 0, len);
+						len = fis.read(content);
+					}
+					fis.close();
+
+					os.close();
+
+					BlobFile blob = new BlobFile(reduced, os.toByteArray());
+					zs.setBlobFileReduced(blob);
+				}
+				
+				log.debug(zs.toString());
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			ctx.setStatus(Status.REZIP_FAILED);
+		}
+
+		ctx.setStatus(Status.REZIPPED);
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
@@ -54,7 +127,7 @@ public class ZipServiceImpl extends ServiceImpl implements ZipService {
 
 			byte[] content = new byte[100000];
 			ByteArrayOutputStream os = new ByteArrayOutputStream();
-			
+
 			FileInputStream fis = new FileInputStream(new File(rezipped));
 			int len = fis.read(content);
 			while (len > -1) {
@@ -62,12 +135,12 @@ public class ZipServiceImpl extends ServiceImpl implements ZipService {
 				len = fis.read(content);
 			}
 			fis.close();
-			
+
 			os.close();
-			
+
 			BlobFile blob = new BlobFile(rezipped, os.toByteArray());
 			ZipSession zs = new ZipSession();
-			zs.setBlobFile(blob);
+			zs.setBlobFileEnriched(blob);
 			zs.setContext(ctx);
 
 			log.debug(zs.toString());

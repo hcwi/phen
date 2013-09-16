@@ -7,4 +7,7 @@
 <definition extends="default" name="contexts/show">
         <put-attribute name="body" value="/WEB-INF/views/contexts/show.jspx"/>
     </definition>
+<definition extends="default" name="contexts/create">
+        <put-attribute name="body" value="/WEB-INF/views/contexts/create.jspx"/>
+    </definition>
 </tiles-definitions>

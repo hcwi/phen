@@ -5,6 +5,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.Test;
@@ -56,5 +58,23 @@ public class ZipServiceIntegrationTest extends AbstractIntegrationTest {
 		log.info("Packed file removed");
 	}
 
+	@Test
+	public void testRZip() {
+		
+		String path = "src/test/resources/Keygene2";
+
+		Pattern p = Pattern.compile("(?<=.*)[^/]+$");
+		Matcher m = p.matcher(path);
+		if (m.find()) {
+			
+			String dir = m.group();
+			String packedAgain = dir + "_enriched.zip"; 
+			log.info(packedAgain);
+						
+			File f = new File(path + "/" + packedAgain);
+			assertTrue("Zip file does not exist.", f.exists());
+		}
+		
+	}
 
 }

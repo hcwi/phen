@@ -83,28 +83,32 @@ load.saFiles <- function(sName, aName) {
   print("[debug] load.saFiles")
   
   print(paste(sName, aName))
-  study <- read.table(sName, header=T, sep='\t')
+  s <- read.table(sName, header=T, sep='\t')
   s.names <- as.vector(names(read.table(sName, header=T, sep="\t", check.names=F)))
-  names(s.names) <- names(study)
+  names(s.names) <- names(s)
   print("[debug]     read.table study")
   
-  assay <- read.table(aName, header=T, sep='\t', fill=T)
+  a <- read.table(aName, header=T, sep='\t', fill=T)
   a.names <- as.vector(names(read.table(aName, header=T, sep='\t', fill=T, check.names=F)))
-  names(a.names) <- names(assay)
+  names(a.names) <- names(a)
   print("[debug]     read.table assay")
   
-  s <<- study
-  a <<- assay  
+  s <<- s
+  a <<- a
   sa.names <- c(s.names, a.names)
-  
-  
-  dupNames <- subset(names(study), match(names(study), names(assay)) > 0)
+    
+  dupNames <- subset(names(s), match(names(s), names(a)) > 0)
   print(paste("Common columns: ", toString(dupNames)))
   dupNames.nontrivial <- grep("(REF)|(Accession.Number)", dupNames, invert=T)
   dupNames <- dupNames[dupNames.nontrivial]
   warning("Parameter all=FALSE, not paired rows will be removed")
-  sa <- merge(study, assay, by=dupNames, all=F)
-  print(paste("Merged by", dupNames))
+  sa <- merge(s, a, by=dupNames, all=F)
+  print(paste("Merged by", paste(dupNames, collapse=", ")))
+  
+  if (dim(sa)[1] == 0) {
+    stop(paste("ERROR: Matching study file", sName, "and assay file", aName, "by columns", paste(dupNames, collapse=", "), 
+               "resulted in an empty set. Check for conflicting values."))
+  }
   
   list(sa, sa.names)
 }
@@ -147,7 +151,7 @@ load.xls <- function(file) {
   
   print("[debug] load.xls")
   
-  if(!require("gdata")) {install.packages("gdata")}
+  if(!require("gdata")) {install.packages("gdata", repos='http://cran.us.r-project.org')}
   library(gdata)
   d <- read.xls(file, perl=PERL)
   d2 <- read.xls(file, perl=PERL, check.names=F)
@@ -211,6 +215,11 @@ get.sad <- function(sa, d) {
   sad <- merge(sa, d, by=dupNames, all=T)
   print(paste("Merged by: ", toString(dupNames)))
   
+  if (dim(sad)[1] == 0) {
+    stop(paste("ERROR: Matching study file", sName, "and assay file", aName, "with data file", d, "by columns", paste(dupNames, collapse=", "), 
+               "resulted in an empty set. Check for conflicting values."))
+  }
+  
   sad
 }
 
@@ -219,8 +228,10 @@ get.sad <- function(sa, d) {
 run <- function() {
   
   print("[debug] run")
-  ENRICHED <<- "enriched"
-  REDUCED <<- "reduced"
+  r <- regexpr(pattern="/[^/]*$", getwd())
+  dir <- substr(getwd(), r[1]+1, r[1]+attr(r, "match.length"))
+  ENRICHED <<- paste(dir, "enriched", sep="_")
+  REDUCED <<- paste(dir, "reduced", sep="_")
   
   if (file.exists("C:/strawberry/perl/bin/perl.exe")) 
     PERL <<- "C:/strawberry/perl/bin/perl.exe"
@@ -232,7 +243,7 @@ run <- function() {
     sFile <- saPairs[i,2]
     aFile <- saPairs[i,3]  
     tmp <- load.saFiles(sFile, aFile)
-    sa <- tmp[[1]]
+    sa <<- tmp[[1]]
     sa.names <- tmp[[2]]
     
     dFile <- find.dFile(sa)
@@ -343,7 +354,7 @@ change.names <- function (means, names) {
 }
 
 # Save results to files
-save.results <- function (sFile, aFile, experiment, means, models) {
+save.results <- function (sFile, aFile, experiment, means, models, elegant=TRUE) {
   
   print("[debug] save.results")
   
@@ -357,6 +368,24 @@ save.results <- function (sFile, aFile, experiment, means, models) {
   save(models, file=rFile)
   print(paste("R objects saved to file:", rFile))
   
+  if (elegant) {
+    drop <- grep(colnames(means), pattern="Formula")    
+    max <- length(colnames(means))
+    
+    rf <- "Factor.Value.Random."
+    emax <- length(colnames(experiment))
+    if (colnames(experiment)[emax] == rf) {
+      col <- grep(colnames(means), pattern=rf)
+      row <- grep(means[,col], pattern="[*]")
+      rmax <- dim(means)[1]
+      means <- rbind(means[1:(row-1),], means[(row+1):rmax,])
+      means <- cbind(Parameter=means[,1:(drop-1)], means[,(drop+1):(col-1)], means[,(col+1):max])
+    }
+    else {
+      means <- cbind(Parameter=means[,1:(drop-1)], means[,(drop+1):max])
+    }
+  }
+    
   statFile <- paste(sFile2, aFile2, "stat.txt", sep="_")
   write.table(means, file=statFile, sep="\t", na="", row.names=F)
   print(paste("Sufficient statistics saved to file: ", statFile))
@@ -654,13 +683,13 @@ prepare.matrices <- function(sad, fixed) {
 prepare.libs <- function() {
   
   if(!require("lme4")) {
-    install.packages("lme4")
+    install.packages("lme4", repos="http://cran.us.r-project.org")
+    library(lme4)
   }
-  library(lme4)
   if(!require("reshape")) {
-    install.packages("reshape")
+    install.packages("reshape", repos="http://cran.us.r-project.org")
+    library(reshape)
   }
-  library(reshape)
 }
 
 # Get traits
@@ -710,11 +739,11 @@ get.random <- function(sad) {
 # Things to do before running in Java
 
 # remove global variables (<<-)
-# change assay file instead of adding "*2.txt"
-
 # uncomment:
 args <- commandArgs(TRUE)
-setwd(args[1])
+if (length(args) > 0) {
+  setwd(args[1])
+}
 
 options(stringsAsFactors=FALSE)
 run()
@@ -724,8 +753,11 @@ run()
 #setwd("C:/Users/hcwi/Desktop/phen/src/test/resources/DataWUR")
 #setwd("C:/Users/hcwi/Desktop/phen/src/test/resources/Phenotyping2")
 #setwd("C:/Users/hcwi/Desktop/phen/src/test/resources/IPGPASData")
-# XXX setwd("C:/Users/hcwi/Desktop/phen/src/test/resources/DataIPK")
+# XXX setwd("C:/Users/hcwi/Desktop/phen/src/test/resources/DataIPK") XXX too big file, very time consuming calculations (30min) with no result
 #setwd("C:/Users/hcwi/Desktop/phen/src/test/resources/DataIPK2")
+# XXx setwd("C:/Users/hcwi/Desktop/phen/src/test/resources/DataINRA") XXX mistake in ISA-TAB structure, Sample column in both s/a with different values
+#setwd("C:/Users/hcwi/Desktop/phen/src/test/resources/DataINRA2")
+#setwd("C:/Users/hcwi/Desktop/phen/src/test/resources/Keygene2")
 
 # calculate means for all obs~factor combinations
 #   what <- names(barley[sapply(barley, is.numeric)])
@@ -734,7 +766,7 @@ run()
 # 
 
 #P-VALS
-#if(!require("languageR")) {install.packages("languageR")}
+#if(!require("languageR")) {install.packages("languageR", repos='http://cran.us.r-project.org')}
 #library(languageR)
 #m1.p <- pvals.fnc(m1)
 

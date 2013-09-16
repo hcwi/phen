@@ -23,15 +23,19 @@
                     <a href="/igr/download/stats/${context.id}">Statistics</a>
                 </li>
             </c:if>
-            <c:if test="${not empty context.zipSession}">
+            <c:if test="${not empty context.zipSession.blobFileEnriched}">
                 <li>
-                    <a href="/igr/download/all/${context.id}">All</a>
+                    <a href="/igr/download/enriched/${context.id}">Enriched dataset</a>
+                </li>
+            </c:if>
+            <c:if test="${not empty context.zipSession.blobFileReduced}">
+                <li>
+                    <a href="/igr/download/reduced/${context.id}">Reduced dataset</a>
                 </li>
             </c:if>
         </ul>
         <c:if test="${not empty context.statusMessage}">
-	        <field:display field="statusMessage" id="s_pl_poznan_igr_domain_Context_statusMessage" object="${context}" z="w34QKgDmVlcygtuTRvcPgatdBtY="/>
+            <field:display field="statusMessage" id="s_pl_poznan_igr_domain_Context_statusMessage" object="${context}" z="w34QKgDmVlcygtuTRvcPgatdBtY="/>
         </c:if>
-        
-    </page:show>
+  </page:show>
 </div>

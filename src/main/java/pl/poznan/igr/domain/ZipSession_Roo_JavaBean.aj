@@ -26,12 +26,20 @@ privileged aspect ZipSession_Roo_JavaBean {
         this.context = context;
     }
     
-    public BlobFile ZipSession.getBlobFile() {
-        return this.blobFile;
+    public BlobFile ZipSession.getBlobFileEnriched() {
+        return this.blobFileEnriched;
     }
     
-    public void ZipSession.setBlobFile(BlobFile blobFile) {
-        this.blobFile = blobFile;
+    public void ZipSession.setBlobFileEnriched(BlobFile blobFileEnriched) {
+        this.blobFileEnriched = blobFileEnriched;
+    }
+    
+    public BlobFile ZipSession.getBlobFileReduced() {
+        return this.blobFileReduced;
+    }
+    
+    public void ZipSession.setBlobFileReduced(BlobFile blobFileReduced) {
+        this.blobFileReduced = blobFileReduced;
     }
     
 }

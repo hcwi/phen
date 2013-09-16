@@ -35,7 +35,10 @@ public class ZipSession {
 	private Context context;
 
 	@ManyToOne(cascade = CascadeType.ALL)
-	private BlobFile blobFile;
+	private BlobFile blobFileEnriched;
+
+	@ManyToOne(cascade = CascadeType.ALL)
+	private BlobFile blobFileReduced;
 
 	public ZipSession() {
 		this.setCreationDate(new Date());
