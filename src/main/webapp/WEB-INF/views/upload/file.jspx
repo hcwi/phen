@@ -7,6 +7,10 @@
 	<jsp:output omit-xml-declaration="yes" />
 	<spring:message code="label_upload_index" htmlEscape="false"
 		var="title" />
+	<spring:message code="label_submit" htmlEscape="false"
+		var="submit" />
+	<spring:message code="label_browse" htmlEscape="false"
+		var="browse" />
 	<util:panel id="title" title="${title}">
 		<spring:message code="application_name" htmlEscape="false"
 			var="app_name" />
@@ -17,9 +21,9 @@
 				<li><strong>Owner</strong></li>
 				<form:input path="owner" />
 				<li><strong>File</strong></li>
-				<form:input path="fileContent" type="file" />
+				<form:input path="fileContent" type="file" accept="archive/*" name="${browse}"/>
 			</ul>
-			<input type="submit" />
+			<input type="submit" value="${submit}"/>
 		</form:form>
 	</util:panel>
 </div>
