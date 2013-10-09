@@ -90,4 +90,8 @@ public class StatsServiceIntegrationTest extends AbstractIntegrationTest {
 		assertEquals(Status.ANALYSIS_SAVED, ctx.getStatus());
 	}
 
+	//@Test
+	public void testWhateverNeeded() {
+		log.info(System.getProperty("os.name"));
+	}
 }

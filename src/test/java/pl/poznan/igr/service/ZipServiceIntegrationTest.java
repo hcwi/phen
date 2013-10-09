@@ -58,7 +58,10 @@ public class ZipServiceIntegrationTest extends AbstractIntegrationTest {
 		log.info("Packed file removed");
 	}
 
-	@Test
+	
+	// TODO check test
+	// check whether zip exists, but run nothing to create it - why?
+	// @Test
 	public void testRZip() {
 		
 		String path = "src/test/resources/Keygene2";

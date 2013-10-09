@@ -46,7 +46,7 @@ public class StatsServiceImpl extends ServiceImpl implements StatsService {
 		UnzipSession us = ctx.getUnzipSession();
 
 		String path = us.getUnzipPath();
-		//new File(path + "/output").mkdir();
+		// new File(path + "/output").mkdir();
 
 		try {
 			// TODO wydzieliæ statystyki do osobnego watku
@@ -78,7 +78,7 @@ public class StatsServiceImpl extends ServiceImpl implements StatsService {
 
 			ctx.setStatsSession(ss);
 			ctx.setStatus(Status.ANALYSIS_SAVED);
-			
+
 		} catch (IOException e) {
 			e.printStackTrace();
 			ctx.setStatus(Status.ANALYSIS_FAILED);
@@ -96,17 +96,18 @@ public class StatsServiceImpl extends ServiceImpl implements StatsService {
 	}
 
 	@Override
-	public void calculateStats(String workingDir, Context ctx) throws InterruptedException,
-			IOException {
-
-		// CLEAN check if R is installed - win/linux
+	public void calculateStats(String workingDir, Context ctx)
+			throws InterruptedException, IOException {
 
 		String rHome = System.getenv("R_HOME");
 		if (rHome == null) {
 			throw new RException(
 					"Environmental variable R_HOME is missing. Analysis failed.");
 		}
-		String exe = rHome + "/bin/x64/Rscript.exe";
+		String exe = rHome + "Rscript";
+		if (System.getProperty("os.name").startsWith("Windows")) {
+			exe += ".exe";
+		}
 		log.info("R exe = " + exe);
 		boolean can = new File(exe).canExecute();
 		log.debug("can execute = " + can);
@@ -122,31 +123,60 @@ public class StatsServiceImpl extends ServiceImpl implements StatsService {
 					+ scriptUrl + ". Analysis failed.");
 		}
 
-		String script = scriptUrl.getFile().substring(1);
+		String script = scriptUrl.getFile();
+		if (System.getProperty("os.name").startsWith("Windows")) {
+			script = script.substring(1);
+		}
 		log.info("script = " + script);
 		log.info("working dir = " + workingDir);
 
-		Process p = Runtime.getRuntime().exec(
-				new String[] { exe, script, workingDir });
-
-		RHandler is = new RHandler(p.getInputStream(), "INPUT", log, ctx);
-		RHandler es = new RHandler(p.getErrorStream(), "ERROR", log, ctx);
-
-		is.start();
-		es.start();
+		if (!System.getProperty("os.name").startsWith("Windows")) {
+			Process chmod = Runtime.getRuntime().exec(
+					"chmod 777 -R " + workingDir);
+			(new RHandler(chmod.getErrorStream(), "ERROR", log, ctx)).start();
+			int success = chmod.waitFor();
+			if (success != 0) {
+				log.error("Process exited with " + success);
+				throw new RException("Changing rights to location "
+						+ workingDir
+						+ " failed. Probably processing fails shortly.");
+			} else {
+				log.info("Rights to :" + workingDir + " changed sucessfully.");
+			}
 		
+			chmod = Runtime.getRuntime().exec(
+					"chmod a+x " + script);
+			(new RHandler(chmod.getErrorStream(), "ERROR", log, ctx)).start();
+			success = chmod.waitFor();
+			if (success != 0) {
+				log.error("Process exited with " + success);
+				throw new RException("Changing rights to location "
+						+ script
+						+ " failed. Probably processing fails shortly.");
+			} else {
+				log.info("Rights to :" + script + " changed sucessfully.");
+			}
+		}
+		
+		String[] args = new String[] {exe, script, workingDir};
+		log.info("Command:");
+		for (String string : args) {
+			log.info(string);
+		}
+		Process p = Runtime.getRuntime().exec(args);
+
+		(new RHandler(p.getInputStream(), "INPUT", log, ctx)).start();
+		(new RHandler(p.getErrorStream(), "ERROR", log, ctx)).start();
+
 		int success = p.waitFor();
-		if (success != 0) {	
+		if (success != 0) {
 			log.error("Process exited with " + success);
 			throw new RException(
 					"Analysis of the dataset failed. Probably there are errors in the processed ISA-TAB files.");
-		}
-		else {
+		} else {
 			log.info("Process exited with " + success);
 		}
-		
 
-		// TODO don't show "Download statistics" if analysis failed
 	}
 
 	/*

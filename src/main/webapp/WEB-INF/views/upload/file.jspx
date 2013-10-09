@@ -21,7 +21,7 @@
 				<li><strong>Owner</strong></li>
 				<form:input path="owner" />
 				<li><strong>File</strong></li>
-				<form:input path="fileContent" type="file" accept="archive/*" name="${browse}"/>
+				<form:input path="fileContent" type="file" accept="archive/*" labelCode="${browse}"/>
 			</ul>
 			<input type="submit" value="${submit}"/>
 		</form:form>

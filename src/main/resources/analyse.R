@@ -122,7 +122,7 @@ load.dFile <- function(dFile) {
   f <- paste(getwd(),dFile, sep="/")
   
   d <- tryCatch({
-    if (grep("xls", dFile)) {
+    if (length(grep("xls", dFile)) > 0) {
       if (exists("PERL"))
         load.xls(f)
       else
@@ -130,7 +130,8 @@ load.dFile <- function(dFile) {
     }
     else {
       print(paste("Loading", dFile, "with read.table"))
-      read.table(dFile, header=T, sep="\t")
+      load.txt(f)
+      #read.table(f, header=T, sep="\t")
     }
   },    
                 error = function(e) {
@@ -161,14 +162,13 @@ load.xls <- function(file) {
 }
 
 # Load data from txt file
-load.txt <- function(file) {
+load.txt <- function(dFile) {
   
   print("[debug] load.txt")
   
-  dataName2 <- gsub("([.]xls)|([.]xlsx)", ".txt", dataName)
-  print(paste("Trying", dataName2,"with read.table"))
-  d <- read.table(dataName2, header=T, sep="\t")
-  d2 <- read.table(dataName2, header=T, sep="\t", check.names=F)    
+  print(paste("Loading", dFile, "with read.table"))
+  d <- read.table(dFile, header=T, sep="\t")
+  d2 <- read.table(dFile, header=T, sep="\t", check.names=F)    
   d.names <- as.vector(names(d2))
   names(d.names) <- names(d)
   list(d, d.names)
@@ -286,7 +286,7 @@ zip.files <- function(remFiles) {
   
   files <- list.files()
   toSave <- setdiff(files, dirs)
-  toSave <- setdiff(toSave, list.files(pattern="([.]zip)|([.]R)"))
+  toSave <- setdiff(toSave, list.files(pattern="([.]zip)|([.]R)|~.*"))
   toSave <- setdiff(toSave, saPairs[,3])
   
   toSave2 <- paste(ENRICHED, sep="/", list.files(ENRICHED))
@@ -683,11 +683,11 @@ prepare.matrices <- function(sad, fixed) {
 prepare.libs <- function() {
   
   if(!require("lme4")) {
-    install.packages("lme4", repos="http://cran.us.r-project.org")
+    install.packages("lme4", repos='http://cran.us.r-project.org')
     library(lme4)
   }
   if(!require("reshape")) {
-    install.packages("reshape", repos="http://cran.us.r-project.org")
+    install.packages("reshape", repos='http://cran.us.r-project.org')
     library(reshape)
   }
 }
@@ -748,6 +748,7 @@ if (length(args) > 0) {
 options(stringsAsFactors=FALSE)
 run()
 
+#setwd("C:/Users/hcwi/Desktop/phenotypingTXT")
 #setwd("C:/Users/hcwi/Desktop/phen-stats/isatab")
 #setwd("C:/Users/hcwi/Desktop/phen-stats/isatab_missing")
 #setwd("C:/Users/hcwi/Desktop/phen/src/test/resources/DataWUR")

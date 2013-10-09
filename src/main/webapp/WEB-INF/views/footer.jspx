@@ -25,13 +25,19 @@
     <c:out value=": "/>
   <util:language label="English" locale="en"/>
     </span>
-  <util:theme/>
+  <!--  <util:theme/> -->
 
-  <spring:url value="/resources/images/springsource-logo.png" var="logo"/>
+  <spring:url value="/resources/images/7th-framework-programme_medium.png" var="logo1"/>
+  <spring:url value="/resources/images/eu_small.png" var="logo2"/>
   <spring:message code="global_sponsored" htmlEscape="false" var="sponsored"/>
   <span>
-    <a href="http://springsource.com" title="${fn:escapeXml(sponsored)}">
-      <img align="right" alt="${fn:escapeXml(sponsored)}" src="${logo}"/>
+  	<c:out value=" | "/>  	
+    <spring:message code="global_sponsored" htmlEscape="false"/>
+    <c:out value=" "/>  	
+    <a href="http://transplantdb.eu" title="${fn:escapeXml(sponsored)}">
+  	  <c:out value="TransPLANT"/>
+  	  <img align="right" alt="${fn:escapeXml(sponsored)}" src="${logo2}" />
+      <img align="right" alt="${fn:escapeXml(sponsored)}" src="${logo1}"/>
     </a>
   </span>
 </div>

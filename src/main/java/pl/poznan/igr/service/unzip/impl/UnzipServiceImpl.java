@@ -147,9 +147,6 @@ public class UnzipServiceImpl extends ServiceImpl implements UnzipService {
 			File file = new File(wd, name);
 			if (name.endsWith("/")) {
 				file.mkdirs();
-				// TODO add stats.txt to ISA_TAB
-				// TODO think what to do with stats.txt file
-				// in this version it gets saved in wd/inDir
 				inDir = name.substring(0, name.length() - 1);
 				continue;
 			}
