@@ -290,13 +290,23 @@ zip.files <- function(remFiles) {
   toSave <- setdiff(toSave, saPairs[,3])
   
   toSave2 <- paste(ENRICHED, sep="/", list.files(ENRICHED))
-  zip(zipfile=paste(ENRICHED, ".zip", sep=""), files=c(toSave, toSave2), flags="a -ep1", zip="rar")
+  if (Sys.info()["sysname"] == "Windows") {
+    zip(zipfile=paste(ENRICHED, ".zip", sep=""), files=c(toSave, toSave2), flags="a -ep1", zip="rar")
+  }
+  else {
+    zip(zipfile=ENRICHED, files=c(toSave, toSave2), flags="-rj", zip="zip")
+  }
   
   if (length(remFiles) > 0) {
     print(paste("        files to remove from", REDUCED, ":", remFiles))
     toSave <- setdiff(toSave, remFiles)
     toSave3 <- paste(REDUCED, sep="/", list.files(REDUCED))
-    zip(zipfile=paste(REDUCED, ".zip", sep=""), files=c(toSave, toSave3), flags="a -ep1", zip="rar")
+    if (Sys.info()["sysname"] == "Windows") {
+      zip(zipfile=paste(REDUCED, ".zip", sep=""), files=c(toSave, toSave3), flags="a -ep1", zip="rar")
+    } 
+    else {
+      zip(zipfile=REDUCED, files=c(toSave, toSave3), flags="-rj", zip="zip")
+    }
   }
   
 }
@@ -500,7 +510,7 @@ get.model.for.trait <- function(trait, sad, results) {
   form <- paste(trait,"~",fixef, ranef, sep="")
   print(paste("Formula:", form))
   
-  model <- lmer(form, sadtf)
+  model <<- lmer(form, sadtf)
   
   # Set variances of random effects
   {
@@ -615,8 +625,8 @@ fill.means.for.fixed <- function(sad, results, model, fixed, trait) {
   fix <- tmp$fix
   xu <- tmp$xu
   
-  x <- unique(model@X)
-  est <- x %*% model@fixef
+  x <- unique(getME(model, "X"))
+  est <- x %*% fixef(model)
   est.cov <- x %*% vcov(model) %*% t(x)
   
   for (i in 1:dim(fix)[1]) {
