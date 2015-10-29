@@ -49,7 +49,7 @@ public class StatsServiceImpl extends ServiceImpl implements StatsService {
 		// new File(path + "/output").mkdir();
 
 		try {
-			// TODO wydzieliæ statystyki do osobnego watku
+			// TODO wydzieliÄ‡ statystyki do osobnego watku
 			// bo sie dlugo wczytuje
 			// dynamiczne stona z lista analiz i odswiezanie stanu
 
