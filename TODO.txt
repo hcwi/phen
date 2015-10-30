@@ -1,2 +1,8 @@
-[v] git branches: develop master
-[ ] generate web
+[ ] get rid of router service
+[ ] simplify interfaces
+[ ] analysis A
+
+
+Long term:
+[ ] file repository
+[ ] persistence / sqlite

@@ -10,3 +10,7 @@ application.log*
 # bin
 bin
 target
+
+# idea
+.idea
+igr.iml

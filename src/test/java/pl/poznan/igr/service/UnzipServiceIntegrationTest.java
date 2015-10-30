@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -45,6 +46,7 @@ public class UnzipServiceIntegrationTest extends AbstractIntegrationTest {
 	 * 
 	 * }
 	 */
+    @Ignore
 	@Test
 	public void testFromContext() {
 

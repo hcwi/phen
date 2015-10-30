@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.io.filefilter.SuffixFileFilter;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -39,6 +40,7 @@ public class StatsServiceIntegrationTest extends AbstractIntegrationTest {
 	public static final String OUT_PATH = "target/output";
 
 	@Test
+    @Ignore
 	public void testCalculateStats() {
 
 		File zip = new File(ZIP_PATH);

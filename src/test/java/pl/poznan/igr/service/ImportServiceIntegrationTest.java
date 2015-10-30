@@ -9,7 +9,6 @@ import java.util.Date;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import pl.poznan.igr.AbstractIntegrationTest;
@@ -18,7 +17,6 @@ import pl.poznan.igr.domain.Context;
 import pl.poznan.igr.domain.ImportSession;
 import pl.poznan.igr.domain.type.Status;
 import pl.poznan.igr.service.impor.ImportService;
-import pl.poznan.igr.service.router.RouterService;
 
 public class ImportServiceIntegrationTest extends AbstractIntegrationTest {
 
@@ -28,9 +26,6 @@ public class ImportServiceIntegrationTest extends AbstractIntegrationTest {
 
 	@Autowired
 	private ImportService importService;
-
-	@Mock
-	private RouterService routerService;
 
 	@Before
 	public void setUp() {
@@ -69,9 +64,6 @@ public class ImportServiceIntegrationTest extends AbstractIntegrationTest {
 
 		ImportSession is = ImportSession.findImportSessionForContext(ctx);
 		assertEquals(session, is);
-
-		routerService.runNext(ctx);
-
 	}
 
 	@Test
@@ -106,9 +98,6 @@ public class ImportServiceIntegrationTest extends AbstractIntegrationTest {
 
 		assertNotNull(is);
 		assertEquals(session, is);
-
-		routerService.runNext(ctx);
-
 	}
 
 }
