@@ -4,11 +4,14 @@
     <jsp:output omit-xml-declaration="yes"/>
     <menu:menu id="_menu" z="nZaf43BjUg1iM0v70HJVEsXDopc=">
         <menu:category id="c_context" z="+5Smb/qAeUpQ+CseJ6nEBdXflnU=">
-            <menu:item id="i_context_list" messageCode="global_menu_list" url="/contexts?page=1&amp;size=${empty param.size ? 10 : param.size}" z="x9dDHiEDqFC5viWNLhTx0aBvcLo="/>
-            <menu:item id="i_context_new" messageCode="global_menu_new" url="/contexts?form" z="9nAVYrmIph0B9E9UOIHsaHEP8KI="/>
-        </menu:category>
-        <menu:category id="c_controller">
-            <menu:item id="i_controller__uploadindex_id" messageCode="global_generic" url="/upload/file" z="user-managed"/>
+            <menu:item id="i_context_list"
+                messageCode="global_menu_list"
+                url="/contexts?page=1&amp;size=${empty param.size ? 10 : param.size}"
+                z="x9dDHiEDqFC5viWNLhTx0aBvcLo="/>
+            <menu:item id="i_controller__uploadindex_id"
+                        messageCode="global_generic"
+                        url="/upload/file"
+                        z="user-managed"/>
         </menu:category>
     </menu:menu>
 </div>

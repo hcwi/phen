@@ -51,7 +51,7 @@ public class UnzipService {
             uz.setContext(context);
 
             context.setUnzipSession(uz);
-            context.setStatus(Status.UNZIPPED);
+            context.setStatus(Status.READY_FOR_ANALYSIS);
 
         } catch (UnzipException e) {
             e.printStackTrace();

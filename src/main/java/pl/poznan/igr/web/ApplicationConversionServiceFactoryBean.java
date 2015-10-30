@@ -7,7 +7,7 @@ import org.springframework.format.FormatterRegistry;
 import org.springframework.format.support.FormattingConversionServiceFactoryBean;
 import pl.poznan.igr.domain.Context;
 import pl.poznan.igr.domain.ImportSession;
-import pl.poznan.igr.domain.StatsSession;
+import pl.poznan.igr.domain.AnalysisASession;
 import pl.poznan.igr.domain.UnzipSession;
 import pl.poznan.igr.domain.ZipSession;
 
@@ -48,9 +48,9 @@ public class ApplicationConversionServiceFactoryBean extends
 	}
 	
 
-	public Converter<StatsSession, String> getStatsSessionToStringConverter() {
-		return new Converter<StatsSession, String>() {
-			public String convert(StatsSession ss) {
+	public Converter<AnalysisASession, String> getStatsSessionToStringConverter() {
+		return new Converter<AnalysisASession, String>() {
+			public String convert(AnalysisASession ss) {
 				return new StringBuilder().append(ss.getBlobFile().getFileName()).append(' ')
 						.append(ss.getCreationDate()).toString();
 			}

@@ -11,16 +11,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import pl.poznan.igr.domain.BlobFile;
 import pl.poznan.igr.domain.Context;
-import pl.poznan.igr.domain.StatsSession;
+import pl.poznan.igr.domain.AnalysisASession;
 import pl.poznan.igr.domain.UnzipSession;
 import pl.poznan.igr.domain.type.Status;
 
 // CLEAN up logging mechanisms: slf4j, log4j, *.jars
 
 @Service
-public class StatsService {
+public class AnalysisAService {
 
-    private final static Logger log = LoggerFactory.getLogger(StatsService.class);
+    private final static Logger log = LoggerFactory.getLogger(AnalysisAService.class);
 
     public void calculateStats(Context ctx) {
 
@@ -53,11 +53,11 @@ public class StatsService {
             blobFile.setContent(content);
             blobFile.setFileName(fname);
 
-            StatsSession ss = new StatsSession();
+            AnalysisASession ss = new AnalysisASession();
             ss.setBlobFile(blobFile);
             ss.setContext(ctx);
 
-            ctx.setStatsSession(ss);
+            ctx.setAnalysisASession(ss);
             ctx.setStatus(Status.ANALYSIS_SAVED);
 
         } catch (IOException e) {

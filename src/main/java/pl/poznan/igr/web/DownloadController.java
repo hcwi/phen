@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import pl.poznan.igr.domain.BlobFile;
 import pl.poznan.igr.domain.Context;
 import pl.poznan.igr.domain.ImportSession;
-import pl.poznan.igr.domain.StatsSession;
+import pl.poznan.igr.domain.AnalysisASession;
 import pl.poznan.igr.domain.ZipSession;
 
 @RequestMapping("/download/**")
@@ -31,7 +31,7 @@ public class DownloadController {
 			HttpServletResponse response) {
 
 		Context ctx = Context.findContext(contextId);
-		final StatsSession ss = checkNotNull(StatsSession.findStatsSessionForContext(ctx),
+		final AnalysisASession ss = checkNotNull(AnalysisASession.findStatsSessionForContext(ctx),
 				"No zip for context {0}", contextId);
 		
 		try {

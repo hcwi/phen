@@ -17,7 +17,7 @@ import org.springframework.web.util.UriUtils;
 import org.springframework.web.util.WebUtils;
 import pl.poznan.igr.domain.Context;
 import pl.poznan.igr.domain.ImportSession;
-import pl.poznan.igr.domain.StatsSession;
+import pl.poznan.igr.domain.AnalysisASession;
 import pl.poznan.igr.domain.UnzipSession;
 import pl.poznan.igr.domain.ZipSession;
 import pl.poznan.igr.domain.type.Status;
@@ -88,7 +88,7 @@ public class ContextController {
         uiModel.addAttribute("context", context);
         addDateTimeFormatPatterns(uiModel);
         uiModel.addAttribute("importsessions", ImportSession.findAllImportSessions());
-        uiModel.addAttribute("statssessions", StatsSession.findAllStatsSessions());
+        uiModel.addAttribute("statssessions", AnalysisASession.findAllStatsSessions());
         uiModel.addAttribute("unzipsessions", UnzipSession.findAllUnzipSessions());
         uiModel.addAttribute("zipsessions", ZipSession.findAllZipSessions());
         uiModel.addAttribute("statuses", Arrays.asList(Status.values()));

@@ -20,7 +20,7 @@ public class StatsSessionDataOnDemand {
 
 	private Random rnd = new SecureRandom();
 
-	private List<StatsSession> data;
+	private List<AnalysisASession> data;
 
 	@Autowired
     BlobFileDataOnDemand blobFileDataOnDemand;
@@ -28,24 +28,24 @@ public class StatsSessionDataOnDemand {
 	@Autowired
     ContextDataOnDemand contextDataOnDemand;
 
-	public StatsSession getNewTransientStatsSession(int index) {
-        StatsSession obj = new StatsSession();
+	public AnalysisASession getNewTransientStatsSession(int index) {
+        AnalysisASession obj = new AnalysisASession();
         setContext(obj, index);
         setCreationDate(obj, index);
         return obj;
     }
 
-	public void setContext(StatsSession obj, int index) {
+	public void setContext(AnalysisASession obj, int index) {
         Context context = contextDataOnDemand.getSpecificContext(index);
         obj.setContext(context);
     }
 
-	public void setCreationDate(StatsSession obj, int index) {
+	public void setCreationDate(AnalysisASession obj, int index) {
         Date creationDate = new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.MONTH), Calendar.getInstance().get(Calendar.DAY_OF_MONTH), Calendar.getInstance().get(Calendar.HOUR_OF_DAY), Calendar.getInstance().get(Calendar.MINUTE), Calendar.getInstance().get(Calendar.SECOND) + new Double(Math.random() * 1000).intValue()).getTime();
         obj.setCreationDate(creationDate);
     }
 
-	public StatsSession getSpecificStatsSession(int index) {
+	public AnalysisASession getSpecificStatsSession(int index) {
         init();
         if (index < 0) {
             index = 0;
@@ -53,26 +53,26 @@ public class StatsSessionDataOnDemand {
         if (index > (data.size() - 1)) {
             index = data.size() - 1;
         }
-        StatsSession obj = data.get(index);
+        AnalysisASession obj = data.get(index);
         Long id = obj.getId();
-        return StatsSession.findStatsSession(id);
+        return AnalysisASession.findStatsSession(id);
     }
 
-	public StatsSession getRandomStatsSession() {
+	public AnalysisASession getRandomStatsSession() {
         init();
-        StatsSession obj = data.get(rnd.nextInt(data.size()));
+        AnalysisASession obj = data.get(rnd.nextInt(data.size()));
         Long id = obj.getId();
-        return StatsSession.findStatsSession(id);
+        return AnalysisASession.findStatsSession(id);
     }
 
-	public boolean modifyStatsSession(StatsSession obj) {
+	public boolean modifyStatsSession(AnalysisASession obj) {
         return false;
     }
 
 	public void init() {
         int from = 0;
         int to = 10;
-        data = StatsSession.findStatsSessionEntries(from, to);
+        data = AnalysisASession.findStatsSessionEntries(from, to);
         if (data == null) {
             throw new IllegalStateException("Find entries implementation for 'StatsSession' illegally returned null");
         }
@@ -80,9 +80,9 @@ public class StatsSessionDataOnDemand {
             return;
         }
         
-        data = new ArrayList<StatsSession>();
+        data = new ArrayList<AnalysisASession>();
         for (int i = 0; i < 10; i++) {
-            StatsSession obj = getNewTransientStatsSession(i);
+            AnalysisASession obj = getNewTransientStatsSession(i);
             try {
                 obj.persist();
             } catch (final ConstraintViolationException e) {
