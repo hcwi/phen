@@ -121,6 +121,10 @@ public class SufficientStatisticsSession {
         this.status = status;
     }
 
+    public boolean isError() {
+        return status != null && status.equals(AnalysisStatus.ERROR);
+    }
+
     @PersistenceContext
     transient EntityManager entityManager;
 

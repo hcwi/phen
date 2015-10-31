@@ -106,28 +106,52 @@
 
             <spring:url value="/analysis/time_series_analysis/context/${itemId}" var="timeSeriesAnalysisUrl" htmlEscape="true"/>
               <td class="utilbox">
-                  <a href="${timeSeriesAnalysisUrl}" alt="Do Time Series Analysis" title="Do Time Series Analysis">
-                      <img class="image" alt="Do Time Series Analysis" src="/igr/resources/images/update.png"
-                           title="Do Time Series Analysis" />
-                  </a>
+
+
+                  <c:if test="${not empty item.FDAnalysisSession}">
+                      ${item.FDAnalysisSession.status}
+                  </c:if>
+
+                  <c:if test="${empty item.FDAnalysisSession}">
+                      NOT DONE
+
+                      <a href="${timeSeriesAnalysisUrl}" alt="Do Time Series Analysis" title="Do Time Series Analysis">
+                          <img class="image" alt="Do Time Series Analysis" src="/igr/resources/images/update.png"
+                               title="Do Time Series Analysis" />
+                      </a>
+                  </c:if>
               </td>
 
             <spring:url value="/analysis/sufficient_statistics/context/${itemId}" var="sufficientStatisticsUrl" htmlEscape="true"/>
             <td class="utilbox">
-                <a href="${sufficientStatisticsUrl}" alt="Do Sufficient Statistics" title="Do Sufficient Statistics">
-                    <img class="image" alt="Do Sufficient Statistics"
-                         src="/igr/resources/images/update.png"
-                         title="Do Sufficient Statistics" />
-                </a>
+                <c:if test="${not empty item.sufficientStatisticsSession}">
+                    ${item.sufficientStatisticsSession.status}
+                </c:if>
+                <c:if test="${empty item.sufficientStatisticsSession}">
+                    NOT DONE
+
+                    <a href="${sufficientStatisticsUrl}" alt="Do Sufficient Statistics" title="Do Sufficient Statistics">
+                        <img class="image" alt="Do Sufficient Statistics"
+                             src="/igr/resources/images/update.png"
+                             title="Do Sufficient Statistics" />
+                    </a>
+                </c:if>
             </td>
 
             <spring:url value="/analysis/estimation_of_effects/context/${itemId}" var="estimationOfEffectsUrl" htmlEscape="true"/>
             <td class="utilbox">
-                <a href="${estimationOfEffectsUrl}" alt="Do Estimation of Effects" title="Do Estimation of Effects">
-                    <img class="image" alt="Do Sufficient Statistics Analysis"
-                         src="/igr/resources/images/update.png"
-                         title="Do Estimation of Effects" />
-                </a>
+                <c:if test="${not empty item.lme4ModelSession}">
+                    ${item.lme4ModelSession.status}
+                </c:if>
+                <c:if test="${empty item.lme4ModelSession}">
+                    NOT DONE
+
+                    <a href="${estimationOfEffectsUrl}" alt="Do Estimation of Effects" title="Do Estimation of Effects">
+                        <img class="image" alt="Do Sufficient Statistics Analysis"
+                             src="/igr/resources/images/update.png"
+                             title="Do Estimation of Effects" />
+                    </a>
+                </c:if>
             </td>
 
           <td class="utilbox">

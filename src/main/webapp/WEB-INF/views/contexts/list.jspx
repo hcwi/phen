@@ -8,7 +8,6 @@
             <table:column id="c_pl_poznan_igr_domain_Context_status" property="status" z="FnGgy14YSzLHxJvA/+8NQnB1z3o="/>
             <table:column id="c_pl_poznan_igr_domain_Context_importSession" property="importSession" z="ZYljPxqJmSZ98VgkGP+UKCCvAEQ="/>
             <table:column date="true" dateTimePattern="${context_started_date_format}" id="c_pl_poznan_igr_domain_Context_started" property="started" z="1BjVoO9OqSVEknoxxh3ivx3RKEs="/>
-            <table:column id="c_pl_poznan_igr_domain_Context_statusMessage" property="statusMessage" z="/dU5pC8VEV8L33hMGuEBvPJdbzk="/>
         </table:ctxTable>
     </page:list>
 </div>

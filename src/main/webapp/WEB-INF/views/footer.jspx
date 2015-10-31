@@ -18,13 +18,6 @@
       </a>
     </span>
   </c:if>
-
-  <span id="language">
-    <c:out value=" | "/>
-    <spring:message code="global_language"/>
-    <c:out value=": "/>
-  <util:language label="English" locale="en"/>
-    </span>
   <!--  <util:theme/> -->
 
   <spring:url value="/resources/images/7th-framework-programme_medium.png" var="logo1"/>

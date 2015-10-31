@@ -2,6 +2,7 @@
 <div xmlns:c="http://java.sun.com/jsp/jstl/core"
     xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields"
     xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:spring="http://www.springframework.org/tags"
     xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
@@ -18,27 +19,71 @@
 		    <li><b>Time Series Analysis</b>
 		        <c:if test="${not empty context.FDAnalysisSession}">
 		            ${context.FDAnalysisSession.status}
+
+		            <c:if test="${context.FDAnalysisSession.error}">
+		                ${context.FDAnalysisSession.message}
+		            </c:if>
+
 		        </c:if>
 		        <c:if test="${empty context.FDAnalysisSession}">
-                	NOT DONE
+
+                    NOT DONE
+
+		            <spring:url value="/analysis/time_series_analysis/context/${itemId}" var="timeSeriesAnalysisUrl" htmlEscape="true"/>
+                    <td class="utilbox">
+                        <a href="${timeSeriesAnalysisUrl}" alt="Do Time Series Analysis" title="Do Time Series Analysis">
+                            <img class="image" alt="Do Time Series Analysis" src="/igr/resources/images/update.png"
+                               title="Do Time Series Analysis" />
+                        </a>
+                    </td>
                 </c:if>
 		    </li>
 
 		    <li><b>Sufficient Statistics</b>
                 	<c:if test="${not empty context.sufficientStatisticsSession}">
                         ${context.sufficientStatisticsSession.status}
+
+                        <c:if test="${context.sufficientStatisticsSession.error }">
+                            ${context.sufficientStatisticsSession.message}
+                        </c:if>
+
                     </c:if>
                     <c:if test="${empty context.sufficientStatisticsSession}">
+
                         NOT DONE
+
+                        <spring:url value="/analysis/sufficient_statistics/context/${itemId}" var="sufficientStatisticsUrl" htmlEscape="true"/>
+                        <td class="utilbox">
+                            <a href="${sufficientStatisticsUrl}" alt="Do Sufficient Statistics" title="Do Sufficient Statistics">
+                                <img class="image" alt="Do Sufficient Statistics"
+                                     src="/igr/resources/images/update.png"
+                                     title="Do Sufficient Statistics" />
+                            </a>
+                        </td>
                     </c:if>
 		    </li>
 
 		    <li><b>Estimation of Effects</b>
                 	<c:if test="${not empty context.lme4ModelSession}">
                         ${context.lme4ModelSession.status}
+
+                        <c:if test="${context.lme4ModelSession.error }">
+                            ${context.lme4ModelSession.message}
+                        </c:if>
+
                     </c:if>
                     <c:if test="${empty context.lme4ModelSession}">
+
                         NOT DONE
+
+                        <spring:url value="/analysis/estimation_of_effects/context/${itemId}" var="estimationOfEffectsUrl" htmlEscape="true"/>
+                        <td class="utilbox">
+                            <a href="${estimationOfEffectsUrl}" alt="Do Estimation of Effects" title="Do Estimation of Effects">
+                                <img class="image" alt="Do Sufficient Statistics Analysis"
+                                     src="/igr/resources/images/update.png"
+                                     title="Do Estimation of Effects" />
+                            </a>
+                        </td>
                     </c:if>
 		    </li>
 		</ul>
