@@ -56,9 +56,9 @@
               <spring:eval var="colCounter" expression="colCounter  + 1" />
             </th>
           </c:forTokens>
-          <th>Analysis A</th>
+          <th>Time Series Analysis</th>
           <th>Sufficient Statistics</th>
-          <th>Analysis C</th>
+          <th>Estimation of Effects</th>
           <spring:eval var="colCounter" expression="colCounter  + 3" />
           <th></th>
           <c:if test="${update}">
@@ -113,14 +113,21 @@
 
             <spring:url value="/analysis/sufficient_statistics/context/${itemId}" var="sufficientStatisticsUrl" htmlEscape="true"/>
             <td class="utilbox">
-                <a href="${sufficientStatisticsUrl}" alt="Do Sufficient Statistics Analysis" title="Do Sufficient Statistics Analysis">
-                    <img class="image" alt="Do Sufficient Statistics Analysis"
+                <a href="${sufficientStatisticsUrl}" alt="Do Sufficient Statistics" title="Do Sufficient Statistics">
+                    <img class="image" alt="Do Sufficient Statistics"
                          src="/igr/resources/images/update.png"
-                         title="Do Sufficient Statistics Analysis" />
+                         title="Do Sufficient Statistics" />
                 </a>
             </td>
 
-            <td>X</td>
+            <spring:url value="/analysis/estimation_of_effects/context/${itemId}" var="estimationOfEffectsUrl" htmlEscape="true"/>
+            <td class="utilbox">
+                <a href="${estimationOfEffectsUrl}" alt="Do Estimation of Effects" title="Do Estimation of Effects">
+                    <img class="image" alt="Do Sufficient Statistics Analysis"
+                         src="/igr/resources/images/update.png"
+                         title="Do Estimation of Effects" />
+                </a>
+            </td>
 
           <td class="utilbox">
             <spring:url value="${path}/${itemId}" var="show_form_url" />

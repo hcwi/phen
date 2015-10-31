@@ -24,7 +24,7 @@
                 </c:if>
 		    </li>
 
-		    <li><b>Sufficient statistics</b>
+		    <li><b>Sufficient Statistics</b>
                 	<c:if test="${not empty context.sufficientStatisticsSession}">
                         ${context.sufficientStatisticsSession.status}
                     </c:if>
@@ -33,8 +33,13 @@
                     </c:if>
 		    </li>
 
-		    <li><b>Analysis C</b>
-                    NOT DONE
+		    <li><b>Estimation of Effects</b>
+                	<c:if test="${not empty context.lme4ModelSession}">
+                        ${context.lme4ModelSession.status}
+                    </c:if>
+                    <c:if test="${empty context.lme4ModelSession}">
+                        NOT DONE
+                    </c:if>
 		    </li>
 		</ul>
 
