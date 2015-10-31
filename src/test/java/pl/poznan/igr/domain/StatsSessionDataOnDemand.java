@@ -13,6 +13,7 @@ import javax.validation.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.stereotype.Component;
+import pl.poznan.igr.domain.analysis.AnalysisASession;
 
 @Component
 @Configurable

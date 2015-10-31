@@ -28,6 +28,8 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.transaction.annotation.Transactional;
+import pl.poznan.igr.domain.analysis.AnalysisASession;
+import pl.poznan.igr.domain.analysis.SufficientStatisticsSession;
 import pl.poznan.igr.domain.type.Status;
 
 @Entity
@@ -57,6 +59,9 @@ public class Context {
 
 	@OneToOne(mappedBy = "context", cascade = CascadeType.ALL)
 	private AnalysisASession analysisASession;
+
+    @OneToOne(mappedBy = "context", cascade = CascadeType.ALL)
+    private SufficientStatisticsSession sufficientStatisticsSession;
 
 	@OneToOne(mappedBy = "context", cascade = CascadeType.ALL)
 	private ZipSession zipSession;
@@ -110,7 +115,8 @@ public class Context {
 	@PersistenceContext
     transient EntityManager entityManager;
 
-	public static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("owner", "started", "finished", "status", "importSession", "unzipSession", "analysisASession", "zipSession", "statusMessage", "resultFile");
+	public static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("owner", "started", "finished", "status", "importSession", "unzipSession", "analysisASession",
+            "sufficientStatisticsSession", "zipSession", "statusMessage", "resultFile");
 
 	public static final EntityManager entityManager() {
         EntityManager em = new Context().entityManager;
@@ -238,6 +244,7 @@ public class Context {
                 .append(owner, rhs.owner)
                 .append(started, rhs.started)
                 .append(analysisASession, rhs.analysisASession)
+                .append(sufficientStatisticsSession, rhs.sufficientStatisticsSession)
                 .append(status, rhs.status)
                 .append(unzipSession, rhs.unzipSession)
                 .append(zipSession, rhs.zipSession)
@@ -253,6 +260,7 @@ public class Context {
                 .append(owner)
                 .append(started)
                 .append(analysisASession)
+                .append(sufficientStatisticsSession)
                 .append(status)
                 .append(unzipSession)
                 .append(zipSession)
@@ -316,7 +324,15 @@ public class Context {
         this.analysisASession = analysisASession;
     }
 
-	public ZipSession getZipSession() {
+    public SufficientStatisticsSession getSufficientStatisticsSession() {
+        return sufficientStatisticsSession;
+    }
+
+    public void setSufficientStatisticsSession(SufficientStatisticsSession sufficientStatisticsSession) {
+        this.sufficientStatisticsSession = sufficientStatisticsSession;
+    }
+
+    public ZipSession getZipSession() {
         return this.zipSession;
     }
 

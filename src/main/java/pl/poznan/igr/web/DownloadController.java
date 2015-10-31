@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import pl.poznan.igr.domain.BlobFile;
 import pl.poznan.igr.domain.Context;
 import pl.poznan.igr.domain.ImportSession;
-import pl.poznan.igr.domain.AnalysisASession;
 import pl.poznan.igr.domain.ZipSession;
 
 @RequestMapping("/download/**")

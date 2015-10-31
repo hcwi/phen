@@ -1,10 +1,9 @@
-package pl.poznan.igr.domain;
+package pl.poznan.igr.domain.analysis;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.util.Date;
 import java.util.List;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
@@ -12,7 +11,6 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -23,8 +21,7 @@ import javax.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.transaction.annotation.Transactional;
-import pl.poznan.igr.domain.type.AnalysisStatus;
-import pl.poznan.igr.domain.type.Status;
+import pl.poznan.igr.domain.Context;
 
 @Entity
 @Configurable

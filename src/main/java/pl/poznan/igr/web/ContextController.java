@@ -17,7 +17,7 @@ import org.springframework.web.util.UriUtils;
 import org.springframework.web.util.WebUtils;
 import pl.poznan.igr.domain.Context;
 import pl.poznan.igr.domain.ImportSession;
-import pl.poznan.igr.domain.AnalysisASession;
+import pl.poznan.igr.domain.analysis.AnalysisASession;
 import pl.poznan.igr.domain.UnzipSession;
 import pl.poznan.igr.domain.ZipSession;
 import pl.poznan.igr.domain.type.Status;

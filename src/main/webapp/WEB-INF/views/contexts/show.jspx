@@ -24,8 +24,13 @@
                 </c:if>
 		    </li>
 
-		    <li><b>Analysis B</b>
-                	NOT DONE
+		    <li><b>Sufficient statistics</b>
+                	<c:if test="${not empty context.sufficientStatisticsSession}">
+                        ${context.sufficientStatisticsSession.status}
+                    </c:if>
+                    <c:if test="${empty context.sufficientStatisticsSession}">
+                        NOT DONE
+                    </c:if>
 		    </li>
 
 		    <li><b>Analysis C</b>

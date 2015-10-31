@@ -57,7 +57,7 @@
             </th>
           </c:forTokens>
           <th>Analysis A</th>
-          <th>Analysis B</th>
+          <th>Sufficient Statistics</th>
           <th>Analysis C</th>
           <spring:eval var="colCounter" expression="colCounter  + 3" />
           <th></th>
@@ -111,8 +111,16 @@
                   </a>
               </td>
 
-          <td>X</td>
-          <td>X</td>
+            <spring:url value="/analysis/sufficient_statistics/context/${itemId}" var="sufficientStatisticsUrl" htmlEscape="true"/>
+            <td class="utilbox">
+                <a href="${sufficientStatisticsUrl}" alt="Do Sufficient Statistics Analysis" title="Do Sufficient Statistics Analysis">
+                    <img class="image" alt="Do Sufficient Statistics Analysis"
+                         src="/igr/resources/images/update.png"
+                         title="Do Sufficient Statistics Analysis" />
+                </a>
+            </td>
+
+            <td>X</td>
 
           <td class="utilbox">
             <spring:url value="${path}/${itemId}" var="show_form_url" />
