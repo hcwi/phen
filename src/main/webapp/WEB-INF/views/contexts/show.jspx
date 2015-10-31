@@ -15,11 +15,11 @@
 
 		<h3>Analysis</h3>
 		<ul>
-		    <li><b>Analysis A</b>
-		        <c:if test="${not empty context.analysisASession}">
-		            ${context.analysisASession.status}
+		    <li><b>Time Series Analysis</b>
+		        <c:if test="${not empty context.FDAnalysisSession}">
+		            ${context.FDAnalysisSession.status}
 		        </c:if>
-		        <c:if test="${empty context.analysisASession}">
+		        <c:if test="${empty context.FDAnalysisSession}">
                 	NOT DONE
                 </c:if>
 		    </li>

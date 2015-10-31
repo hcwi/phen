@@ -1,26 +1,19 @@
 package pl.poznan.igr.service.stats;
 
-import com.google.common.io.Files;
-import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import pl.poznan.igr.domain.BlobFile;
 import pl.poznan.igr.domain.Context;
 import pl.poznan.igr.domain.UnzipSession;
-import pl.poznan.igr.domain.analysis.AnalysisASession;
 import pl.poznan.igr.domain.analysis.AnalysisStatus;
 import pl.poznan.igr.domain.analysis.SufficientStatisticsSession;
-import pl.poznan.igr.domain.type.Status;
 import pl.poznan.igr.service.stats.r.ScriptRunner;
 import pl.poznan.igr.service.stats.r.ScriptStatus;
 
 import java.io.File;
-import java.io.IOException;
-import java.net.URL;
 
 @Service
 public class SufficientStatisticsService {

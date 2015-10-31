@@ -1,4 +1,4 @@
-package pl.poznan.igr.service;
+package pl.poznan.igr.service.stats;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

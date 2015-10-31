@@ -104,10 +104,11 @@
           <c:set var="itemId"><spring:eval expression="item[typeIdFieldName]"/></c:set>
 
 
-            <spring:url value="/analysis/a/context/${itemId}" var="analysisAUrl" htmlEscape="true"/>
+            <spring:url value="/analysis/time_series_analysis/context/${itemId}" var="timeSeriesAnalysisUrl" htmlEscape="true"/>
               <td class="utilbox">
-                  <a href="${analysisAUrl}" alt="Do Analysis" title="Do Analysis">
-                      <img class="image" alt="Do Analysis" src="/igr/resources/images/update.png" title="Do Analysis" />
+                  <a href="${timeSeriesAnalysisUrl}" alt="Do Time Series Analysis" title="Do Time Series Analysis">
+                      <img class="image" alt="Do Time Series Analysis" src="/igr/resources/images/update.png"
+                           title="Do Time Series Analysis" />
                   </a>
               </td>
 

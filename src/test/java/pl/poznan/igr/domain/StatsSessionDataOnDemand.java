@@ -13,7 +13,7 @@ import javax.validation.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.stereotype.Component;
-import pl.poznan.igr.domain.analysis.AnalysisASession;
+import pl.poznan.igr.domain.analysis.FDAnalysisSession;
 
 @Component
 @Configurable
@@ -21,7 +21,7 @@ public class StatsSessionDataOnDemand {
 
 	private Random rnd = new SecureRandom();
 
-	private List<AnalysisASession> data;
+	private List<FDAnalysisSession> data;
 
 	@Autowired
     BlobFileDataOnDemand blobFileDataOnDemand;
@@ -29,24 +29,24 @@ public class StatsSessionDataOnDemand {
 	@Autowired
     ContextDataOnDemand contextDataOnDemand;
 
-	public AnalysisASession getNewTransientStatsSession(int index) {
-        AnalysisASession obj = new AnalysisASession();
+	public FDAnalysisSession getNewTransientStatsSession(int index) {
+        FDAnalysisSession obj = new FDAnalysisSession();
         setContext(obj, index);
         setCreationDate(obj, index);
         return obj;
     }
 
-	public void setContext(AnalysisASession obj, int index) {
+	public void setContext(FDAnalysisSession obj, int index) {
         Context context = contextDataOnDemand.getSpecificContext(index);
         obj.setContext(context);
     }
 
-	public void setCreationDate(AnalysisASession obj, int index) {
+	public void setCreationDate(FDAnalysisSession obj, int index) {
         Date creationDate = new GregorianCalendar(Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.MONTH), Calendar.getInstance().get(Calendar.DAY_OF_MONTH), Calendar.getInstance().get(Calendar.HOUR_OF_DAY), Calendar.getInstance().get(Calendar.MINUTE), Calendar.getInstance().get(Calendar.SECOND) + new Double(Math.random() * 1000).intValue()).getTime();
         obj.setCreationDate(creationDate);
     }
 
-	public AnalysisASession getSpecificStatsSession(int index) {
+	public FDAnalysisSession getSpecificStatsSession(int index) {
         init();
         if (index < 0) {
             index = 0;
@@ -54,26 +54,26 @@ public class StatsSessionDataOnDemand {
         if (index > (data.size() - 1)) {
             index = data.size() - 1;
         }
-        AnalysisASession obj = data.get(index);
+        FDAnalysisSession obj = data.get(index);
         Long id = obj.getId();
-        return AnalysisASession.findStatsSession(id);
+        return FDAnalysisSession.findStatsSession(id);
     }
 
-	public AnalysisASession getRandomStatsSession() {
+	public FDAnalysisSession getRandomStatsSession() {
         init();
-        AnalysisASession obj = data.get(rnd.nextInt(data.size()));
+        FDAnalysisSession obj = data.get(rnd.nextInt(data.size()));
         Long id = obj.getId();
-        return AnalysisASession.findStatsSession(id);
+        return FDAnalysisSession.findStatsSession(id);
     }
 
-	public boolean modifyStatsSession(AnalysisASession obj) {
+	public boolean modifyStatsSession(FDAnalysisSession obj) {
         return false;
     }
 
 	public void init() {
         int from = 0;
         int to = 10;
-        data = AnalysisASession.findStatsSessionEntries(from, to);
+        data = FDAnalysisSession.findStatsSessionEntries(from, to);
         if (data == null) {
             throw new IllegalStateException("Find entries implementation for 'StatsSession' illegally returned null");
         }
@@ -81,9 +81,9 @@ public class StatsSessionDataOnDemand {
             return;
         }
         
-        data = new ArrayList<AnalysisASession>();
+        data = new ArrayList<FDAnalysisSession>();
         for (int i = 0; i < 10; i++) {
-            AnalysisASession obj = getNewTransientStatsSession(i);
+            FDAnalysisSession obj = getNewTransientStatsSession(i);
             try {
                 obj.persist();
             } catch (final ConstraintViolationException e) {

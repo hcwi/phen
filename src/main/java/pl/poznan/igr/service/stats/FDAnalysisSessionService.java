@@ -14,7 +14,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import pl.poznan.igr.domain.BlobFile;
 import pl.poznan.igr.domain.Context;
-import pl.poznan.igr.domain.analysis.AnalysisASession;
+import pl.poznan.igr.domain.analysis.FDAnalysisSession;
 import pl.poznan.igr.domain.UnzipSession;
 import pl.poznan.igr.domain.analysis.AnalysisStatus;
 import pl.poznan.igr.domain.type.Status;
@@ -24,9 +24,9 @@ import pl.poznan.igr.service.stats.r.ScriptStatus;
 // CLEAN up logging mechanisms: slf4j, log4j, *.jars
 
 @Service
-public class AnalysisAService {
+public class FDAnalysisSessionService {
 
-    private final static Logger log = LoggerFactory.getLogger(AnalysisAService.class);
+    private final static Logger log = LoggerFactory.getLogger(FDAnalysisSessionService.class);
 
 
     @Autowired
@@ -43,26 +43,26 @@ public class AnalysisAService {
             ScriptStatus status = scriptRunner.run("a", new File(path));
             if (status.errorMessage.isPresent()) {
                 log.debug("Error analysing " + ctx + ": " + status.errorMessage);
-                ctx.getAnalysisASession().setStatus(AnalysisStatus.ERROR);
-                ctx.getAnalysisASession().setMessage(status.errorMessage.get());
+                ctx.getFDAnalysisSession().setStatus(AnalysisStatus.ERROR);
+                ctx.getFDAnalysisSession().setMessage(status.errorMessage.get());
             } else {
                 log.debug("Done analysing of " + ctx );
-                ctx.getAnalysisASession().setStatus(AnalysisStatus.DONE);
+                ctx.getFDAnalysisSession().setStatus(AnalysisStatus.DONE);
                 ctx.setResultFile(ctx.getImportSession().getBlobFile()); // TODO: reupload new file
             }
         }
     }
 
     private boolean canProceed(Context ctx) {
-        if (ctx.getAnalysisASession() == null) {
+        if (ctx.getFDAnalysisSession() == null) {
             return true;
         }
 
-        if (ctx.getAnalysisASession().getStatus() == null) {
+        if (ctx.getFDAnalysisSession().getStatus() == null) {
             return true;
         }
 
-        if (ctx.getAnalysisASession().getStatus() == AnalysisStatus.ERROR) {
+        if (ctx.getFDAnalysisSession().getStatus() == AnalysisStatus.ERROR) {
             return true;
         }
 
@@ -71,13 +71,13 @@ public class AnalysisAService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     private void startAnalysis(Context ctx) {
-        AnalysisASession analysisASession = ctx.getAnalysisASession();
-        if (analysisASession == null) {
-            analysisASession = new AnalysisASession();
-            analysisASession.setContext(ctx);
-            ctx.setAnalysisASession(analysisASession);
+        FDAnalysisSession FDAnalysisSession = ctx.getFDAnalysisSession();
+        if (FDAnalysisSession == null) {
+            FDAnalysisSession = new FDAnalysisSession();
+            FDAnalysisSession.setContext(ctx);
+            ctx.setFDAnalysisSession(FDAnalysisSession);
         }
-        analysisASession.setStatus(AnalysisStatus.IN_PROGRESS);
+        FDAnalysisSession.setStatus(AnalysisStatus.IN_PROGRESS);
     }
 
 
@@ -112,11 +112,11 @@ public class AnalysisAService {
             blobFile.setContent(content);
             blobFile.setFileName(fname);
 
-            AnalysisASession ss = new AnalysisASession();
+            FDAnalysisSession ss = new FDAnalysisSession();
             // ss.setBlobFile(blobFile);
             ss.setContext(ctx);
 
-            ctx.setAnalysisASession(ss);
+            ctx.setFDAnalysisSession(ss);
             ctx.setStatus(Status.ANALYSIS_SAVED);
 
         } catch (IOException e) {

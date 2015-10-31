@@ -20,13 +20,13 @@ import pl.poznan.igr.domain.Context;
 import pl.poznan.igr.domain.UnzipSession;
 import pl.poznan.igr.domain.type.Status;
 import pl.poznan.igr.service.impor.ImportService;
-import pl.poznan.igr.service.stats.AnalysisAService;
+import pl.poznan.igr.service.stats.FDAnalysisSessionService;
 import pl.poznan.igr.service.unzip.UnzipService;
 
-public class AnalysisAServiceIntegrationTest extends AbstractIntegrationTest {
+public class FDAnalysisSessionServiceIntegrationTest extends AbstractIntegrationTest {
 
 	@Autowired
-	private AnalysisAService analysisAService;
+	private FDAnalysisSessionService FDAnalysisSessionService;
 
 	@Autowired
 	private ImportService importService;
@@ -66,7 +66,7 @@ public class AnalysisAServiceIntegrationTest extends AbstractIntegrationTest {
 		assertTrue("Unzipped file does not exist.", f.exists());
 		assertEquals(Status.READY_FOR_ANALYSIS, ctx.getStatus());
 
-		analysisAService.calculateStats(ctx);
+		FDAnalysisSessionService.calculateStats(ctx);
 
 		// TODO uncomment and remove second stage to other test
 		assertEquals(Status.ANALYSIS_SAVED, ctx.getStatus());

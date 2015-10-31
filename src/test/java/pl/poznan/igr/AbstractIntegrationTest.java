@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.poznan.igr.domain.BlobFile;
 import pl.poznan.igr.domain.Context;
 import pl.poznan.igr.domain.ImportSession;
-import pl.poznan.igr.domain.analysis.AnalysisASession;
+import pl.poznan.igr.domain.analysis.FDAnalysisSession;
 import pl.poznan.igr.domain.UnzipSession;
 import pl.poznan.igr.service.UnzipServiceIntegrationTest;
 
@@ -38,7 +38,7 @@ public abstract class AbstractIntegrationTest {
 
 	public void cleanUpDatabase() {
 		hqlDelete(ImportSession.class);
-		hqlDelete(AnalysisASession.class);
+		hqlDelete(FDAnalysisSession.class);
 		hqlDelete(UnzipSession.class);
 		hqlDelete(BlobFile.class);
 		hqlDelete(Context.class);

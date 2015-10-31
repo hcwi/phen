@@ -25,9 +25,9 @@ import pl.poznan.igr.domain.Context;
 
 @Entity
 @Configurable
-public class AnalysisASession {
+public class FDAnalysisSession {
 
-	private static final String STATS_SESSION_FOR_CONTEXT_QUERY = "SELECT z FROM AnalysisASession z join z.context c "
+	private static final String STATS_SESSION_FOR_CONTEXT_QUERY = "SELECT z FROM FDAnalysisSession z join z.context c "
 			+ "WHERE c.id = :contextId";
 
 	@NotNull
@@ -44,16 +44,16 @@ public class AnalysisASession {
     @Enumerated
     private AnalysisStatus status;
 
-	public AnalysisASession() {
+	public FDAnalysisSession() {
 		this.setCreationDate(new Date());
 	}
 
-	public static AnalysisASession findStatsSessionForContext(Context context) {
+	public static FDAnalysisSession findStatsSessionForContext(Context context) {
 		checkNotNull(context);
 		Query query = entityManager().createQuery(
 				STATS_SESSION_FOR_CONTEXT_QUERY);
 		query.setParameter("contextId", context.getId());
-		return (AnalysisASession) query.getSingleResult();
+		return (FDAnalysisSession) query.getSingleResult();
 	}
 
 	public String toString() {
@@ -126,48 +126,48 @@ public class AnalysisASession {
 	public static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("STATS_SESSION_FOR_CONTEXT_QUERY", "creationDate", "context", "message", "status");
 
 	public static final EntityManager entityManager() {
-        EntityManager em = new AnalysisASession().entityManager;
+        EntityManager em = new FDAnalysisSession().entityManager;
         if (em == null) throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");
         return em;
     }
 
 	public static long countStatsSessions() {
-        return entityManager().createQuery("SELECT COUNT(o) FROM AnalysisASession o", Long.class).getSingleResult();
+        return entityManager().createQuery("SELECT COUNT(o) FROM FDAnalysisSession o", Long.class).getSingleResult();
     }
 
-	public static List<AnalysisASession> findAllStatsSessions() {
-        return entityManager().createQuery("SELECT o FROM AnalysisASession o", AnalysisASession.class).getResultList();
+	public static List<FDAnalysisSession> findAllStatsSessions() {
+        return entityManager().createQuery("SELECT o FROM FDAnalysisSession o", FDAnalysisSession.class).getResultList();
     }
 
-	public static List<AnalysisASession> findAllStatsSessions(String sortFieldName, String sortOrder) {
-        String jpaQuery = "SELECT o FROM AnalysisASession o";
+	public static List<FDAnalysisSession> findAllStatsSessions(String sortFieldName, String sortOrder) {
+        String jpaQuery = "SELECT o FROM FDAnalysisSession o";
         if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
             jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
             if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
                 jpaQuery = jpaQuery + " " + sortOrder;
             }
         }
-        return entityManager().createQuery(jpaQuery, AnalysisASession.class).getResultList();
+        return entityManager().createQuery(jpaQuery, FDAnalysisSession.class).getResultList();
     }
 
-	public static AnalysisASession findStatsSession(Long id) {
+	public static FDAnalysisSession findStatsSession(Long id) {
         if (id == null) return null;
-        return entityManager().find(AnalysisASession.class, id);
+        return entityManager().find(FDAnalysisSession.class, id);
     }
 
-	public static List<AnalysisASession> findStatsSessionEntries(int firstResult, int maxResults) {
-        return entityManager().createQuery("SELECT o FROM AnalysisASession o", AnalysisASession.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
+	public static List<FDAnalysisSession> findStatsSessionEntries(int firstResult, int maxResults) {
+        return entityManager().createQuery("SELECT o FROM FDAnalysisSession o", FDAnalysisSession.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
     }
 
-	public static List<AnalysisASession> findStatsSessionEntries(int firstResult, int maxResults, String sortFieldName, String sortOrder) {
-        String jpaQuery = "SELECT o FROM AnalysisASession o";
+	public static List<FDAnalysisSession> findStatsSessionEntries(int firstResult, int maxResults, String sortFieldName, String sortOrder) {
+        String jpaQuery = "SELECT o FROM FDAnalysisSession o";
         if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
             jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
             if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
                 jpaQuery = jpaQuery + " " + sortOrder;
             }
         }
-        return entityManager().createQuery(jpaQuery, AnalysisASession.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
+        return entityManager().createQuery(jpaQuery, FDAnalysisSession.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
     }
 
 	@Transactional
@@ -182,7 +182,7 @@ public class AnalysisASession {
         if (this.entityManager.contains(this)) {
             this.entityManager.remove(this);
         } else {
-            AnalysisASession attached = AnalysisASession.findStatsSession(this.id);
+            FDAnalysisSession attached = FDAnalysisSession.findStatsSession(this.id);
             this.entityManager.remove(attached);
         }
     }
@@ -200,9 +200,9 @@ public class AnalysisASession {
     }
 
 	@Transactional
-    public AnalysisASession merge() {
+    public FDAnalysisSession merge() {
         if (this.entityManager == null) this.entityManager = entityManager();
-        AnalysisASession merged = this.entityManager.merge(this);
+        FDAnalysisSession merged = this.entityManager.merge(this);
         this.entityManager.flush();
         return merged;
     }

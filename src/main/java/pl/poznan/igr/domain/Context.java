@@ -28,7 +28,7 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.transaction.annotation.Transactional;
-import pl.poznan.igr.domain.analysis.AnalysisASession;
+import pl.poznan.igr.domain.analysis.FDAnalysisSession;
 import pl.poznan.igr.domain.analysis.Lme4ModelSession;
 import pl.poznan.igr.domain.analysis.SufficientStatisticsSession;
 import pl.poznan.igr.domain.type.Status;
@@ -59,7 +59,7 @@ public class Context {
 	private UnzipSession unzipSession;
 
 	@OneToOne(mappedBy = "context", cascade = CascadeType.ALL)
-	private AnalysisASession analysisASession;
+	private FDAnalysisSession FDAnalysisSession;
 
     @OneToOne(mappedBy = "context", cascade = CascadeType.ALL)
     private SufficientStatisticsSession sufficientStatisticsSession;
@@ -119,8 +119,8 @@ public class Context {
 	@PersistenceContext
     transient EntityManager entityManager;
 
-	public static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("owner", "started", "finished", "status", "importSession", "unzipSession", "analysisASession",
-            "sufficientStatisticsSession", "Lme4ModelSession", "zipSession", "statusMessage", "resultFile");
+	public static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("owner", "started", "finished", "status", "importSession", "unzipSession",
+            "FDAnalysisSession", "sufficientStatisticsSession", "Lme4ModelSession", "zipSession", "statusMessage", "resultFile");
 
 	public static final EntityManager entityManager() {
         EntityManager em = new Context().entityManager;
@@ -247,7 +247,7 @@ public class Context {
                 .append(importSession, rhs.importSession)
                 .append(owner, rhs.owner)
                 .append(started, rhs.started)
-                .append(analysisASession, rhs.analysisASession)
+                .append(FDAnalysisSession, rhs.FDAnalysisSession)
                 .append(sufficientStatisticsSession, rhs.sufficientStatisticsSession)
                 .append(lme4ModelSession, rhs.lme4ModelSession)
                 .append(status, rhs.status)
@@ -264,7 +264,7 @@ public class Context {
                 .append(importSession)
                 .append(owner)
                 .append(started)
-                .append(analysisASession)
+                .append(FDAnalysisSession)
                 .append(sufficientStatisticsSession)
                 .append(lme4ModelSession)
                 .append(status)
@@ -322,12 +322,12 @@ public class Context {
         this.unzipSession = unzipSession;
     }
 
-	public AnalysisASession getAnalysisASession() {
-        return this.analysisASession;
+	public FDAnalysisSession getFDAnalysisSession() {
+        return this.FDAnalysisSession;
     }
 
-	public void setAnalysisASession(AnalysisASession analysisASession) {
-        this.analysisASession = analysisASession;
+	public void setFDAnalysisSession(FDAnalysisSession fDAnalysisSession) {
+        this.FDAnalysisSession = fDAnalysisSession;
     }
 
     public SufficientStatisticsSession getSufficientStatisticsSession() {
