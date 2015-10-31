@@ -8,6 +8,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityManager;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -22,6 +23,8 @@ import javax.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.transaction.annotation.Transactional;
+import pl.poznan.igr.domain.type.AnalysisStatus;
+import pl.poznan.igr.domain.type.Status;
 
 @Entity
 @Configurable
@@ -39,8 +42,10 @@ public class AnalysisASession {
 	@OneToOne
 	private Context context;
 
-	@ManyToOne(cascade = CascadeType.ALL)
-	private BlobFile blobFile;
+    private String message;
+
+    @Enumerated
+    private AnalysisStatus status;
 
 	public AnalysisASession() {
 		this.setCreationDate(new Date());
@@ -57,7 +62,7 @@ public class AnalysisASession {
 	public String toString() {
 
 		String s = this.getClass() + ": id " + this.getId() + " date "
-				+ this.getCreationDate() + this.getBlobFile().toString();
+				+ this.getCreationDate() + " message = " + this.getMessage();
 		return s;
 	}
 
@@ -102,18 +107,26 @@ public class AnalysisASession {
         this.context = context;
     }
 
-	public BlobFile getBlobFile() {
-        return this.blobFile;
+	public String getMessage() {
+        return this.message;
     }
 
-	public void setBlobFile(BlobFile blobFile) {
-        this.blobFile = blobFile;
+	public void setMessage(String message) {
+        this.message = message;
     }
 
-	@PersistenceContext
+    public AnalysisStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(AnalysisStatus status) {
+        this.status = status;
+    }
+
+    @PersistenceContext
     transient EntityManager entityManager;
 
-	public static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("STATS_SESSION_FOR_CONTEXT_QUERY", "creationDate", "context", "blobFile");
+	public static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("STATS_SESSION_FOR_CONTEXT_QUERY", "creationDate", "context", "message", "status");
 
 	public static final EntityManager entityManager() {
         EntityManager em = new AnalysisASession().entityManager;

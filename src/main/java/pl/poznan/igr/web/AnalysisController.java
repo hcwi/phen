@@ -24,7 +24,7 @@ public class AnalysisController {
             throw new ResourceNotFoundException();
         }
 
-        analysisAService.calculateStats(context);
+        analysisAService.analyze(context);
 
         return new ModelAndView("redirect:/contexts/" + contextId);
     }

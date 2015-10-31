@@ -51,7 +51,7 @@ public class ApplicationConversionServiceFactoryBean extends
 	public Converter<AnalysisASession, String> getStatsSessionToStringConverter() {
 		return new Converter<AnalysisASession, String>() {
 			public String convert(AnalysisASession ss) {
-				return new StringBuilder().append(ss.getBlobFile().getFileName()).append(' ')
+				return new StringBuilder().append(' ')
 						.append(ss.getCreationDate()).toString();
 			}
 		};

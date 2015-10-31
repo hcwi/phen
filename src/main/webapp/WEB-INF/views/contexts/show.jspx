@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<div xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields" xmlns:jsp="http://java.sun.com/JSP/Page" xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" version="2.0">
+<div xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:field="urn:jsptagdir:/WEB-INF/tags/form/fields"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:page="urn:jsptagdir:/WEB-INF/tags/form" version="2.0">
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
     <page:show create="false" id="ps_pl_poznan_igr_domain_Context" object="${context}" path="/contexts" update="false" z="user-managed">
@@ -9,8 +12,28 @@
             <field:display date="true" dateTimePattern="${context_finished_date_format}" field="finished" id="s_pl_poznan_igr_domain_Context_finished" object="${context}" z="c8Bncl+r5iuOrfuDkVfT1mB86BE="/>
         </c:if>
         <field:display field="status" id="s_pl_poznan_igr_domain_Context_status" object="${context}" z="NwNQsGD7jhnylV6pIW5ddEUtKXc="/>
-		
-		Download:
+
+		<h3>Analysis</h3>
+		<ul>
+		    <li><b>Analysis A</b>
+		        <c:if test="${not empty context.analysisASession}">
+		            ${context.analysisASession.status}
+		        </c:if>
+		        <c:if test="${empty context.analysisASession}">
+                	NOT DONE
+                </c:if>
+		    </li>
+
+		    <li><b>Analysis B</b>
+                	NOT DONE
+		    </li>
+
+		    <li><b>Analysis C</b>
+                    NOT DONE
+		    </li>
+		</ul>
+
+		<h3>Download</h3>
 		<ul>
             <c:if test="${not empty context.importSession}">
                 <li>
@@ -18,19 +41,9 @@
 						dataset</a>
                 </li>
             </c:if>
-            <c:if test="${not empty context.analysisASession}">
+            <c:if test="${not empty context.resultFile}">
                 <li>
-                    <a href="/igr/download/stats/${context.id}">Analysis A</a>
-                </li>
-            </c:if>
-            <c:if test="${not empty context.zipSession.blobFileEnriched}">
-                <li>
-                    <a href="/igr/download/enriched/${context.id}">Enriched dataset</a>
-                </li>
-            </c:if>
-            <c:if test="${not empty context.zipSession.blobFileReduced}">
-                <li>
-                    <a href="/igr/download/reduced/${context.id}">Reduced dataset</a>
+                    <a href="/igr/download/stats/${context.id}">Results</a>
                 </li>
             </c:if>
         </ul>

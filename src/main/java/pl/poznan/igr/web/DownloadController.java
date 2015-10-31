@@ -31,12 +31,10 @@ public class DownloadController {
 			HttpServletResponse response) {
 
 		Context ctx = Context.findContext(contextId);
-		final AnalysisASession ss = checkNotNull(AnalysisASession.findStatsSessionForContext(ctx),
-				"No zip for context {0}", contextId);
-		
+
 		try {
-			BlobFile blob = ss.getBlobFile();
-			response.setContentType("plain/text");
+			BlobFile blob = checkNotNull(ctx.getResultFile(), "No zip for context {0}", contextId);
+			response.setContentType("application/zip");
 			response.setHeader("Content-Disposition", "attachment; filename="
 					+ blob.getFileName());
 			response.getOutputStream().write(blob.getContent());

@@ -8,12 +8,18 @@ import com.google.common.io.Files;
 import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import pl.poznan.igr.domain.BlobFile;
 import pl.poznan.igr.domain.Context;
 import pl.poznan.igr.domain.AnalysisASession;
 import pl.poznan.igr.domain.UnzipSession;
+import pl.poznan.igr.domain.type.AnalysisStatus;
 import pl.poznan.igr.domain.type.Status;
+import pl.poznan.igr.service.stats.r.ScriptRunner;
+import pl.poznan.igr.service.stats.r.ScriptStatus;
 
 // CLEAN up logging mechanisms: slf4j, log4j, *.jars
 
@@ -21,6 +27,59 @@ import pl.poznan.igr.domain.type.Status;
 public class AnalysisAService {
 
     private final static Logger log = LoggerFactory.getLogger(AnalysisAService.class);
+
+
+    @Autowired
+    private ScriptRunner scriptRunner;
+
+    @Transactional
+    public void analyze(Context ctx) {
+        if (canProceed(ctx)) {
+            log.debug("Starting analysis of " + ctx );
+            startAnalysis(ctx);
+
+            UnzipSession us = ctx.getUnzipSession();
+            String path = us.getUnzipPath();
+            ScriptStatus status = scriptRunner.run("a", new File(path));
+            if (status.errorMessage.isPresent()) {
+                log.debug("Error analysing " + ctx + ": " + status.errorMessage);
+                ctx.getAnalysisASession().setStatus(AnalysisStatus.ERROR);
+                ctx.getAnalysisASession().setMessage(status.errorMessage.get());
+            } else {
+                log.debug("Done analysing of " + ctx );
+                ctx.getAnalysisASession().setStatus(AnalysisStatus.DONE);
+                ctx.setResultFile(ctx.getImportSession().getBlobFile()); // TODO: reupload new file
+            }
+        }
+    }
+
+    private boolean canProceed(Context ctx) {
+        if (ctx.getAnalysisASession() == null) {
+            return true;
+        }
+
+        if (ctx.getAnalysisASession().getStatus() == null) {
+            return true;
+        }
+
+        if (ctx.getAnalysisASession().getStatus() == AnalysisStatus.ERROR) {
+            return true;
+        }
+
+        return false;
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    private void startAnalysis(Context ctx) {
+        AnalysisASession analysisASession = ctx.getAnalysisASession();
+        if (analysisASession == null) {
+            analysisASession = new AnalysisASession();
+            analysisASession.setContext(ctx);
+            ctx.setAnalysisASession(analysisASession);
+        }
+        analysisASession.setStatus(AnalysisStatus.IN_PROGRESS);
+    }
+
 
     public void calculateStats(Context ctx) {
 
@@ -54,7 +113,7 @@ public class AnalysisAService {
             blobFile.setFileName(fname);
 
             AnalysisASession ss = new AnalysisASession();
-            ss.setBlobFile(blobFile);
+            // ss.setBlobFile(blobFile);
             ss.setContext(ctx);
 
             ctx.setAnalysisASession(ss);

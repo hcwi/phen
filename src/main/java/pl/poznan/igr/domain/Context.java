@@ -13,6 +13,7 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Temporal;
@@ -60,6 +61,9 @@ public class Context {
 	@OneToOne(mappedBy = "context", cascade = CascadeType.ALL)
 	private ZipSession zipSession;
 
+    @ManyToOne(cascade = CascadeType.ALL)
+    private BlobFile resultFile;
+
 	public Context(String owner) {
 		this.setStarted(new Date());
 		this.setStatus(Status.NEW);
@@ -106,7 +110,7 @@ public class Context {
 	@PersistenceContext
     transient EntityManager entityManager;
 
-	public static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("owner", "started", "finished", "status", "importSession", "unzipSession", "analysisASession", "zipSession", "statusMessage");
+	public static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("owner", "started", "finished", "status", "importSession", "unzipSession", "analysisASession", "zipSession", "statusMessage", "resultFile");
 
 	public static final EntityManager entityManager() {
         EntityManager em = new Context().entityManager;
@@ -227,11 +231,33 @@ public class Context {
             return true;
         }
         Context rhs = (Context) obj;
-        return new EqualsBuilder().append(finished, rhs.finished).append(id, rhs.id).append(importSession, rhs.importSession).append(owner, rhs.owner).append(started, rhs.started).append(analysisASession, rhs.analysisASession).append(status, rhs.status).append(unzipSession, rhs.unzipSession).append(zipSession, rhs.zipSession).isEquals();
+        return new EqualsBuilder()
+                .append(finished, rhs.finished)
+                .append(id, rhs.id)
+                .append(importSession, rhs.importSession)
+                .append(owner, rhs.owner)
+                .append(started, rhs.started)
+                .append(analysisASession, rhs.analysisASession)
+                .append(status, rhs.status)
+                .append(unzipSession, rhs.unzipSession)
+                .append(zipSession, rhs.zipSession)
+                .append(resultFile, rhs.resultFile)
+                .isEquals();
     }
 
 	public int hashCode() {
-        return new HashCodeBuilder().append(finished).append(id).append(importSession).append(owner).append(started).append(analysisASession).append(status).append(unzipSession).append(zipSession).toHashCode();
+        return new HashCodeBuilder()
+                .append(finished)
+                .append(id)
+                .append(importSession)
+                .append(owner)
+                .append(started)
+                .append(analysisASession)
+                .append(status)
+                .append(unzipSession)
+                .append(zipSession)
+                .append(resultFile)
+                .toHashCode();
     }
 
 	public String getOwner() {
@@ -296,5 +322,13 @@ public class Context {
 
 	public void setZipSession(ZipSession zipSession) {
         this.zipSession = zipSession;
+    }
+
+    public BlobFile getResultFile() {
+        return this.resultFile;
+    }
+
+    public void setResultFile(BlobFile resultFile) {
+        this.resultFile = resultFile;
     }
 }
