@@ -38,7 +38,6 @@ public class ContextDataOnDemand {
         setOwner(obj, index);
         setStarted(obj, index);
         setStatus(obj, index);
-        setZipSession(obj, index);
         return obj;
     }
 
@@ -63,11 +62,6 @@ public class ContextDataOnDemand {
 	public void setStatus(Context obj, int index) {
         Status status = Status.class.getEnumConstants()[0];
         obj.setStatus(status);
-    }
-
-	public void setZipSession(Context obj, int index) {
-        ZipSession zipSession = null;
-        obj.setZipSession(zipSession);
     }
 
 	public Context getSpecificContext(int index) {

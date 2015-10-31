@@ -9,7 +9,6 @@ import pl.poznan.igr.domain.Context;
 import pl.poznan.igr.domain.ImportSession;
 import pl.poznan.igr.domain.analysis.FDAnalysisSession;
 import pl.poznan.igr.domain.UnzipSession;
-import pl.poznan.igr.domain.ZipSession;
 
 @Configurable
 /**
@@ -26,7 +25,6 @@ public class ApplicationConversionServiceFactoryBean extends
 		registry.addConverter(getImportSessionToStringConverter());
 		registry.addConverter(getUnzipSessionToStringConverter());
 		registry.addConverter(getStatsSessionToStringConverter());
-		registry.addConverter(getZipSessionToStringConverter());
 		}
 
 	public Converter<ImportSession, String> getImportSessionToStringConverter() {
@@ -53,15 +51,6 @@ public class ApplicationConversionServiceFactoryBean extends
 			public String convert(FDAnalysisSession ss) {
 				return new StringBuilder().append(' ')
 						.append(ss.getCreationDate()).toString();
-			}
-		};
-	}
-	
-	public Converter<ZipSession, String> getZipSessionToStringConverter() {
-		return new Converter<ZipSession, String>() {
-			public String convert(ZipSession zs) {
-				return new StringBuilder().append(zs.getBlobFileEnriched().getFileName()).append(' ').append(zs.getBlobFileReduced().getFileName())
-						.append(zs.getCreationDate()).toString();
 			}
 		};
 	}

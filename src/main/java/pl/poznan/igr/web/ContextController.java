@@ -19,7 +19,6 @@ import pl.poznan.igr.domain.Context;
 import pl.poznan.igr.domain.ImportSession;
 import pl.poznan.igr.domain.analysis.FDAnalysisSession;
 import pl.poznan.igr.domain.UnzipSession;
-import pl.poznan.igr.domain.ZipSession;
 import pl.poznan.igr.domain.type.Status;
 
 @RequestMapping("/contexts")
@@ -90,7 +89,6 @@ public class ContextController {
         uiModel.addAttribute("importsessions", ImportSession.findAllImportSessions());
         uiModel.addAttribute("statssessions", FDAnalysisSession.findAllStatsSessions());
         uiModel.addAttribute("unzipsessions", UnzipSession.findAllUnzipSessions());
-        uiModel.addAttribute("zipsessions", ZipSession.findAllZipSessions());
         uiModel.addAttribute("statuses", Arrays.asList(Status.values()));
     }
 

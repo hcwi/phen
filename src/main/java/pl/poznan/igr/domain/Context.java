@@ -67,9 +67,6 @@ public class Context {
     @OneToOne(mappedBy = "context", cascade = CascadeType.ALL)
     private Lme4ModelSession lme4ModelSession;
 
-	@OneToOne(mappedBy = "context", cascade = CascadeType.ALL)
-	private ZipSession zipSession;
-
     @ManyToOne(cascade = CascadeType.ALL)
     private BlobFile resultFile;
 
@@ -252,7 +249,6 @@ public class Context {
                 .append(lme4ModelSession, rhs.lme4ModelSession)
                 .append(status, rhs.status)
                 .append(unzipSession, rhs.unzipSession)
-                .append(zipSession, rhs.zipSession)
                 .append(resultFile, rhs.resultFile)
                 .isEquals();
     }
@@ -269,7 +265,6 @@ public class Context {
                 .append(lme4ModelSession)
                 .append(status)
                 .append(unzipSession)
-                .append(zipSession)
                 .append(resultFile)
                 .toHashCode();
     }
@@ -344,14 +339,6 @@ public class Context {
 
     public void setLme4ModelSession(Lme4ModelSession lme4ModelSession) {
         this.lme4ModelSession = lme4ModelSession;
-    }
-
-    public ZipSession getZipSession() {
-        return this.zipSession;
-    }
-
-	public void setZipSession(ZipSession zipSession) {
-        this.zipSession = zipSession;
     }
 
     public BlobFile getResultFile() {
