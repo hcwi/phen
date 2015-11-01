@@ -12,6 +12,8 @@ import pl.poznan.igr.service.stats.FDAnalysisService;
 import pl.poznan.igr.service.stats.SufficientStatisticsService;
 import pl.poznan.igr.web.exception.ResourceNotFoundException;
 
+import java.io.IOException;
+
 @RequestMapping("/analysis/**")
 @Controller
 public class AnalysisController {
@@ -26,7 +28,7 @@ public class AnalysisController {
     Lme4ModelService lme4ModelService;
 
     @RequestMapping(method = RequestMethod.GET, value = "time_series_analysis/context/{contextId}")
-    public ModelAndView analyzeFDAnalysis(@PathVariable Long contextId) {
+    public ModelAndView analyzeFDAnalysis(@PathVariable Long contextId) throws IOException {
         Context context = Context.findContext(contextId);
         if (context == null) {
             throw new ResourceNotFoundException();
@@ -38,7 +40,7 @@ public class AnalysisController {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "sufficient_statistics/context/{contextId}")
-    public ModelAndView analyzeSufficientStatistics(@PathVariable Long contextId) {
+    public ModelAndView analyzeSufficientStatistics(@PathVariable Long contextId) throws IOException {
         Context context = Context.findContext(contextId);
         if (context == null) {
             throw new ResourceNotFoundException();
@@ -50,7 +52,7 @@ public class AnalysisController {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "estimation_of_effects/context/{contextId}")
-    public ModelAndView analyzeLme4Model(@PathVariable Long contextId) {
+    public ModelAndView analyzeLme4Model(@PathVariable Long contextId) throws IOException {
         Context context = Context.findContext(contextId);
         if (context == null) {
             throw new ResourceNotFoundException();
