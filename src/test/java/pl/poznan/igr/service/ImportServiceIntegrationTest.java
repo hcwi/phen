@@ -2,13 +2,13 @@ package pl.poznan.igr.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.mockito.Mockito.mock;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.util.Date;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import pl.poznan.igr.AbstractIntegrationTest;
@@ -17,7 +17,6 @@ import pl.poznan.igr.domain.Context;
 import pl.poznan.igr.domain.ImportSession;
 import pl.poznan.igr.domain.type.Status;
 import pl.poznan.igr.service.impor.ImportService;
-import pl.poznan.igr.service.router.RouterService;
 
 public class ImportServiceIntegrationTest extends AbstractIntegrationTest {
 
@@ -27,16 +26,12 @@ public class ImportServiceIntegrationTest extends AbstractIntegrationTest {
 
 	@Autowired
 	private ImportService importService;
-	
-	@Mock
-	private RouterService routerService;
 
 	@Before
 	public void setUp() {
-		routerService = mock(RouterService.class);
-	} 
-	
-	
+		cleanUpDatabase();
+	}
+
 	@Test
 	public void testImportFile() {
 
@@ -44,7 +39,7 @@ public class ImportServiceIntegrationTest extends AbstractIntegrationTest {
 		assertEquals(0, Context.countContexts());
 
 		importService.importFile(OWNER, FILE_PATH);
-		
+
 		assertEquals(1, BlobFile.countBlobFiles());
 		assertEquals(1, Context.countContexts());
 
@@ -56,23 +51,21 @@ public class ImportServiceIntegrationTest extends AbstractIntegrationTest {
 		Context ctx = Context.findAllContexts().get(0);
 		assertEquals(OWNER, ctx.getOwner());
 		assertFalse(ctx.getStarted().after(new Date()));
-		assertEquals(null, ctx.getFinished());
+		assertNull(ctx.getFinished());
 		assertEquals(Status.UPLOADED, ctx.getStatus());
-		
-		ImportSession session = ImportSession.findAllImportSessions().iterator().next();
+
+		ImportSession session = ImportSession.findAllImportSessions()
+				.iterator().next();
 		assertFalse(session.getCreationDate().after(new Date()));
 		assertEquals(ctx, session.getContext());
-		
+
 		BlobFile uploadedFile = session.getBlobFile();
 		assertEquals(uploadedFile, blobFile);
-		
+
 		ImportSession is = ImportSession.findImportSessionForContext(ctx);
 		assertEquals(session, is);
-		
-		routerService.runNext(ctx);
-				
 	}
-	
+
 	@Test
 	public void testImportZip() {
 
@@ -80,7 +73,7 @@ public class ImportServiceIntegrationTest extends AbstractIntegrationTest {
 		assertEquals(0, Context.countContexts());
 
 		importService.importFile(OWNER, ZIP_PATH);
-		
+
 		assertEquals(1, BlobFile.countBlobFiles());
 		assertEquals(1, Context.countContexts());
 
@@ -90,23 +83,21 @@ public class ImportServiceIntegrationTest extends AbstractIntegrationTest {
 		Context ctx = Context.findAllContexts().get(0);
 		assertEquals(OWNER, ctx.getOwner());
 		assertFalse(ctx.getStarted().after(new Date()));
-		assertEquals(null, ctx.getFinished());
+		assertNull(ctx.getFinished());
 		assertEquals(Status.UPLOADED, ctx.getStatus());
-		
-		ImportSession session = ImportSession.findAllImportSessions().iterator().next();
+
+		ImportSession session = ImportSession.findAllImportSessions()
+				.iterator().next();
 		assertFalse(session.getCreationDate().after(new Date()));
 		assertEquals(ctx, session.getContext());
-		
+
 		BlobFile uploadedFile = session.getBlobFile();
 		assertEquals(uploadedFile, blobFile);
-		
+
 		ImportSession is = ImportSession.findImportSessionForContext(ctx);
-		
-		assertEquals(true, null != is);
+
+		assertNotNull(is);
 		assertEquals(session, is);
-		
-		routerService.runNext(ctx);
-		
 	}
 
 }
