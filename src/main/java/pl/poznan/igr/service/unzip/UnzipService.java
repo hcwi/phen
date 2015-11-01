@@ -150,7 +150,7 @@ public class UnzipService {
         String unzippedPath = wd.getAbsolutePath();
         // TODO which path? general or deepest (as now)
         if (inDir != "") {
-            unzippedPath += "/" + inDir;
+            unzippedPath += File.separator + inDir;
         }
         return unzippedPath;
     }
