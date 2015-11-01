@@ -18,68 +18,40 @@ import pl.poznan.igr.domain.analysis.FDAnalysisSession;
 import pl.poznan.igr.domain.UnzipSession;
 import pl.poznan.igr.domain.analysis.AnalysisStatus;
 import pl.poznan.igr.domain.type.Status;
+import pl.poznan.igr.service.stats.r.RException;
+import pl.poznan.igr.service.stats.r.RHandler;
 import pl.poznan.igr.service.stats.r.ScriptRunner;
 import pl.poznan.igr.service.stats.r.ScriptStatus;
 
 // CLEAN up logging mechanisms: slf4j, log4j, *.jars
 
 @Service
-public class FDAnalysisSessionService {
+public class FDAnalysisService extends AbstractAnalysisService<FDAnalysisSession> {
 
-    private final static Logger log = LoggerFactory.getLogger(FDAnalysisSessionService.class);
-
+    private final static Logger log = LoggerFactory.getLogger(FDAnalysisService.class);
 
     @Autowired
     private ScriptRunner scriptRunner;
 
-    @Transactional
-    public void analyze(Context ctx) {
-        if (canProceed(ctx)) {
-            log.debug("Starting analysis of " + ctx );
-            startAnalysis(ctx);
-
-            UnzipSession us = ctx.getUnzipSession();
-            String path = us.getUnzipPath();
-            ScriptStatus status = scriptRunner.run("a", new File(path));
-            if (status.errorMessage.isPresent()) {
-                log.debug("Error analysing " + ctx + ": " + status.errorMessage);
-                ctx.getFDAnalysisSession().setStatus(AnalysisStatus.ERROR);
-                ctx.getFDAnalysisSession().setMessage(status.errorMessage.get());
-            } else {
-                log.debug("Done analysing of " + ctx );
-                ctx.getFDAnalysisSession().setStatus(AnalysisStatus.DONE);
-                ctx.setResultFile(ctx.getImportSession().getBlobFile()); // TODO: reupload new file
-            }
-        }
+    @Override
+    protected FDAnalysisSession newSession() {
+        return new FDAnalysisSession();
     }
 
-    private boolean canProceed(Context ctx) {
-        if (ctx.getFDAnalysisSession() == null) {
-            return true;
-        }
-
-        if (ctx.getFDAnalysisSession().getStatus() == null) {
-            return true;
-        }
-
-        if (ctx.getFDAnalysisSession().getStatus() == AnalysisStatus.ERROR) {
-            return true;
-        }
-
-        return false;
+    @Override
+    protected FDAnalysisSession getSessionFromContext(Context ctx) {
+        return ctx.getFDAnalysisSession();
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    private void startAnalysis(Context ctx) {
-        FDAnalysisSession FDAnalysisSession = ctx.getFDAnalysisSession();
-        if (FDAnalysisSession == null) {
-            FDAnalysisSession = new FDAnalysisSession();
-            FDAnalysisSession.setContext(ctx);
-            ctx.setFDAnalysisSession(FDAnalysisSession);
-        }
-        FDAnalysisSession.setStatus(AnalysisStatus.IN_PROGRESS);
+    @Override
+    protected void setSessionInContext(Context ctx, FDAnalysisSession session) {
+        ctx.setFDAnalysisSession(session);
     }
 
+    @Override
+    protected ScriptStatus runScript(String workingDirectory) {
+        return scriptRunner.run("FDAnalysis.R", new File(workingDirectory));
+    }
 
     public void calculateStats(Context ctx) {
 

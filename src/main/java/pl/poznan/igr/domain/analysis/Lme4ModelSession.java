@@ -26,28 +26,90 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 @Entity
 @Configurable
-public class Lme4ModelSession {
+public class Lme4ModelSession implements AnalysisSession {
 
 	private static final String STATS_SESSION_FOR_CONTEXT_QUERY = "SELECT z FROM Lme4ModelSession z join z.context c "
 			+ "WHERE c.id = :contextId";
 
-	@NotNull
-	@Temporal(TemporalType.TIMESTAMP)
-	@DateTimeFormat(style = "M-")
-	private Date creationDate;
-
-	@NotNull
-	@OneToOne
-	private Context context;
-
-    private String message;
-
-    @Enumerated
-    private AnalysisStatus status;
 
 	public Lme4ModelSession() {
 		this.setCreationDate(new Date());
 	}
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id")
+    protected Long id;
+
+    @NotNull
+    @Temporal(TemporalType.TIMESTAMP)
+    @DateTimeFormat(style = "M-")
+    protected Date creationDate;
+
+    @NotNull
+    @OneToOne
+    protected Context context;
+
+    protected String message;
+
+    @Enumerated
+    protected AnalysisStatus status;
+
+    @Version
+    @Column(name = "version")
+    protected Integer version;
+
+    public Long getId() {
+        return this.id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Integer getVersion() {
+        return this.version;
+    }
+
+    public void setVersion(Integer version) {
+        this.version = version;
+    }
+
+    public Date getCreationDate() {
+        return this.creationDate;
+    }
+
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public Context getContext() {
+        return this.context;
+    }
+
+    public void setContext(Context context) {
+        this.context = context;
+    }
+
+    public String getMessage() {
+        return this.message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public AnalysisStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(AnalysisStatus status) {
+        this.status = status;
+    }
+
+    public boolean isError() {
+        return status != null && status.equals(AnalysisStatus.ERROR);
+    }
 
 	public static Lme4ModelSession findStatsSessionForContext(Context context) {
 		checkNotNull(context);
@@ -63,67 +125,6 @@ public class Lme4ModelSession {
 				+ this.getCreationDate() + " message = " + this.getMessage();
 		return s;
 	}
-
-	@Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
-    private Long id;
-
-	@Version
-    @Column(name = "version")
-    private Integer version;
-
-	public Long getId() {
-        return this.id;
-    }
-
-	public void setId(Long id) {
-        this.id = id;
-    }
-
-	public Integer getVersion() {
-        return this.version;
-    }
-
-	public void setVersion(Integer version) {
-        this.version = version;
-    }
-
-	public Date getCreationDate() {
-        return this.creationDate;
-    }
-
-	public void setCreationDate(Date creationDate) {
-        this.creationDate = creationDate;
-    }
-
-	public Context getContext() {
-        return this.context;
-    }
-
-	public void setContext(Context context) {
-        this.context = context;
-    }
-
-	public String getMessage() {
-        return this.message;
-    }
-
-	public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public AnalysisStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(AnalysisStatus status) {
-        this.status = status;
-    }
-
-    public boolean isError() {
-        return status != null && status.equals(AnalysisStatus.ERROR);
-    }
 
     @PersistenceContext
     transient EntityManager entityManager;

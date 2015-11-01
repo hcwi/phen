@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import pl.poznan.igr.domain.Context;
 import pl.poznan.igr.service.stats.Lme4ModelService;
-import pl.poznan.igr.service.stats.FDAnalysisSessionService;
+import pl.poznan.igr.service.stats.FDAnalysisService;
 import pl.poznan.igr.service.stats.SufficientStatisticsService;
 import pl.poznan.igr.web.exception.ResourceNotFoundException;
 
@@ -17,7 +17,7 @@ import pl.poznan.igr.web.exception.ResourceNotFoundException;
 public class AnalysisController {
 
     @Autowired
-    FDAnalysisSessionService fDAnalysisSessionService;
+    FDAnalysisService fDAnalysisService;
 
     @Autowired
     SufficientStatisticsService sufficientStatisticsService;
@@ -32,7 +32,7 @@ public class AnalysisController {
             throw new ResourceNotFoundException();
         }
 
-        fDAnalysisSessionService.analyze(context);
+        fDAnalysisService.analyze(context);
 
         return new ModelAndView("redirect:/contexts/" + contextId);
     }

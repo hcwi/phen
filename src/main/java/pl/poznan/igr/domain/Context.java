@@ -74,7 +74,7 @@ public class Context {
 		this.setStarted(new Date());
 		this.setStatus(Status.NEW);
 		this.setOwner(owner);
-		this.statusMessage = new Vector<String>();
+		this.statusMessage = new Vector<>();
 	}
 
 	@Column

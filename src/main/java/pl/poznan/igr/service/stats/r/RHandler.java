@@ -1,4 +1,4 @@
-package pl.poznan.igr.service.stats;
+package pl.poznan.igr.service.stats.r;
 
 import java.io.BufferedReader;
 import java.io.InputStream;

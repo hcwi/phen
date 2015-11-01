@@ -1,4 +1,4 @@
-package pl.poznan.igr.service.stats;
+package pl.poznan.igr.service.stats.r;
 
 public class RException extends RuntimeException {
 
