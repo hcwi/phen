@@ -68,9 +68,7 @@ public abstract class AbstractAnalysisService<T extends AnalysisSession> {
     }
 
     private void persistResults(Context ctx, String path) throws IOException {
-        byte[] bytes = ctx.getImportSession().getBlobFile().getContent();
-        // TODO: uncomment below to read the results
-        // byte[] bytes = Files.toByteArray(new File(path + "/results.zip"));
+        byte[] bytes = Files.toByteArray(new File(path + File.separator + "results.zip"));
         BlobFile results = new BlobFile("analyzed-" + ctx.getImportSession().getBlobFile().getFileName(), bytes);
         ctx.setResultFile(results);
     }

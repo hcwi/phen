@@ -32,6 +32,6 @@ public class SufficientStatisticsService extends AbstractAnalysisService<Suffici
 
     @Override
     protected ScriptStatus runScript(String workingDirectory) {
-        return scriptRunner.run("SufficientStatistics.R", new File(workingDirectory));
+        return scriptRunner.run("sufficientStatistics.R", new File(workingDirectory));
     }
 }

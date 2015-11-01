@@ -32,6 +32,6 @@ public class Lme4ModelService extends AbstractAnalysisService<Lme4ModelSession> 
 
     @Override
     protected ScriptStatus runScript(String workingDirectory) {
-        return scriptRunner.run("Lme4Model.R", new File(workingDirectory));
+        return scriptRunner.run("lme4model.R", new File(workingDirectory));
     }
 }
