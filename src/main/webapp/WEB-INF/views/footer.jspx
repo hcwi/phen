@@ -20,7 +20,7 @@
   </c:if>
   <!--  <util:theme/> -->
 
-  <spring:url value="/resources/images/7th-framework-programme_medium.png" var="logo1"/>
+  <!-- <spring:url value="/resources/images/7th-framework-programme_medium.png" var="logo1"/> -->
   <spring:url value="/resources/images/eu_small.png" var="logo2"/>
   <spring:message code="global_sponsored" htmlEscape="false" var="sponsored"/>
   <span>
