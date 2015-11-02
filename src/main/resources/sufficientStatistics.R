@@ -265,11 +265,12 @@ prepare.matrices <- function(sad, fixed) {
 
 # Install and load missing libraries
 prepare.libs <- function() {
-  
-  if(!require("reshape2")) {
-    install.packages("reshape2", repos='http://cran.us.r-project.org')
-    library(reshape2)
-  }
+
+  require("reshape2")
+#  if(!require("reshape2")) {
+#    install.packages("reshape2", repos='http://cran.us.r-project.org')
+#    library(reshape2)
+#  }
 }
 
 # Get traits
