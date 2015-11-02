@@ -1,0 +1,67 @@
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html class="dj_gecko dj_contentbox">
+<head>
+	<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+	<meta content="IE=8" http-equiv="X-UA-Compatible">
+	<link href="index_files/tundra.css" type="text/css" rel="stylesheet">
+	<link href="index_files/standard.css" media="screen" type="text/css" rel="stylesheet">
+	<script type="text/javascript">var djConfig = {parseOnLoad: false, isDebug: false, locale: 'en-gb'};</script>
+	<style>#header + #content > #left > #rlblock_left
+	{display:none !important;}</style>
+	<script type="text/javascript" src="index_files/dojo.js"></script>
+	<script type="text/javascript" src="index_files/Spring.js"></script>
+	<script type="text/javascript" src="index_files/Spring-Dojo.js"></script>
+	<script type="text/javascript" language="JavaScript">dojo.require("dojo.parser");</script>
+	<title>Welcome to Phenalyse</title>
+</head>
+
+<body class="tundra spring">
+	<div id="wrapper">
+		<div version="2.0" id="header">
+			<a title="Home" name="Home" href="http://localhost:8080/igr/">
+				<img src="index_files/banner-graphic_transplant.png">
+			</a>
+		</div>
+		<div id="main">
+			<div version="2.0">
+				<script type="text/javascript">dojo.require('dijit.TitlePane');</script>
+				<div class="dijitTitlePane dijitTitlePaneHover dijitHover" role="group" title="" widgetid="_title_title_id" id="_title_title_id">
+					<div dojoattachevent="onclick:_onTitleClick, onkeypress:_onTitleKey" class="dijitTitlePaneTitle dijitOpen dijitTitlePaneTitleHover" dojoattachpoint="titleBarNode">
+						<div tabindex="0" aria-controls="_title_title_id_pane" role="button" aria-pressed="true" class="dijitTitlePaneTitleFocus" dojoattachpoint="focusNode">
+							<img role="presentation" src="index_files/blank.gif" alt="" dojoattachpoint="arrowNode" class="dijitArrowNode" wairole="presentation">
+							<span dojoattachpoint="arrowNodeInner" class="dijitArrowNodeInner">-</span>
+							<span style="-moz-user-select: none;" dojoattachpoint="titleNode" class="dijitTitlePaneTextNode">
+								Welcome to Phenalyse
+							</span>
+						</div>
+					</div>
+					<div role="presentation" class="dijitTitlePaneContentOuter" dojoattachpoint="hideNode" wairole="presentation">
+						<div role="presentation" class="dijitReset" dojoattachpoint="wipeNode" wairole="presentation">
+							<div aria-hidden="false" role="region" class="dijitTitlePaneContentInner" dojoattachpoint="containerNode" wairole="region" tabindex="-1" id="_title_title_id_pane">
+								<!-- nested divs because wipeIn()/wipeOut() doesn't work right on node w/padding etc.  Put padding on inner div. -->
+								<script type="text/javascript">Spring.addDecoration(new Spring.ElementDecoration({elementId : '_title_title_id', widgetType : 'dijit.TitlePane', widgetAttrs : {title: 'Welcome to Phenalyse', open: true}}));
+								</script>
+								<h3>Maintenance break between 2015-11-02 and 2015-11-03</h3>
+
+								<p>
+									Due to infrastructure migration we are down 2015-11-02 and 2015-11-03
+
+									We apologise for all the inconvenience!
+								</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div version="2.0" id="footer">
+				<span>
+					<a href="http://localhost:8080/igr/">Home</a>
+				</span>
+				<span>
+					| Sponsored by <a title="Sponsored by" href="http://transplantdb.eu/">TransPLANT<img src="index_files/eu_small.png" alt="Sponsored by" align="right"><img src="index_files/7th-framework-programme_medium.png" alt="Sponsored by" align="right"></a>
+				</span>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
