@@ -4,15 +4,15 @@ import org.springframework.web.multipart.MultipartFile;
 
 public class UploadForm {
 
-	private String owner;
+	private String username;
 	private MultipartFile fileContent;
 
-	public String getOwner() {
-        return this.owner;
+	public String getUsername() {
+        return this.username;
     }
 
-	public void setOwner(String owner) {
-        this.owner = owner;
+	public void setUsername(String username) {
+        this.username = username;
     }
 
 	public MultipartFile getFileContent() {

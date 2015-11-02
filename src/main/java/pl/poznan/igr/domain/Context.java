@@ -39,7 +39,7 @@ public class Context {
 
 	@NotNull
 	@Size(max = 64)
-	private String owner;
+	private String username;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@DateTimeFormat(style = "MM")
@@ -70,10 +70,10 @@ public class Context {
     @ManyToOne(cascade = CascadeType.ALL)
     private BlobFile resultFile;
 
-	public Context(String owner) {
+	public Context(String username) {
 		this.setStarted(new Date());
 		this.setStatus(Status.NEW);
-		this.setOwner(owner);
+		this.setUsername(username);
 		this.statusMessage = new Vector<>();
 	}
 
@@ -116,7 +116,7 @@ public class Context {
 	@PersistenceContext
     transient EntityManager entityManager;
 
-	public static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("owner", "started", "finished", "status", "importSession", "unzipSession",
+	public static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("username", "started", "finished", "status", "importSession", "unzipSession",
             "FDAnalysisSession", "sufficientStatisticsSession", "Lme4ModelSession", "zipSession", "statusMessage", "resultFile");
 
 	public static final EntityManager entityManager() {
@@ -242,7 +242,7 @@ public class Context {
                 .append(finished, rhs.finished)
                 .append(id, rhs.id)
                 .append(importSession, rhs.importSession)
-                .append(owner, rhs.owner)
+                .append(username, rhs.username)
                 .append(started, rhs.started)
                 .append(FDAnalysisSession, rhs.FDAnalysisSession)
                 .append(sufficientStatisticsSession, rhs.sufficientStatisticsSession)
@@ -258,7 +258,7 @@ public class Context {
                 .append(finished)
                 .append(id)
                 .append(importSession)
-                .append(owner)
+                .append(username)
                 .append(started)
                 .append(FDAnalysisSession)
                 .append(sufficientStatisticsSession)
@@ -269,12 +269,12 @@ public class Context {
                 .toHashCode();
     }
 
-	public String getOwner() {
-        return this.owner;
+	public String getUsername() {
+        return this.username;
     }
 
-	public void setOwner(String owner) {
-        this.owner = owner;
+	public void setUsername(String username) {
+        this.username = username;
     }
 
 	public Date getStarted() {

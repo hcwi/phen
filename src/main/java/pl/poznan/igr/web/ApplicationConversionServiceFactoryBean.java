@@ -58,7 +58,7 @@ public class ApplicationConversionServiceFactoryBean extends
 	public Converter<Context, String> getContextToStringConverter() {
         return new org.springframework.core.convert.converter.Converter<pl.poznan.igr.domain.Context, java.lang.String>() {
             public String convert(Context context) {
-                return new StringBuilder().append(context.getOwner()).append(' ').append(context.getStarted()).append(' ').append(context.getFinished()).toString();
+                return new StringBuilder().append(context.getUsername()).append(' ').append(context.getStarted()).append(' ').append(context.getFinished()).toString();
             }
         };
     }

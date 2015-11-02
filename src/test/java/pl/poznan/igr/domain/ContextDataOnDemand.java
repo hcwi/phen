@@ -51,7 +51,7 @@ public class ContextDataOnDemand {
         if (owner.length() > 64) {
             owner = owner.substring(0, 64);
         }
-        obj.setOwner(owner);
+        obj.setUsername(owner);
     }
 
 	public void setStarted(Context obj, int index) {
