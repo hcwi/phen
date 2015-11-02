@@ -1,0 +1,4 @@
+---
+dependencies:
+  - basic-ubuntu
+  - oracle-java
