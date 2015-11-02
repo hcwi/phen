@@ -3,7 +3,6 @@ package pl.poznan.igr.service.stats;
 import com.google.common.io.Files;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import pl.poznan.igr.domain.BlobFile;
@@ -20,16 +19,7 @@ public abstract class AbstractAnalysisService<T extends AnalysisSession> {
 
     private final static Logger log = LoggerFactory.getLogger(AbstractAnalysisService.class);
 
-    @Transactional
-    public void analyze(Context ctx) throws IOException {
-        if (canProceed(ctx)) {
-            log.debug("Starting analysis of " + ctx);
-            startAnalysis(ctx);
-            runAnalysis(ctx);
-        }
-    }
-
-    private boolean canProceed(Context ctx) {
+    protected boolean canProceed(Context ctx) {
         if (getSessionFromContext(ctx) == null) {
             return true;
         }
@@ -56,36 +46,31 @@ public abstract class AbstractAnalysisService<T extends AnalysisSession> {
         session.setStatus(AnalysisStatus.IN_PROGRESS);
     }
 
-    @Async
-    private void runAnalysis(Context ctx) {
-        UnzipSession us = ctx.getUnzipSession();
-        String path = us.getUnzipPath();
-        ScriptStatus status = runScript(path);
-        if (status.errorMessage.isPresent()) {
-            persistFailure(ctx, status);
-        } else {
-            log.debug("Done analysing of " + ctx);
-            persistSuccessResults(ctx, path);
+    @Transactional
+    public void analyze(Context ctx) throws IOException {
+        if (canProceed(ctx)) {
+            log.debug("Starting analysis of " + ctx);
+            startAnalysis(ctx);
+
+            UnzipSession us = ctx.getUnzipSession();
+            String path = us.getUnzipPath();
+            ScriptStatus status = runScript(path);
+            if (status.errorMessage.isPresent()) {
+                log.debug("Error analysing " + ctx + ": " + status.errorMessage);
+                getSessionFromContext(ctx).setStatus(AnalysisStatus.ERROR);
+                getSessionFromContext(ctx).setMessage(status.errorMessage.get());
+            } else {
+                log.debug("Done analysing of " + ctx);
+                getSessionFromContext(ctx).setStatus(AnalysisStatus.DONE);
+                persistResults(ctx, path);
+            }
         }
     }
 
-    private void persistFailure(Context ctx, ScriptStatus status) {
-        log.debug("Error analysing " + ctx + ": " + status.errorMessage);
-        getSessionFromContext(ctx).setStatus(AnalysisStatus.ERROR);
-        getSessionFromContext(ctx).setMessage(status.errorMessage.get());
-    }
-
-    private void persistSuccessResults(Context ctx, String path) {
-        try {
-            byte[] bytes = Files.toByteArray(new File(path + File.separator + "results.zip"));
-            BlobFile results = new BlobFile("analyzed-" + ctx.getImportSession().getBlobFile().getFileName(), bytes);
-            ctx.setResultFile(results);
-            getSessionFromContext(ctx).setStatus(AnalysisStatus.DONE);
-        } catch (IOException e) {
-            log.error("Can't save results for " + ctx, e);
-            getSessionFromContext(ctx).setStatus(AnalysisStatus.ERROR);
-            getSessionFromContext(ctx).setMessage("Can't save results, please contact support");
-        }
+    private void persistResults(Context ctx, String path) throws IOException {
+        byte[] bytes = Files.toByteArray(new File(path + File.separator + "results.zip"));
+        BlobFile results = new BlobFile("analyzed-" + ctx.getImportSession().getBlobFile().getFileName(), bytes);
+        ctx.setResultFile(results);
     }
 
     protected abstract T newSession();
