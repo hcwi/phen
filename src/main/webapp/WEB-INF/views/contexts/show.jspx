@@ -12,11 +12,12 @@
         <c:if test="${not empty context.finished}">
             <field:display date="true" dateTimePattern="${context_finished_date_format}" field="finished" id="s_pl_poznan_igr_domain_Context_finished" object="${context}" z="c8Bncl+r5iuOrfuDkVfT1mB86BE="/>
         </c:if>
-        <field:display field="status" id="s_pl_poznan_igr_domain_Context_status" object="${context}" z="NwNQsGD7jhnylV6pIW5ddEUtKXc="/>
 
 		<h3>Analysis</h3>
 		<ul>
 		    <li><b>Time Series Analysis</b>
+
+		        <br/>
 		        <c:if test="${not empty context.FDAnalysisSession}">
 		            ${context.FDAnalysisSession.status}
 
@@ -40,6 +41,8 @@
 		    </li>
 
 		    <li><b>Sufficient Statistics</b>
+
+                	<br/>
                 	<c:if test="${not empty context.sufficientStatisticsSession}">
                         ${context.sufficientStatisticsSession.status}
 
@@ -64,6 +67,8 @@
 		    </li>
 
 		    <li><b>Estimation of Effects</b>
+
+                	<br/>
                 	<c:if test="${not empty context.lme4ModelSession}">
                         ${context.lme4ModelSession.status}
 

@@ -56,9 +56,9 @@
               <spring:eval var="colCounter" expression="colCounter  + 1" />
             </th>
           </c:forTokens>
-          <th>Time Series Analysis</th>
-          <th>Sufficient Statistics</th>
-          <th>Estimation of Effects</th>
+          <th style="width: 120px">Time Series Analysis</th>
+          <th style="width: 120px">Sufficient Statistics</th>
+          <th style="width: 120px">Estimation of Effects</th>
           <spring:eval var="colCounter" expression="colCounter  + 3" />
           <th></th>
           <c:if test="${update}">
@@ -105,7 +105,7 @@
 
 
             <spring:url value="/analysis/time_series_analysis/context/${itemId}" var="timeSeriesAnalysisUrl" htmlEscape="true"/>
-              <td class="utilbox">
+              <td class="utilbox" style="text-align: center">
 
 
                   <c:if test="${not empty item.FDAnalysisSession}">
@@ -123,7 +123,7 @@
               </td>
 
             <spring:url value="/analysis/sufficient_statistics/context/${itemId}" var="sufficientStatisticsUrl" htmlEscape="true"/>
-            <td class="utilbox">
+            <td class="utilbox"  style="text-align: center">
                 <c:if test="${not empty item.sufficientStatisticsSession}">
                     ${item.sufficientStatisticsSession.status}
                 </c:if>
@@ -139,7 +139,7 @@
             </td>
 
             <spring:url value="/analysis/estimation_of_effects/context/${itemId}" var="estimationOfEffectsUrl" htmlEscape="true"/>
-            <td class="utilbox">
+            <td class="utilbox" style="text-align: center">
                 <c:if test="${not empty item.lme4ModelSession}">
                     ${item.lme4ModelSession.status}
                 </c:if>
