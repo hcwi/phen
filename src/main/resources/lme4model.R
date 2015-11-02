@@ -224,95 +224,6 @@ get.sad <- function(sa, d) {
 }
 
 
-# Run processing: find, read, model, save
-run <- function() {
-  
-  print("[debug] run")
-  r <- regexpr(pattern="/[^/]*$", getwd())
-  dir <- substr(getwd(), r[1]+1, r[1]+attr(r, "match.length"))
-  ENRICHED <<- paste(dir, "enriched", sep="_")
-  REDUCED <<- paste(dir, "reduced", sep="_")
-  
-  if (file.exists("C:/strawberry/perl/bin/perl.exe")) 
-    PERL <<- "C:/strawberry/perl/bin/perl.exe"
-  
-  saPairs <<- get.isaFiles()
-  
-  for (i in 1:dim(saPairs)[1]) {
-    
-    sFile <- saPairs[i,2]
-    aFile <- saPairs[i,3]  
-    tmp <- load.saFiles(sFile, aFile)
-    sa <<- tmp[[1]]
-    sa.names <- tmp[[2]]
-    
-    dFile <- find.dFile(sa)
-    saPairs[i,4] <<- dFile
-    dat <- load.dFile(dFile)
-    d <<- dat[[1]]
-    d.names <- dat[[2]]
-    
-    sad.names <<- c(sa.names, d.names)
-    
-    sad <<- get.sad(sa, d)
-    tmp <- check.random(sad, sad.names)
-    sad <<- tmp$sad
-    sad.names <- tmp$names
-    
-    result <<- get.models(sad, sad.names)
-    means <- result$means
-    models <- result$models
-    success <- result$success
-    
-    means <- change.names(means, sad.names)
-    
-    statFile <- save.results(sFile, aFile, sad, means, models)
-    saPairs[i,5] <<- statFile
-    # update isa-tab file to include sufficient data file
-    remFiles <- update.aFile(aFile, statFile, success == 0)   
-    zip.files(remFiles)
-    
-  }
-} 
-
-
-# Zip files to full/reduced archives
-zip.files <- function(remFiles) {
-  
-  print("[debug] zip.files")
-  
-  dirs <- gsub(list.dirs(), pattern="./", rep="")
-  dirs <- grep(dirs, pattern=paste("(", ENRICHED, ")|(", REDUCED, ")", sep=""), val=T)
-  
-  files <- list.files()
-  toSave <- setdiff(files, dirs)
-  toSave <- setdiff(toSave, list.files(pattern="([.]zip)|([.]R)|~.*"))
-  toSave <- setdiff(toSave, saPairs[,3])
-  
-  toSave2 <- paste(ENRICHED, sep="/", list.files(ENRICHED))
-  if (Sys.info()["sysname"] == "Windows") {
-    zip(zipfile=paste(ENRICHED, ".zip", sep=""), files=c(toSave, toSave2), flags="a -ep1", zip="rar")
-  }
-  else {
-    zip(zipfile=ENRICHED, files=c(toSave, toSave2), flags="-rj", zip="zip")
-  }
-  
-  if (length(remFiles) > 0) {
-    print(paste("        files to remove from", REDUCED, ":", remFiles))
-    toSave <- setdiff(toSave, remFiles)
-    toSave3 <- paste(REDUCED, sep="/", list.files(REDUCED))
-    if (Sys.info()["sysname"] == "Windows") {
-      zip(zipfile=paste(REDUCED, ".zip", sep=""), files=c(toSave, toSave3), flags="a -ep1", zip="rar")
-    } 
-    else {
-      zip(zipfile=REDUCED, files=c(toSave, toSave3), flags="-rj", zip="zip")
-    }
-  }
-  
-}
-
-
-
 # Check if random effect exists - if not, add a random column
 check.random <- function(sad, sad.names) {
   
@@ -361,87 +272,6 @@ change.names <- function (means, names) {
   
   colnames(means) <- new.names
   means
-}
-
-# Save results to files
-save.results <- function (sFile, aFile, experiment, means, models, elegant=TRUE) {
-  
-  print("[debug] save.results")
-  
-  sFile2 <- substr(sFile, start=0, stop=regexpr("[.]",sFile)-1)
-  aFile2 <- substr(aFile, start=0, stop=regexpr("[.]",aFile)-1)
-  
-  rFile <- paste(sFile2, aFile2, "obj.R", sep="_")
-  
-  
-  save(experiment, file=rFile)
-  save(models, file=rFile)
-  print(paste("R objects saved to file:", rFile))
-  
-  if (elegant) {
-    drop <- grep(colnames(means), pattern="Formula")    
-    max <- length(colnames(means))
-    
-    rf <- "Factor.Value.Random."
-    emax <- length(colnames(experiment))
-    if (colnames(experiment)[emax] == rf) {
-      col <- grep(colnames(means), pattern=rf)
-      row <- grep(means[,col], pattern="[*]")
-      rmax <- dim(means)[1]
-      means <- rbind(means[1:(row-1),], means[(row+1):rmax,])
-      means <- cbind(Parameter=means[,1:(drop-1)], means[,(drop+1):(col-1)], means[,(col+1):max])
-    }
-    else {
-      means <- cbind(Parameter=means[,1:(drop-1)], means[,(drop+1):max])
-    }
-  }
-    
-  statFile <- paste(sFile2, aFile2, "stat.txt", sep="_")
-  write.table(means, file=statFile, sep="\t", na="", row.names=F)
-  print(paste("Sufficient statistics saved to file: ", statFile))
-  
-  statFile
-} 
-
-# Update assay file to include sufficient statistics column
-update.aFile <- function(aFile, statFile, complete) {
-  
-  print("[debug] update.aFile")
-  
-  print("Updating..")
-  a <- read.table(aFile, header=T, check.names=F, sep="\t")
-  
-  dataCols <- grep(names(a), pattern="Data File")
-  
-  a <- cbind(a, "Sufficient Data File"=statFile)
-  
-  dir.create(ENRICHED)
-  write.table(a, na="", row.names=F, sep="\t", file=paste(ENRICHED, aFile, sep="/"))
-  #write.table(a, na="", row.names=F, sep="\t", aFile)
-  
-  remFiles = character(0)
-  if (complete) {
-    u <- vector()
-    from=1
-    for (i in dataCols) {
-      c <- unique(a[i])
-      print(c)
-      to <- from + dim(c)[1]
-      u[from:(to-1)] <- as.matrix(c)
-      from <- to
-    }
-    u <- unique(u)
-    
-    remFiles <- u[!is.na(u)]
-    a[dataCols] <- NA
-    
-    dir.create(REDUCED)
-    write.table(a, na="", row.names=F, sep="\t", file=paste(REDUCED, aFile, sep="/"))
-  }
-  
-  print(paste("Assay file", aFile, "updated to include sufficient statistics column"))
-  
-  remFiles
 }
 
 
@@ -510,7 +340,7 @@ get.model.for.trait <- function(trait, sad, results) {
   form <- paste(trait,"~",fixef, ranef, sep="")
   print(paste("Formula:", form))
   
-  model <<- lmer(form, sadtf)
+  model <- lmer(form, sadtf)
   
   # Set variances of random effects
   {
@@ -746,41 +576,182 @@ get.random <- function(sad) {
 }
 
 
+# Save results to files
+save.results <- function (sFile, aFile, experiment, means, models, elegant=TRUE) {
+  
+  print("[debug] save.results")
+  
+  sFile2 <- substr(sFile, start=0, stop=regexpr("[.]",sFile)-1)
+  aFile2 <- substr(aFile, start=0, stop=regexpr("[.]",aFile)-1)
+  
+  #rFile <- paste(sFile2, aFile2, "obj.R", sep="_")
+  #save(experiment, file=rFile)
+  #save(models, file=rFile)
+  #print(paste("R objects saved to file:", rFile))
+  
+  if (elegant) {
+    drop <- grep(colnames(means), pattern="Formula")    
+    max <- length(colnames(means))
+    
+    rf <- "Factor.Value.Random."
+    emax <- length(colnames(experiment))
+    if (colnames(experiment)[emax] == rf) {
+      col <- grep(colnames(means), pattern=rf)
+      row <- grep(means[,col], pattern="[*]")
+      rmax <- dim(means)[1]
+      means <- rbind(means[1:(row-1),], means[(row+1):rmax,])
+      means <- cbind(Parameter=means[,1:(drop-1)], means[,(drop+1):(col-1)], means[,(col+1):max])
+    }
+    else {
+      means <- cbind(Parameter=means[,1:(drop-1)], means[,(drop+1):max])
+    }
+  }
+  
+  statFile <- paste(paste("data_model", sFile2, aFile2, sep="_"),".txt",sep="")
+  write.table(means, file=paste("results/", statFile, sep=""), sep="\t", na="", row.names=F, quote=F)
+  print(paste("Sufficient statistics saved to file: ", statFile))
+  
+  statFile
+} 
+
+# Update assay file to include sufficient statistics column
+update.aFile <- function(aFile, statFile) {
+  
+  print("[debug] update.aFile")
+  
+  print("Updating..")
+  a <- read.table(aFile, header=T, check.names=F, sep="\t")
+  a <- cbind(a, "Protocol REF"="data modelling", "Derived Data File"=statFile)
+  
+  if (length(grep(aFile, pat="results/")) == 0){
+    aFile <- paste("results/", aFile, sep="")
+  }
+  write.table(a, na="", row.names=F, sep="\t", quote=F, file=aFile)  
+  print(paste("Assay file", aFile, "updated to include data modelling column"))
+  
+}
+
+#Udpade inevstigation by adding info about a protocol for lme4
+update.investigation <- function(ipath) {
+  
+  print("[debug] update.investigation")
+  
+  
+  inv <- read.csv(ipath, sep = "\t", head=F)
+  inv <- as.matrix(inv)
+  prot <- grep(pat="Study Protocol Name", inv)
+  ncols <- dim(inv)[2]
+  prot.count <- max((1:ncols)[inv[prot,] != "" & !is.na(inv[prot,])]) 
+  if (prot.count == ncols) {
+    inv <- cbind(inv, NA)
+  } 
+  inv[prot, prot.count+1] <- "data modelling"
+  inv[grep(pat="Study Protocol Type$", inv), prot.count + 1] <- "data analysis"
+  desc <- "Observations for all traits are analysed by estimation of linear mixed models, with use of lme4 package for R."
+  inv[grep(pat="Study Protocol Description", inv), prot.count + 1] <- desc
+  
+  if (length(grep(ipath, pat="results/")) == 0){
+    ipath <- paste("results/", ipath, sep="")
+  }
+  write.table(x=inv, ipath, na="", col.names=F, sep="\t", quote = F, row.names=F)
+  print("Investigation file updated.")
+}
+
+# Zip files
+zip.files <- function() {
+  
+  print("[debug] zip.sufficient.files")
+  
+  files.new <- list.files("results", full.names = T)
+  files.old <- list.files(include.dirs = FALSE, pattern = "[^.zip]$")
+  files.unchanged <- setdiff(files.old, list.files("results"))
+  files <- c(files.unchanged, files.new)
+  zip(zipfile="original.zip", files=files.old, flags = "-j")
+  zip(zipfile="results.zip", files=files, flags = "-j")
+  
+}
+
+
+
+
+# Run processing: find, read, model, save
+run <- function() {
+  
+  print("[debug] run")
+ 
+  if (file.exists("C:/strawberry/perl/bin/perl.exe")) 
+    PERL <<- "C:/strawberry/perl/bin/perl.exe"
+  
+  saPairs <<- get.isaFiles()
+  
+  for (i in 1:dim(saPairs)[1]) {
+    
+    sFile <- saPairs[i,2]
+    aFile <- saPairs[i,3]  
+    tmp <- load.saFiles(sFile, aFile)
+    sa <<- tmp[[1]]
+    sa.names <- tmp[[2]]
+    
+    dFile <- find.dFile(sa)
+    saPairs[i,4] <<- dFile
+    dat <- load.dFile(dFile)
+    d <<- dat[[1]]
+    d.names <- dat[[2]]
+    
+    sad.names <<- c(sa.names, d.names)
+    
+    sad <<- get.sad(sa, d)
+    tmp <- check.random(sad, sad.names)
+    sad <<- tmp$sad
+    sad.names <- tmp$names
+    
+    result <<- get.models(sad, sad.names)
+    means <- result$means
+    models <- result$models
+    success <- result$success
+    
+    means <- change.names(means, sad.names)
+    
+    #statFile <- save.results(sFile, aFile, sad, means, models)
+    #saPairs[i,5] <<- statFile
+    # update isa-tab file to include sufficient data file
+    #remFiles <- update.aFile(aFile, statFile, success == 0)   
+    #zip.files(remFiles)
+    
+    
+    # update isa-tab file to include sufficient data file
+    {
+      results.exists <- length(grep(dir(), pat="^results$")) != 0
+      if (!results.exists) {
+        dir.create("results")
+      }
+      
+      statFile <- save.results(sFile, aFile, sad, means, models)
+      saPairs[i,5] <<- statFile
+      iFile <- saPairs[i,1]
+      if (results.exists) {
+        aFile <- paste("results/", aFile, sep="")
+        iFile <- paste("results/", iFile, sep="")
+      }
+      update.aFile(aFile, statFile)   
+      update.investigation(iFile)
+      zip.files()
+    }
+    
+  }
+} 
+
+
 # Things to do before running in Java
 
 # remove global variables (<<-)
 # uncomment:
-args <- commandArgs(TRUE)
-if (length(args) > 0) {
-  setwd(args[1])
-}
+ args <- commandArgs(TRUE)
+ if (length(args) > 0) {
+   setwd(args[1])
+ }
 
 options(stringsAsFactors=FALSE)
+#setwd("C:/Users/hcwi/Dropbox/IGR/phenalyse/phen-stats/isatab - Kopia")
+#setwd("C:/Users/hnk/Dropbox/IGR/phenalyse/phen-stats - new/isatab-new")
 run()
-
-#setwd("C:/Users/hcwi/Desktop/phenotypingTXT")
-#setwd("C:/Users/hcwi/Desktop/phen-stats/isatab")
-#setwd("C:/Users/hcwi/Desktop/phen-stats/isatab_missing")
-#setwd("C:/Users/hcwi/Desktop/phen/src/test/resources/DataWUR")
-#setwd("C:/Users/hcwi/Desktop/phen/src/test/resources/Phenotyping2")
-#setwd("C:/Users/hcwi/Desktop/phen/src/test/resources/IPGPASData")
-# XXX setwd("C:/Users/hcwi/Desktop/phen/src/test/resources/DataIPK") XXX too big file, very time consuming calculations (30min) with no result
-#setwd("C:/Users/hcwi/Desktop/phen/src/test/resources/DataIPK2")
-# XXx setwd("C:/Users/hcwi/Desktop/phen/src/test/resources/DataINRA") XXX mistake in ISA-TAB structure, Sample column in both s/a with different values
-#setwd("C:/Users/hcwi/Desktop/phen/src/test/resources/DataINRA2")
-#setwd("C:/Users/hcwi/Desktop/phen/src/test/resources/Keygene2")
-
-# calculate means for all obs~factor combinations
-#   what <- names(barley[sapply(barley, is.numeric)])
-#   byWhat <- names(barley[sapply(barley, is.factor)])
-#   mChar <- aggregate(barley[,what[j]]~barley[,byWhat[i]], FUN=mean)
-# 
-
-#P-VALS
-#if(!require("languageR")) {install.packages("languageR", repos='http://cran.us.r-project.org')}
-#library(languageR)
-#m1.p <- pvals.fnc(m1)
-
-#NULL MODEL COMPARISION
-#m1.null <- lmer(t.length~1+(1|f.block), barley)
-#anova(m1,m1.null)

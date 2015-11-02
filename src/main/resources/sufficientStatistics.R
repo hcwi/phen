@@ -538,7 +538,7 @@ save.sufficient.results <- function (sFile, aFile, experiment, means, elegant=TR
   }
   
   statFile <- paste(paste("data_suff", sFile2, aFile2, sep="_"),".txt",sep="")
-  write.table(means, file=paste("results/", statFile,".txt",sep=""), sep="\t", na="", row.names=F, quote=F)
+  write.table(means, file=paste("results/", statFile, sep=""), sep="\t", na="", row.names=F, quote=F)
   print(paste("Sufficient statistics saved to file: ", statFile))
   
   statFile
@@ -600,63 +600,45 @@ zip.sufficient.files <- function() {
   zip(zipfile="results.zip", files=files, flags = "-j")
 }
 
-
-
-# Things to do before running in Java
-
-# remove global variables (<<-)
-# uncomment:
-# args <- commandArgs(TRUE)
-# if (length(args) > 0) {
-#   setwd(args[1])
-# }
-
-options(stringsAsFactors=FALSE)
-#setwd("C:/Users/hcwi/Dropbox/IGR/phenalyse/phen-stats - new/isatab - Kopia")
-setwd("C:/Users/hnk/Dropbox/IGR/phenalyse/phen-stats - new/isatab-new")
-prepare.libs()
-run()
-
-
 # Run processing: find, read, get stats, save
 run <- function() {
-  
+
   print("[debug] run")
   #r <- regexpr(pattern="/[^/]*$", getwd())
   #dir <- substr(getwd(), r[1]+1, r[1]+attr(r, "match.length"))
-  
+
   saPairs <- get.isaFiles()#"isatab - Kopia")
-  
+
   for (i in 1:dim(saPairs)[1]) {
-    
+
     sFile <- saPairs[i,2]
-    aFile <- saPairs[i,3]  
+    aFile <- saPairs[i,3]
     tmp <- load.saFiles(sFile, aFile)
     sa <- tmp[[1]]
     sa.names <- tmp[[2]]
-    
+
     dFile <- find.dFile(sa)
     saPairs[i,4] <- dFile
     dat <- load.dFile(dFile)
     d <- dat[[1]]
     d.names <- dat[[2]]
-    
+
     sad <- get.sad(sa, d)
     sad.names <- c(sa.names, d.names)
-    
+
     result <- get.sufficient.stats(sad, sad.names)
     means <- result$means
     success <- result$success
-    
+
     means <- change.sufficient.names(means, sad.names)
-    
+
     # update isa-tab file to include sufficient data file
     {
       results.exists <- length(grep(dir(), pat="^results$")) != 0
       if (!results.exists) {
         dir.create("results")
       }
-      
+
       statFile <- save.sufficient.results(sFile, aFile, sad, means)
       saPairs[i,5] <- statFile
       iFile <- saPairs[i,1]
@@ -664,13 +646,31 @@ run <- function() {
         aFile <- paste("results/", aFile, sep="")
         iFile <- paste("results/", iFile, sep="")
       }
-      update.sufficient.aFile(aFile, statFile)   
+      update.sufficient.aFile(aFile, statFile)
       update.sufficient.investigation(iFile)
       zip.sufficient.files()
     }
-    
+
   }
-} 
+}
+
+# Things to do before running in Java
+
+# remove global variables (<<-)
+# uncomment:
+ args <- commandArgs(TRUE)
+ if (length(args) > 0) {
+   setwd(args[1])
+ }
+
+options(stringsAsFactors=FALSE)
+#setwd("C:/Users/hcwi/Dropbox/IGR/phenalyse/phen-stats - new/isatab - Kopia")
+#setwd("C:/Users/hnk/Dropbox/IGR/phenalyse/phen-stats - new/isatab-new")
+prepare.libs()
+run()
+
+
+
 
 
 
