@@ -7,7 +7,7 @@
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
     <page:show create="false" id="ps_pl_poznan_igr_domain_Context" object="${context}" path="/contexts" update="false" z="user-managed">
-        <field:display field="owner" id="s_pl_poznan_igr_domain_Context_owner" object="${context}" z="52jwae8OZy+rfQTmOutB3mwMVUk="/>
+        <field:display field="username" id="s_pl_poznan_igr_domain_Context_username" object="${context}" z="52jwae8OZy+rfQTmOutB3mwMVUk="/>
         <field:display date="true" dateTimePattern="${context_started_date_format}" field="started" id="s_pl_poznan_igr_domain_Context_started" object="${context}" z="OYLefk5cVns58YQeB8qtCUBDjlI="/>
         <c:if test="${not empty context.finished}">
             <field:display date="true" dateTimePattern="${context_finished_date_format}" field="finished" id="s_pl_poznan_igr_domain_Context_finished" object="${context}" z="c8Bncl+r5iuOrfuDkVfT1mB86BE="/>

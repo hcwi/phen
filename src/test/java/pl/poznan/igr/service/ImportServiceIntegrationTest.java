@@ -49,7 +49,7 @@ public class ImportServiceIntegrationTest extends AbstractIntegrationTest {
 		assertFalse(blobFile.getCreated().after(new Date()));
 
 		Context ctx = Context.findAllContexts().get(0);
-		assertEquals(OWNER, ctx.getOwner());
+		assertEquals(OWNER, ctx.getUsername());
 		assertFalse(ctx.getStarted().after(new Date()));
 		assertNull(ctx.getFinished());
 		assertEquals(Status.UPLOADED, ctx.getStatus());
@@ -81,7 +81,7 @@ public class ImportServiceIntegrationTest extends AbstractIntegrationTest {
 		assertEquals("testzip.zip", new String(blobFile.getFileName()));
 		assertFalse(blobFile.getCreated().after(new Date()));
 		Context ctx = Context.findAllContexts().get(0);
-		assertEquals(OWNER, ctx.getOwner());
+		assertEquals(OWNER, ctx.getUsername());
 		assertFalse(ctx.getStarted().after(new Date()));
 		assertNull(ctx.getFinished());
 		assertEquals(Status.UPLOADED, ctx.getStatus());

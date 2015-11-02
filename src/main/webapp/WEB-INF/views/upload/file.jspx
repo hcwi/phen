@@ -18,8 +18,8 @@
 		<form:form method="post" enctype="multipart/form-data"
 			modelAttribute="form">
 			<ul>
-				<li><strong>Owner</strong></li>
-				<form:input path="owner" />
+				<li><strong>Username</strong></li>
+				<form:input path="username" />
 				<li><strong>File</strong></li>
 				<form:input path="fileContent" type="file" accept="archive/*" labelCode="${browse}"/>
 			</ul>

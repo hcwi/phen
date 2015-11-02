@@ -29,7 +29,7 @@ public class UploadController {
 	public ModelAndView putNewFile(@ModelAttribute("form") UploadForm form) {
 		MultipartFile multipartFile = form.getFileContent();
 		try {
-			importService.importFile(form.getOwner(),
+			importService.importFile(form.getUsername(),
 					multipartFile.getOriginalFilename(), multipartFile.getBytes());
 			return new ModelAndView("redirect:/contexts");
 		} catch (IOException e) {

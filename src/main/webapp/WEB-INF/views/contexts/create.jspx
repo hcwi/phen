@@ -4,7 +4,7 @@
     <jsp:output omit-xml-declaration="yes"/>
     <form:create id="fc_pl_poznan_igr_domain_Context" modelAttribute="context" path="/contexts" render="${empty dependencies}" z="gFk7PpbDPPNa375pfFTSYscujcc=">
         <field:input field="statusMessage" id="c_pl_poznan_igr_domain_Context_statusMessage" z="CF+i4CU7EKBxMG+uz0nedn5r1/k="/>
-        <field:textarea field="owner" id="c_pl_poznan_igr_domain_Context_owner" required="true" z="i41/9WBNiAIN5uXLJkCsxvIoB0s="/>
+        <field:textarea field="username" id="c_pl_poznan_igr_domain_Context_username" required="true" z="i41/9WBNiAIN5uXLJkCsxvIoB0s="/>
         <field:datetime dateTimePattern="${context_started_date_format}" field="started" id="c_pl_poznan_igr_domain_Context_started" z="kEeW8/ppvV03XW89E6PKtn2Lngo="/>
         <field:datetime dateTimePattern="${context_finished_date_format}" field="finished" id="c_pl_poznan_igr_domain_Context_finished" z="zyxfTw7ELsh2IotObRJ8S6W8T9U="/>
         <field:select field="status" id="c_pl_poznan_igr_domain_Context_status" items="${statuses}" path="statuses" z="5MMrSqtnylJ74gim2GOvdqfQlD0="/>
