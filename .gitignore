@@ -14,3 +14,7 @@ target
 # idea
 .idea
 igr.iml
+
+# secrets
+other/digital-ocean/inventory
+other/digital-ocean/secrets.yml
