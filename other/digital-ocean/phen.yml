@@ -6,5 +6,3 @@
     - oracle-java
     - tomcat7
     - rscript
-  vars_files:
-    - secrets.yml
