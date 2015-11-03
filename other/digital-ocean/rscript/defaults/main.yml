@@ -1,5 +1,6 @@
 ---
 r_packages:
   - reshape2
+  - reshape
   - lme4
   - fda

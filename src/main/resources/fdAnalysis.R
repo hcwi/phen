@@ -192,20 +192,23 @@ find.dFile <- function (sa) {
   have.same <- function(x) length(unique(x))==1
   are.same <- sapply(sa[are.files][are.full], have.same)
   
+  cols <- are.files[are.full][are.same]
   nSame = length(sa[are.files][are.full][are.same])
-  if ( nSame < 1)
+  if ( nSame < 1) {
     stop("ERROR: Among the columns referring to data there are no full columns with all same values")
-  if ( nSame > 1)
+  } else if ( nSame > 1) {
     warning("WARNING: Among the columns referring to data there are more than one full columns with all same values.")
-  
-  print(paste("Full equal data names in: ", toString(are.files[are.full][are.same])))
-  
+    print(paste("Full equal data names in: ", cols))
+    datacol <- grep(pat="Derived", are.files, val=T)[1]
+  } else {
+    datacol <- cols[1]
+  }
 
-datacol <- are.files[grep(pat="data_process", sa[are.files][are.full][are.same])]
-print(paste("Using data from file: ", datacol))
-datafile <- sa[1, datacol]  
-datafile
+  print(paste("Using data from file: ", datacol))
+  datafile <- sa[1, datacol]
+  datafile
 }
+
 
 # Merge all tables for the experiment into sad table
 get.sad <- function(sa, d) {
