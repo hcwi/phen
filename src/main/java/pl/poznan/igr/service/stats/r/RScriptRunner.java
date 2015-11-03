@@ -1,6 +1,7 @@
 package pl.poznan.igr.service.stats.r;
 
 import com.google.common.base.Joiner;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,7 +29,9 @@ public class RScriptRunner implements ScriptRunner {
 
     @PostConstruct
     public void init() {
-        checkNotNull(rScriptRunner, "R_SCRIPT is not defined");
+        if (StringUtils.isBlank(rScriptRunner)) {
+            rScriptRunner = "/usr/bin/Rscript";
+        }
     }
 
     @Override
