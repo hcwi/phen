@@ -3,7 +3,12 @@
     <jsp:directive.page contentType="text/html;charset=UTF-8"/>
     <jsp:output omit-xml-declaration="yes"/>
     <page:list id="pl_pl_poznan_igr_domain_Context" items="${contexts}" z="2IheaGeIjSwsZCFVGw/C+EC2Dow=">
-        <table:ctxTable data="${contexts}" delete="true" id="l_pl_poznan_igr_domain_Context" path="/contexts" update="false" z="user-managed">
+        <table:ctxTable data="${contexts}"
+                delete="true"
+                id="l_pl_poznan_igr_domain_Context"
+                path="/contexts"
+                update="false"
+                z="user-managed">
             <table:column id="c_pl_poznan_igr_domain_Context_username" property="username" z="vaEYUs+DMDbgoyNNHhyonzmmFwk="/>
             <table:column id="c_pl_poznan_igr_domain_Context_importSession" property="importSession" z="ZYljPxqJmSZ98VgkGP+UKCCvAEQ="/>
             <table:column date="true" dateTimePattern="${context_started_date_format}" id="c_pl_poznan_igr_domain_Context_started" property="started" z="1BjVoO9OqSVEknoxxh3ivx3RKEs="/>

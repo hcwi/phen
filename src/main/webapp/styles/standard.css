@@ -109,7 +109,8 @@ table.navigation {
 }
 
 label {
-	width:100px;
+	width:120px;
+	font-weight: bold;
 	float:left;
 	margin-left: 5px;
 	margin-top: 0px;
