@@ -341,7 +341,7 @@ run.analysis <- function(sad, sad.names, traits) {
   
   timecol.id <- grep(pattern="time", names(sad))                                 #ids of columns with timestamp to be analysed (hopefull just one)
   if (length(timecol.id)==0) {
-    stop("ERROR: No time attribute for functional time data analysis found.")
+    stop("ERROR: No time attribute for functional time data analysis was found in the dataset.")
   }
   timecol <- names(sad)[timecol.id]
   varcol.id <- grep(pattern="(Factor|Characteristics)", names(sad))                #ids of columns with variables

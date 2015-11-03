@@ -90,7 +90,7 @@ public class RScriptRunner implements ScriptRunner {
         int success = p.waitFor();
         if (success != 0) {
             log.error("Process exited with error code {}", success);
-            errors.add("Analysis of the dataset failed. Probably there are errors in the processed ISA-TAB files.");
+            errors.add("Analysis of the dataset failed.");
         }
     }
 

@@ -138,7 +138,7 @@ load.dFile <- function(dFile) {
                   write(paste("ERROR: Loading data from file", dFile, "failed. The following error occured: ", e), stderr())
                 },
                 warning = function(w) {
-                  write(paste("WARNING: Loading data from file", dFile, "produced a following warning: ", e), stderr())
+                  write(paste("WARNING: Loading data from file", dFile, "produced a following warning: ", w), stderr())
                 },
                 finally = function() {
                   on.exit(close(dataName))
@@ -148,11 +148,11 @@ load.dFile <- function(dFile) {
 }
 
 ## NEEDS IMPROVMENT: get rid of perl
-# Load data from xls file 
+# Load data from xls file
 load.xls <- function(file) {
-  
+
   print("[debug] load.xls")
-  
+
   if(!require("gdata")) {install.packages("gdata", repos='http://cran.us.r-project.org')}
   library(gdata)
   d <- read.xls(file, perl=PERL)
@@ -164,12 +164,12 @@ load.xls <- function(file) {
 
 # Load data from txt file
 load.txt <- function(dFile) {
-  
+
   print("[debug] load.txt")
-  
+
   print(paste("Loading", dFile, "with read.table"))
   d <- read.table(dFile, header=T, sep="\t")
-  d2 <- read.table(dFile, header=T, sep="\t", check.names=F)    
+  d2 <- read.table(dFile, header=T, sep="\t", check.names=F)
   d.names <- as.vector(names(d2))
   names(d.names) <- names(d)
   list(d, d.names)
@@ -177,27 +177,27 @@ load.txt <- function(dFile) {
 
 # Find name of data file to use for study/assay pair
 find.dFile <- function (sa) {
-  
+
   print("[debug] find.dFile")
-  
+
   are.files <- grep("(Raw)|(Derived)|(Processed).Data.File", names(sa), value=T)
   print(paste("Data files: ", toString(are.files)))
-  
+
   have.all <- function(x) !any(is.na(x))
   are.full <- sapply(sa[are.files], have.all)
-  
+
   if (length(are.full) < 1)
     stop("ERROR: Among the columns referring to data there are no columns free of missing values")
-  
+
   have.same <- function(x) length(unique(x))==1
   are.same <- sapply(sa[are.files][are.full], have.same)
-  
+
   nSame = length(sa[are.files][are.full][are.same])
   if ( nSame < 1)
     stop("ERROR: Among the columns referring to data there are no full columns with all same values")
   if ( nSame > 1)
     warning("WARNING: Among the columns referring to data there are more than one full columns with all same values. The last one will be used.")
-  
+
   print(paste("Full equal data names in: ", toString(are.files[are.full][are.same])))
   dfName <- unique(sa[are.files][are.full][are.same][nSame])
   print(paste("Using data from file: ", dfName))
@@ -206,60 +206,60 @@ find.dFile <- function (sa) {
 
 # Merge all tables for the experiment into sad table
 get.sad <- function(sa, d) {
-  
+
   print("[debug] get.sad")
-  
+
   dupNames <- subset(names(sa), match(names(sa), names(d)) > 0)
   print(paste("Common columns: ", toString(dupNames)))
   dupNames.nontrivial <- grep("(REF)|(Accession.Number)", dupNames, invert=T)
   dupNames <- dupNames[dupNames.nontrivial]
   sad <- merge(sa, d, by=dupNames, all=T)
   print(paste("Merged by: ", toString(dupNames)))
-  
+
   if (dim(sad)[1] == 0) {
-    stop(paste("ERROR: Matching study file", sName, "and assay file", aName, "with data file", d, "by columns", paste(dupNames, collapse=", "), 
+    stop(paste("ERROR: Matching study file", sName, "and assay file", aName, "with data file", d, "by columns", paste(dupNames, collapse=", "),
                "resulted in an empty set. Check for conflicting values."))
   }
-  
+
   sad
 }
 
 
 # Prepare full model matrix and indices for it
 prepare.matrices <- function(sad, fixed) {
-  
+
   print("[debug] prepare.matrices")
-  
+
   fix <- data.frame(mform="", pform="", from=1, to=1, stringsAsFactors = F)
-  
+
   x <- matrix(1, nrow=dim(sad)[1])
   colnames(x) <- "all"
-  
+
   f=1
   for (i in 1:length(fixed)) {
     com <- combn(fixed, i)
     ncom <- dim(com)[2]
     for (j in 1:ncom) {
       names <- com[,j]
-      mform <- paste(names, collapse="*") 
-      pform <- paste(names, collapse=":") 
-      
+      mform <- paste(names, collapse="*")
+      pform <- paste(names, collapse=":")
+
       formula <- paste("Sample.Name", sep="~", mform)
       print(paste("[debug]           formu: ", formula, sep=""))
-      
+
       xtmp <- dcast(sad, formula, length)
       xtmp <- xtmp[-1]
       x <- cbind(x, xtmp)
-      
+
       from <- fix[f, "to"] + 1
       to <- from + dim(xtmp)[2] - 1
       f <- f + 1
       fix[f,] <- list(mform, pform, from, to)
     }
   }
-  
-  xu <- as.matrix(unique(x))  
-  
+
+  xu <- as.matrix(unique(x))
+
   list(fix=fix, xu=xu)
 }
 
@@ -320,13 +320,13 @@ get.random <- function(sad) {
 
 
 # Prepare table for sufficient results (combinations of effects)
-prepare.sufficient.results <- function(sad) {
+prepare.sufficient.results <- function(sad, traits) {
 
   print("[debug] prepare.results")
 
   type <- "Parameter"
   form <- "Formula"
-  traits <- get.traits(sad)
+  #traits <- get.traits(sad)
   fixed <- get.fixed(sad)
   random <- get.random(sad)
 
@@ -419,8 +419,8 @@ prepare.sufficient.matrices <- function(sad, fixed) {
       mform <- paste(names, collapse="*")
       pform <- paste(names, collapse=":")
 
-      formula <- paste("Sample.Name", sep="~", mform)
-      print(paste("[debug]           formu: ", formula, sep=""))
+      formula <- paste("Assay.Name", sep="~", mform)
+      print(paste("[debug]           formula: ", formula, sep=""))
 
       xtmp <- dcast(sad, formula, length)
       xtmp <- xtmp[-1]
@@ -439,13 +439,12 @@ prepare.sufficient.matrices <- function(sad, fixed) {
 }
 
 # Calculate models and final statistics
-get.sufficient.stats <- function(sad, sad.names) {
+get.sufficient.stats <- function(sad, sad.names, traits) {
 
   print("[debug] get.sufficient.models")
-  prepare.libs()
 
-  traits <- get.traits(sad)
-  results <- prepare.sufficient.results(sad)
+  #traits <- get.traits(sad)
+  results <- prepare.sufficient.results(sad, traits)
 
   success <- length(traits)
 
@@ -626,7 +625,9 @@ run <- function() {
     sad <- get.sad(sa, d)
     sad.names <- c(sa.names, d.names)
 
-    result <- get.sufficient.stats(sad, sad.names)
+    traits <- names(d)[-1]
+
+    result <- get.sufficient.stats(sad, sad.names, traits)
     means <- result$means
     success <- result$success
 
