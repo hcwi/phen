@@ -138,7 +138,7 @@ load.dFile <- function(dFile) {
                   write(paste("ERROR: Loading data from file", dFile, "failed. The following error occured: ", e), stderr())
                 },
                 warning = function(w) {
-                  write(paste("WARNING: Loading data from file", dFile, "produced a following warning: ", e), stderr())
+                  write(paste("WARNING: Loading data from file", dFile, "produced a following warning: ", w), stderr())
                 },
                 finally = function() {
                   on.exit(close(dataName))
