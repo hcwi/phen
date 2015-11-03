@@ -1,0 +1,13 @@
+---
+  - name: Install Tomcat 7
+    apt: pkg=tomcat7
+  - name: Copy config
+    copy: src=tomcat7 dest=/etc/default/tomcat7 owner=root group=root
+    notify: Restart tomcat7
+  - name: Enable tomcat7
+    service: name=tomcat7 enabled=yes state=started
+  - name: Open access to tomcat7
+    ufw: rule=allow port=8080 proto=tcp
+    notify: Reload ufw
+
+

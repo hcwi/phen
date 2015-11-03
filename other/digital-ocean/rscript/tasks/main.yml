@@ -1,0 +1,18 @@
+---
+- name: Add R repository key
+  apt_key: keyserver=keyserver.ubuntu.com id=E084DAB9 state=present
+
+- name: Add R respository
+  apt_repository: repo="deb http://cran.rstudio.com/bin/linux/ubuntu trusty/"
+
+- name: Install R
+  apt: pkg=r-base state=installed update_cache=true
+
+- name: Install R packages
+  command: >
+    Rscript --slave --no-save --no-restore-history -e "if (! ('{{ item }}' %in% installed.packages()[,'Package'])) { install.packages(pkgs='{{ item }}', repos=c('http://ftp.heanet.ie/mirrors/cran.r-project.org/')); print('Added'); } else { print('Already installed'); }"
+  register: r_result
+  failed_when: "r_result.rc != 0 or 'had non-zero exit status' in r_result.stderr"
+  changed_when: "'Added' in r_result.stdout"
+  with_items: r_packages
+
