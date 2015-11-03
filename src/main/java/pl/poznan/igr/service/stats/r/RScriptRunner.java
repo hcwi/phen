@@ -14,7 +14,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 @Component
 public class RScriptRunner implements ScriptRunner {
@@ -86,17 +87,10 @@ public class RScriptRunner implements ScriptRunner {
     }
 
     private void waitForErrorMessagesIfAny(Process p, List<String> errors) throws InterruptedException {
-        boolean done = p.waitFor(10, TimeUnit.MINUTES);
-        if (done) {
-            int success = p.exitValue();
-            if (success != 0) {
-                log.error("Process exited with error code {}", success);
-                errors.add("Analysis of the dataset failed.");
-            }
-        } else {
-            p.destroy();
-            log.error("Analysis terminated after waiting for 10 minutes");
-            errors.add("Analysis was stopped after time limit exceeded. Please contact support to increase your quota. ");
+        int success = p.waitFor();
+        if (success != 0) {
+            log.error("Process exited with error code {}", success);
+            errors.add("Analysis of the dataset failed.");
         }
     }
 

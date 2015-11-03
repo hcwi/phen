@@ -201,7 +201,8 @@ find.dFile <- function (sa) {
   print(paste("Full equal data names in: ", toString(are.files[are.full][are.same])))
   dfName <- unique(sa[are.files][are.full][are.same][nSame])
   print(paste("Using data from file: ", dfName))
-  dfName
+  datafile <- gsub(" *$", '', x=dfName)
+  datafile
 }
 
 # Merge all tables for the experiment into sad table

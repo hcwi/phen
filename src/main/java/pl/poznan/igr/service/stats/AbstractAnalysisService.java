@@ -3,6 +3,7 @@ package pl.poznan.igr.service.stats;
 import com.google.common.io.Files;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,16 +16,23 @@ import pl.poznan.igr.service.stats.r.ScriptStatus;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public abstract class AbstractAnalysisService<T extends AnalysisSession> {
 
     private final static Logger log = LoggerFactory.getLogger(AbstractAnalysisService.class);
 
-    public void analyze(Context ctx) throws IOException {
+    public void analyze(final Context ctx) throws IOException {
         if (canProceed(ctx)) {
             log.debug("Starting analysis of " + ctx);
             startAnalysis(ctx);
-            runAnalysis(ctx);
+            getAsyncExecutor().execute(new Runnable() {
+                @Override
+                public void run() {
+                    runAnalysis(ctx);
+                }
+            });
         }
     }
 
@@ -56,17 +64,25 @@ public abstract class AbstractAnalysisService<T extends AnalysisSession> {
         session.setStatus(AnalysisStatus.IN_PROGRESS);
     }
 
-    @Async
     @Transactional
     private void runAnalysis(Context ctx) {
-        UnzipSession us = ctx.getUnzipSession();
-        String path = us.getUnzipPath();
-        ScriptStatus status = runScript(path);
-        if (status.errorMessage.isPresent()) {
-            persistFailure(ctx, status);
-        } else {
-            log.debug("Done analysing of " + ctx);
-            persistSuccessResults(ctx, path);
+        try {
+            UnzipSession us = ctx.getUnzipSession();
+            String path = us.getUnzipPath();
+            ScriptStatus status = runScript(path);
+            if (status.errorMessage.isPresent()) {
+                persistFailure(ctx, status);
+            } else {
+                log.debug("Done analysing of " + ctx);
+                persistSuccessResults(ctx, path);
+            }
+        } catch (Exception e) {
+            log.error("Error while analyzing", e);
+            if (getSessionFromContext(ctx).getStatus() != AnalysisStatus.ERROR) {
+                getSessionFromContext(ctx).setMessage("Error while analyzing, please contact support");
+                getSessionFromContext(ctx).setStatus(AnalysisStatus.ERROR);
+                ctx.merge();
+            }
         }
     }
 
@@ -74,6 +90,7 @@ public abstract class AbstractAnalysisService<T extends AnalysisSession> {
         log.debug("Error analysing " + ctx + ": " + status.errorMessage);
         getSessionFromContext(ctx).setStatus(AnalysisStatus.ERROR);
         getSessionFromContext(ctx).setMessage(status.errorMessage.get());
+        ctx.merge();
     }
 
     private void persistSuccessResults(Context ctx, String path) {
@@ -86,6 +103,8 @@ public abstract class AbstractAnalysisService<T extends AnalysisSession> {
             log.error("Can't save results for " + ctx, e);
             getSessionFromContext(ctx).setStatus(AnalysisStatus.ERROR);
             getSessionFromContext(ctx).setMessage("Can't save results, please contact support");
+        } finally {
+            ctx.merge();
         }
     }
 
@@ -96,4 +115,6 @@ public abstract class AbstractAnalysisService<T extends AnalysisSession> {
     protected abstract void setSessionInContext(Context ctx, T session);
 
     protected abstract ScriptStatus runScript(String workingDirectory);
+
+    protected abstract TaskExecutor getAsyncExecutor();
 }

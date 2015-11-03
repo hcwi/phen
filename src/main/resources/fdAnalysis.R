@@ -206,6 +206,7 @@ find.dFile <- function (sa) {
 
   print(paste("Using data from file: ", datacol))
   datafile <- sa[1, datacol]
+  datafile <- gsub(" *$", '', x=datafile)
   datafile
 }
 

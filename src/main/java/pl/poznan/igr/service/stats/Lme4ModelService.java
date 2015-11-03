@@ -1,6 +1,8 @@
 package pl.poznan.igr.service.stats;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.task.TaskExecutor;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 import pl.poznan.igr.domain.Context;
 import pl.poznan.igr.domain.analysis.Lme4ModelSession;
@@ -14,6 +16,14 @@ public class Lme4ModelService extends AbstractAnalysisService<Lme4ModelSession> 
 
     @Autowired
     private ScriptRunner scriptRunner;
+
+    @Autowired
+    private ThreadPoolTaskExecutor executor;
+
+    @Override
+    protected TaskExecutor getAsyncExecutor() {
+        return executor;
+    }
 
     @Override
     protected Lme4ModelSession newSession() {

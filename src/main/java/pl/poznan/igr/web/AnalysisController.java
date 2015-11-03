@@ -18,6 +18,8 @@ import java.io.IOException;
 @Controller
 public class AnalysisController {
 
+    private
+
     @Autowired
     FDAnalysisService fDAnalysisService;
 
