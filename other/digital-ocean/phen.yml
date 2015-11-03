@@ -3,6 +3,7 @@
   remote_user: root
   roles:
     - basic-ubuntu
+    - { role: kamaln7.swapfile, swapfile_size: 4GB, swapfile_swappiness: 20 }
     - oracle-java
     - tomcat7
     - rscript
