@@ -266,53 +266,52 @@ prepare.matrices <- function(sad, fixed) {
 # Install and load missing libraries
 prepare.libs <- function() {
 
-  require("reshape2")
-#  if(!require("reshape2")) {
-#    install.packages("reshape2", repos='http://cran.us.r-project.org')
-#    library(reshape2)
-#  }
+  if(!require("reshape2")) {
+    install.packages("reshape2", repos='http://cran.us.r-project.org')
+    library(reshape2)
+  }
 }
 
 # Get traits
 get.traits <- function(sad) {
-  
+
   print("[debug] get.traits")
-  
+
   are.traits <- grep("Trait[.]Value", names(sad), value=T)
-  
+
 #   warning("Removing traits with no variation")
 #   have.var <- function(x) length(unique(x))>1
 #   are.var <- sapply(sad[are.traits], have.var)
 #   are.traits <- are.traits[are.var]
-  
+
   are.traits
 }
 
 # Get fixed effects
 get.fixed <- function(sad) {
-  
+
   print("[debug] get.fixed")
-  
+
   are.levels <- grep("((Characteristics)|(Factor))", names(sad), value=T)
   #warning("Filtering factors to exclude *id* names -- only for Keygene data. Remove for other analyses!")
   are.levels <- grep("[Ii]d", are.levels, value=T, invert=T)
   are.var <- sapply(sad[are.levels], FUN = function(x) length(unique(x))>1 )
   are.fixed  <- grep("(Block)|(Field)|(Rank)|(Plot)|(Replic)|(Column)|(Row)|(Rand)", are.levels[are.var], value=T, invert=T)
-  
+
   are.fixed
 }
 
 # Get random effects
 get.random <- function(sad) {
-  
+
   print("[debug] get.random")
-  
+
   are.levels <- grep("((Characteristics)|(Factor))", names(sad), value=T)
   #warning("Filtering factors to exclude *id* names -- only for Keygene data. Remove for other analyses!")
   are.levels <- grep("[Ii]d", are.levels, value=T, invert=T)
   are.var <- sapply(sad[are.levels], FUN = function(x) length(unique(x))>1 )
   are.random <- grep("(Block)|(Field)|(Rank)|(Plot)|(Replic)|(Column)|(Row)|(Rand)", are.levels[are.var], value=T)
-  
+
   are.random
 }
 
@@ -322,26 +321,26 @@ get.random <- function(sad) {
 
 # Prepare table for sufficient results (combinations of effects)
 prepare.sufficient.results <- function(sad) {
-  
+
   print("[debug] prepare.results")
-  
+
   type <- "Parameter"
   form <- "Formula"
   traits <- get.traits(sad)
   fixed <- get.fixed(sad)
   random <- get.random(sad)
-  
+
   cols <- c(type, form, fixed, random, traits)
   ncols <- length(cols)
-  
+
   results <- matrix(nrow=1, ncol=ncols)
   colnames(results) <- cols
-  
+
   # General mean
 {
   srow <- 1
   results[srow, form] <- ""
-  results[srow, type] <- "Sufficient sum"
+  results[srow, type] <- "Total"
 }
 
 # Means for fixed effects
@@ -354,17 +353,17 @@ prepare.sufficient.results <- function(sad) {
       names <- com[,j]
       dat <- unique(sad[names])
       dat <- as.matrix(dat[order(dat[1]),])
-      
+
       nrows <- dim(dat)[1]
       if (is.null(nrows)) nrows <- length(dat)
       results <- rbind(results, matrix(nrow=nrows, ncol=ncols))
-      
+
       formula <- paste(names, collapse="*")
-      
+
       to <- srow + nrows - 1
       results[srow:to, names] <- dat
       results[srow:to, form] <- formula
-      results[srow:to, type] <- "Sufficient sum"
+      results[srow:to, type] <- "Total"
       results
       srow <- to + 1
     }
@@ -380,17 +379,17 @@ prepare.sufficient.results <- function(sad) {
       names <- com[,j]
       dat <- unique(sad[names])
       dat <- as.matrix(dat[order(dat[1]),])
-      
+
       nrows <- dim(dat)[1]
       if (is.null(nrows)) nrows <- length(dat)
       results <- rbind(results, matrix(nrow=nrows, ncol=ncols))
-      
+
       formula <- paste(names, collapse="*")
-      
+
       to <- srow + nrows - 1
       results[srow:to, names] <- dat
       results[srow:to, form] <- formula
-      results[srow:to, type] <- "Sufficient sum"
+      results[srow:to, type] <- "Total"
       results
       srow <- to + 1
     }
@@ -403,93 +402,93 @@ results
 
 # Prepare full model matrix and indices for it
 prepare.sufficient.matrices <- function(sad, fixed) {
-  
+
   print("[debug] prepare.sufficient.matrices")
-  
+
   fix <- data.frame(mform="", pform="", from=1, to=1, stringsAsFactors = F)
-  
+
   x <- matrix(1, nrow=dim(sad)[1])
   colnames(x) <- "all"
-  
+
   f=1
   for (i in 1:length(fixed)) {
     com <- combn(fixed, i)
     ncom <- dim(com)[2]
     for (j in 1:ncom) {
       names <- com[,j]
-      mform <- paste(names, collapse="*") 
-      pform <- paste(names, collapse=":") 
-      
+      mform <- paste(names, collapse="*")
+      pform <- paste(names, collapse=":")
+
       formula <- paste("Sample.Name", sep="~", mform)
       print(paste("[debug]           formu: ", formula, sep=""))
-      
+
       xtmp <- dcast(sad, formula, length)
       xtmp <- xtmp[-1]
       x <- cbind(x, xtmp)
-      
+
       from <- fix[f, "to"] + 1
       to <- from + dim(xtmp)[2] - 1
       f <- f + 1
       fix[f,] <- list(mform, pform, from, to)
     }
   }
-  
-  xu <- as.matrix(x[,-1])  
-  
+
+  xu <- as.matrix(x[,-1])
+
   list(fix=fix, xu=xu)
 }
 
 # Calculate models and final statistics
 get.sufficient.stats <- function(sad, sad.names) {
-  
+
   print("[debug] get.sufficient.models")
-  prepare.libs()  
-  
+  prepare.libs()
+
   traits <- get.traits(sad)
   results <- prepare.sufficient.results(sad)
-  
+
   success <- length(traits)
-  
+
   fixed <- get.fixed(sad)
   tmp <- prepare.sufficient.matrices(sad, fixed)
   xu <- tmp$xu
-  
+
   random <- get.random(sad)
   tmpr <- prepare.sufficient.matrices(sad, random)
   xur <- tmpr$xu
-  
-  xuxur <- cbind(xu, xur)  
-  
+
+  xuxur <- cbind(xu, xur)
+
   for (trait in traits) {
-    
+
     ss <- t(xuxur) %*% sad[[trait]]
     results[-1,trait] <- ss
-    
+
     ss1 <- t(sad[[trait]]) %*% sad[[trait]]
     results[1, trait] <- ss1
-    
-    success <- success-1;    
+
+    success <- success-1;
   }
-  
+
   list(means=results, success=success)
 }
 
 # Change names from R-consumable to input-like strings
 change.sufficient.names <- function (means, names) {
-  
+
   print("[debug] change.names")
-  
+
   old.names <- colnames(means)
   old.names <- gsub("S[.]e[.]", "", old.names)
   names[old.names]
-  
+
   chnames <- function(x) {
     if (!is.na(names[x])) {
       if(length(grep("Trait Value", names[x])) == 0) {
         names[x][1]
       }
       else {
-        gsub("Trait Value", "Sum", names[x][1])
+        gsub("Trait Value", "Estimate", names[x][1])
       }
     }
     else {
@@ -497,33 +496,33 @@ change.sufficient.names <- function (means, names) {
     }
   }
   new.names <- sapply(old.names, chnames)
-  
+
   for (i in 2:length(new.names)) {
     if (new.names[i] == new.names[i-1]) {
-      new.names[i] <- gsub("Sum", "Standard Error", new.names[i])
+      new.names[i] <- gsub("Estimate", "Standard Error", new.names[i])
     }
   }
-  
+
   colnames(means) <- new.names
   means
 }
 
 # Save results to files
 save.sufficient.results <- function (sFile, aFile, experiment, means, elegant=TRUE) {
-  
+
   print("[debug] save.sufficient.results")
-  
+
   sFile2 <- substr(sFile, start=0, stop=regexpr("[.]",sFile)-1)
   aFile2 <- substr(aFile, start=0, stop=regexpr("[.]",aFile)-1)
-  
+
   #rFile <- paste("results/", paste(sFile2, aFile2, "suff", "obj.R", sep="_"), sep="")
-  #save(experiment, file=rFile) 
+  #save(experiment, file=rFile)
   #print(paste("R objects saved to file:", rFile))
-  
+
   if (elegant) {
-    drop <- grep(colnames(means), pattern="Formula")    
+    drop <- grep(colnames(means), pattern="Formula")
     max <- length(colnames(means))
-    
+
     rf <- "Factor.Value.Random."
     emax <- length(colnames(experiment))
     if (colnames(experiment)[emax] == rf) {
@@ -537,33 +536,33 @@ save.sufficient.results <- function (sFile, aFile, experiment, means, elegant=TR
       means <- cbind(Parameter=means[,1:(drop-1)], means[,(drop+1):max])
     }
   }
-  
+
   statFile <- paste(paste("data_suff", sFile2, aFile2, sep="_"),".txt",sep="")
   write.table(means, file=paste("results/", statFile, sep=""), sep="\t", na="", row.names=F, quote=F)
   print(paste("Sufficient statistics saved to file: ", statFile))
-  
+
   statFile
-} 
+}
 
 #Udpade inevstigation by adding info about a protocol for sufficient
 update.sufficient.investigation <- function(ipath) {
-  
+
   print("[debug] update.sufficient.investigation")
-  
-             
+
+
   inv <- read.csv(ipath, sep = "\t", head=F)
   inv <- as.matrix(inv)
   prot <- grep(pat="Study Protocol Name", inv)
   ncols <- dim(inv)[2]
-  prot.count <- max((1:ncols)[inv[prot,] != "" & !is.na(inv[prot,])]) 
+  prot.count <- max((1:ncols)[inv[prot,] != "" & !is.na(inv[prot,])])
   if (prot.count == ncols) {
     inv <- cbind(inv, NA)
-  } 
+  }
   inv[prot, prot.count+1] <- "sufficient statistics calculation"
   inv[grep(pat="Study Protocol Type$", inv), prot.count + 1] <- "data reduction"
   desc <- "Observations for all traits under go a data reduction, and a set of sufficient statistics is produced. It can be used for further analysis, instead of the individual observations, e.g. according to A. Markiewicz et al. (2015)"
   inv[grep(pat="Study Protocol Description", inv), prot.count + 1] <- desc
-  
+
   if (length(grep(ipath, pat="results/")) == 0){
     ipath <- paste("results/", ipath, sep="")
   }
@@ -573,26 +572,26 @@ update.sufficient.investigation <- function(ipath) {
 
 # Update assay file to include sufficient statistics column
 update.sufficient.aFile <- function(aFile, statFile) {
-  
+
   print("[debug] update.aFile")
-  
+
   print("Updating..")
   a <- read.table(aFile, header=T, check.names=F, sep="\t")
   a <- cbind(a, "Protocol REF"="sufficient statistics calculation", "Derived Data File"=statFile)
-  
+
   if (length(grep(aFile, pat="results/")) == 0){
     aFile <- paste("results/", aFile, sep="")
   }
-  write.table(a, na="", row.names=F, sep="\t", quote=F, file=aFile)  
+  write.table(a, na="", row.names=F, sep="\t", quote=F, file=aFile)
   print(paste("Assay file", aFile, "updated to include sufficient statistics column"))
-  
+
 }
 
 # Zip files
 zip.sufficient.files <- function() {
-  
+
   print("[debug] zip.sufficient.files")
-  
+
   files.new <- list.files("results", full.names = T)
   files.old <- list.files(include.dirs = FALSE, pattern = "[^.zip]$")
   files.unchanged <- setdiff(files.old, list.files("results"))
