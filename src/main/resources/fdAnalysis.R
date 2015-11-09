@@ -153,8 +153,9 @@ load.xls <- function(file) {
   
   print("[debug] load.xls")
   
-  if(!require("gdata")) {install.packages("gdata", repos='http://cran.us.r-project.org')}
-  library(gdata)
+  if (!require("gdata")) {
+    stop("Library gdata cannot be loaded. Check if installed. Stopping execution")
+  }
   d <- read.xls(file, perl=PERL)
   d2 <- read.xls(file, perl=PERL, check.names=F)
   d.names <- as.vector(names(d2))
@@ -235,7 +236,9 @@ do.fda <- function(data, timepoints, nbases=10, norder=3) {
   
   print("[debug] do.fda")
   
-  require("fda")
+  if (!require("fda")) {
+    stop("Library fda cannot be loaded. Check if installed. Stopping execution")
+  }
   
   bspl <- create.bspline.basis(rangeval=c(min(timepoints),max(timepoints)), nbasis=nbases, norder=norder) 
   fd <- Data2fd(y=data, argvals= timepoints, basisobj=bspl)
@@ -358,7 +361,9 @@ run.analysis <- function(sad, sad.names, traits) {
   meta$timepoints <- strptime(meta[[timecol]], "%m/%d/%Y")                         #add formatted dates
   
   
-  require(reshape)
+  if (!require(reshape)) {
+    stop("Library reshape cannot be loaded. Check if installed. Stopping execution")
+  }
   
   out.traits <- data.frame()
   out.scores <- data.frame()
