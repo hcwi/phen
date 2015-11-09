@@ -153,8 +153,11 @@ load.xls <- function(file) {
 
   print("[debug] load.xls")
 
-  if(!require("gdata")) {install.packages("gdata", repos='http://cran.us.r-project.org')}
-  library(gdata)
+  if(!require("gdata")) {
+    library(gdata)
+  } else {
+    stop("Library gdata cannot be loaded. Check if it is installed. Stopping execution")
+  }
   d <- read.xls(file, perl=PERL)
   d2 <- read.xls(file, perl=PERL, check.names=F)
   d.names <- as.vector(names(d2))
@@ -267,9 +270,10 @@ prepare.matrices <- function(sad, fixed) {
 # Install and load missing libraries
 prepare.libs <- function() {
 
-  if(!require("reshape2")) {
-    install.packages("reshape2", repos='http://cran.us.r-project.org')
-    library(reshape2)
+  if(!require("reshape")) {
+    library(reshape)
+  } else {
+    stop("Library reshape cannot be loaded. Check if it is installed. Stopping execution.")
   }
 }
 

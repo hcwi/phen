@@ -557,12 +557,14 @@ prepare.matrices <- function(sad, fixed) {
 prepare.libs <- function() {
 
   if(!require("lme4")) {
-    install.packages("lme4", repos='http://cran.us.r-project.org')
     library(lme4)
+  } else {
+    stop("Library lme4 cannot be loaded. Check if it is installed. Stopping execution.")
   }
   if(!require("reshape")) {
-    install.packages("reshape", repos='http://cran.us.r-project.org')
     library(reshape)
+  } else {
+    stop("Library reshape cannot be loaded. Check if it is installed. Stopping execution.")
   }
 }
 

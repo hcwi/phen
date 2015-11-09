@@ -50,7 +50,7 @@ read.iFile <- function(folder=".", file="i_Investigation.txt") {
 
 # Find non-standard investigation file in given folder
 find.iFile <- function(dir) {
-  
+
   print("[debug] find.iFile")
   
   nums <- grep("^i_.*", list.files(path=dir))
@@ -358,7 +358,7 @@ run.analysis <- function(sad, sad.names, traits) {
   meta$timepoints <- strptime(meta[[timecol]], "%m/%d/%Y")                         #add formatted dates
   
   
-  require(reshape2)
+  require(reshape)
   
   out.traits <- data.frame()
   out.scores <- data.frame()
